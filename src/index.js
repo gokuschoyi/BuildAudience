@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+import '../src/css/build-audience.webflow.css';
+import '../src/css/normalize.css';
+import '../src/css/webflow.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
