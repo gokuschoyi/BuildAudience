@@ -1121,9 +1121,9 @@ textarea.w-select {
 
 .w-slider {
   position: relative;
-  height: 300px;
+  height: 800px;
   text-align: center;
-  background: #dddddd;
+  background: transparent;
   clear: both;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   tap-highlight-color: rgba(0, 0, 0, 0);
@@ -1220,12 +1220,12 @@ textarea.w-select {
 .w-slider-arrow-left,
 .w-slider-arrow-right {
   position: absolute;
-  width: 80px;
+  width: 100px;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-  margin: auto;
+
   cursor: pointer;
   overflow: hidden;
   color: white;
@@ -1933,7 +1933,7 @@ textarea.w-select {
   top: 100%;
   left: 0;
   right: 0;
-  background: #C8C8C8;
+  background: #c8c8c800;
   text-align: center;
   overflow: visible;
   min-width: 200px;
@@ -2085,15 +2085,15 @@ textarea.w-select {
   display: inline-block;
   vertical-align: top;
   text-decoration: none;
-  padding: 9px 30px;
-  text-align: left;
+  padding: 19px 30px;
+  text-align: center;
   cursor: pointer;
   color: #222222;
-  background-color: #dddddd;
+  background-color: #ffffff;
 }
 
 .w-tab-link.w--current {
-  background-color: #C8C8C8;
+  background-color: #0c0b0b;
 }
 
 .w-tab-link:focus {

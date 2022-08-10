@@ -3,7 +3,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LandingPage from "./LandingPage";
 import AuthSwitch from "./Auth/AuthSwitch";
 import ForgotPassword from "./Auth/ForgotPassword/ForgotPassword";
-
+import Dashboard from "./Dashboard/Dashboard";
+import CustomPost from "./Dashboard/CustomPost/CustomPost";
+import BlogPost from "./Dashboard/BlogPost/BlogPost";
 function App() {
   return (
     <Router>
@@ -12,6 +14,9 @@ function App() {
           <Route path='/' element={<LandingPage />}></Route>
           <Route path='/Auth' element={<AuthSwitch />}> </Route>
           <Route path='/ForgotPassword' element={<ForgotPassword />}> </Route>
+          <Route path='/Dashboard' element={<Dashboard />}> </Route>
+          <Route path='/CustomPost' element={<CustomPost />}> </Route>
+          <Route path='/BlogPost' element={<BlogPost />}> </Route>
         </Routes>
       </div>
     </Router>

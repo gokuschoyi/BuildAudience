@@ -2,6 +2,77 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Bootstrap grid  start */
+
+/* IMAGE GRID STYLES
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+.image-grid figure {
+  margin-bottom: 0;
+}
+
+.image-grid img {
+  box-shadow: 0 1rem 1rem rgba(0, 0, 0, 0.15);
+  transition: box-shadow 0.2s;
+}
+
+.image-grid a:hover img {
+  box-shadow: 0 1rem 1rem rgba(0, 0, 0, 0.35);
+}
+
+
+/* LIGHTBOX STYLES
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+.lightbox-modal .modal-content {
+  background: var(--lightbox);
+}
+
+.lightbox-modal .btn-close {
+  position: absolute;
+  top: 20px;
+  right: 18px;
+  font-size: 1.2rem;
+  z-index: 10;
+}
+
+.lightbox-modal .modal-body {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  text-align: center;
+}
+
+.lightbox-modal img {
+  width: auto;
+  max-height: 100vh;
+  max-width: 100%;
+}
+
+.lightbox-modal .carousel-caption {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(36, 36, 36, 0.75);
+}
+
+.lightbox-modal .carousel-control-prev,
+.lightbox-modal .carousel-control-next {
+  top: 50%;
+  bottom: auto;
+  transform: translateY(-50%);
+  width: auto;
+}
+
+.lightbox-modal .carousel-control-prev {
+  left: 10px;
+}
+
+.lightbox-modal .carousel-control-next {
+  right: 10px;
+}
+
+/* Bootstrap Grid End */
+
+
 /* new navbar */
 
 .navbar-wrapper-2 {
@@ -320,7 +391,7 @@ html {
 
 .body {
 
-  font-family: Poppins, 'Nunito Sans', sans-serif;
+  font-family: 'Poppins', 'Nunito Sans', sans-serif;
   color: #000;
 }
 
@@ -660,7 +731,7 @@ html {
   display: -ms-flexbox;
   display: flex;
   height: 600px;
-  margin-top: 94px;
+  margin-top: 73px;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
   -webkit-flex-direction: column;
@@ -2078,6 +2149,7 @@ html {
   display: -ms-flexbox;
   display: flex;
   width: 160px;
+  height: 58px;
   margin-top: 0px;
   margin-right: 0.5em;
   margin-left: 0.5em;
@@ -2121,11 +2193,10 @@ html {
 }
 
 .navigation-item.w--current {
-  width: 140px;
   padding-bottom: 0.8em;
   border-top: 6px solid #fff;
   border-radius: 5px;
-  background-color: #414141;
+  background-color: #222020;
   box-shadow: 5px 5px 20px 0 #000;
   opacity: 1;
   -webkit-transform: translate(0px, 2px) scale(1.1);
@@ -2291,6 +2362,7 @@ html {
 .white-box.link-box.paper-box {
   position: relative;
   width: 15%;
+  height: 25vh
 }
 
 .white-box.two-third {
@@ -2542,7 +2614,7 @@ html {
   overflow: visible;
   width: auto;
   height: 60px;
-  margin-top: 0px;
+  margin-top: -20px;
   margin-right: auto;
   margin-left: auto;
   padding-top: 30px;
@@ -3116,6 +3188,7 @@ html {
   background-image: url('../images/texture2.jpg');
   background-position: 0px 0px;
   background-size: cover;
+  height: 100vh;
   font-family: Poppins, sans-serif;
 }
 
@@ -3891,7 +3964,7 @@ html {
 }
 
 .next-button-2 {
-  padding: 12px 32px;
+  padding: 12px 15px;
   -webkit-align-self: center;
   -ms-flex-item-align: center;
   -ms-grid-row-align: center;
@@ -5997,7 +6070,7 @@ html {
     right: 0%;
     bottom: auto;
     height: 80px;
-    margin-top: 65px;
+    /* margin-top: 65px; */
     padding: 0em;
   }
 
