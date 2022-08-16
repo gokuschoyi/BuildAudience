@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client';
 import '../src/css/build-audience.webflow.css';
 import '../src/css/normalize.css';
 import '../src/css/webflow.css';
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 

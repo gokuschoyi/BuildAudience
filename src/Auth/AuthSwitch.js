@@ -7,8 +7,8 @@ function AuthSwitch() {
     const changeAuth = () => {
         setIsLogin(isLogin === "Login" ? "Signup" : "Login");
     }
-    console.log(isLogin)
-
+    /*     console.log(isLogin)
+     */
     if (isLogin === "Login") {
         return (
             <Login changeAuthMode={changeAuth} />
