@@ -3964,7 +3964,7 @@ html {
 }
 
 .next-button-2 {
-  padding: 12px 15px;
+  padding: 6px 15px;
   -webkit-align-self: center;
   -ms-flex-item-align: center;
   -ms-grid-row-align: center;
@@ -4051,11 +4051,12 @@ html {
 }
 
 .form-title-wrap-2 {
+  opacity: 100% !important;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  margin-bottom: 35px;
+  margin-bottom: 40px;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
   -webkit-flex-direction: column;
@@ -4084,7 +4085,7 @@ html {
   width: auto;
   height: 35px;
   max-width: 100px;
-  margin: auto auto 30px 30px;
+  margin: auto auto 35px 0px;
   -webkit-box-pack: center;
   -webkit-justify-content: center;
   -ms-flex-pack: center;
@@ -4127,7 +4128,7 @@ html {
   width: 260px;
   height: auto;
   margin-right: auto;
-  margin-bottom: -60px;
+  margin-bottom: 90px;
   margin-left: auto;
   padding-top: 14px;
   padding-bottom: 14px;
@@ -4202,6 +4203,7 @@ html {
 }
 
 .details-right {
+  opacity: 100% !important;
   position: absolute;
   left: auto;
   top: 0%;
@@ -4490,7 +4492,7 @@ html {
 }
 
 .div-block-14 {
-  margin-top: 60px;
+  margin-top: 30px;
 }
 
 .form-content-3 {
@@ -4579,7 +4581,7 @@ html {
 }
 
 .text-field-4 {
-  width: 600px;
+  width: 600px !important;
   margin-bottom: 0px;
   border-radius: 8px;
 }
@@ -5746,7 +5748,7 @@ html {
   }
 
   .text-field-4 {
-    width: 400px;
+    width: 400px !important;
   }
 }
 
@@ -6198,7 +6200,7 @@ html {
     display: -webkit-flex;
     display: -ms-flexbox;
     display: flex;
-    max-width: 75px;
+    max-width: 80px;
   }
 
   .form-section-title-2 {
@@ -6211,7 +6213,7 @@ html {
     left: 0px;
     right: 0px;
     bottom: 0px;
-    margin-bottom: -85px;
+    margin-bottom: 90px;
   }
 
   .slider-2 {
@@ -6250,7 +6252,7 @@ html {
   }
 
   .text-field-4 {
-    width: 207px;
+    width: 207px !important;
     margin-right: 10px;
     margin-left: 10px;
   }

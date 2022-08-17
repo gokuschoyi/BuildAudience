@@ -26,9 +26,9 @@ function PhotoGallery() {
 
     return (
         <div>
-            <p>
+            {/* <p>
                 <button onClick={toggleSelectAll}>toggle select all</button>
-            </p>
+            </p> */}
             <Gallery
                 photos={photos}
                 renderImage={imageRenderer} />

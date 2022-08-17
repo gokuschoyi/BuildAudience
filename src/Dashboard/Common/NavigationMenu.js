@@ -21,6 +21,13 @@ function NavigationMenu() {
         window.Webflow && window.Webflow.require('ix2').init();
         document.dispatchEvent(new Event('readystatechange'))
     })
+
+    function quickImagePost() {
+        console.log("quickImagePost function called");
+
+    }
+
+
     return (
         <div data-duration-in="300" data-duration-out="100" data-current="Blog" data-easing="ease" className="tabs-2 w-tabs">
             <div className="navigation-menu-2 w-tab-menu">
@@ -73,7 +80,7 @@ function NavigationMenu() {
                     <div className="container-13">
                         <h1 className="heading-18">Custom Post </h1>
                         <div className="dash-row">
-                            <a href="#" className="white-box link-box paper-box w-inline-block">
+                            <a href="/CustomPost" className="white-box link-box paper-box w-inline-block">
                                 <div className="box-padding paper-padding">
                                     <h3 className="doc-heading">Custom Post</h3>
                                     <img
@@ -93,7 +100,7 @@ function NavigationMenu() {
                         <div className="form-wrap w-form">
                             <form id="email-form" name="email-form" data-name="Email Form" method="get" className="form-4">
                                 <div className="ios-style-reset w-embed">
-                                    <style dangerouslySetInnerHTML={{ __html: "\n                      input[type=text],\n                      input[type=email],\n                      input[type=tel] {\n                        /* Removes innershadow on form fields on iOS */\n                        border-radius: 0;\n                        -webkit-appearance: none;\n                        -moz-appearance: none;\n                        appearance: none;\n                      }\n                    " }} />
+                                    <style dangerouslySetInnerHTML={{ __html: "\n input[type=text],\n input[type=email],\n input[type=tel] {\n /* Removes innershadow on form fields on iOS */\n border-radius: 0;\n                        -webkit-appearance: none;\n                        -moz-appearance: none;\n                        appearance: none;\n                      }\n                    " }} />
                                 </div>
                                 <h1 className="form-heading">Blog Generation</h1>
                                 <div className="field-wrap">
