@@ -60,6 +60,7 @@ function Login(props) {
             else {
                 dispatch(loginSuccess(result.data));
                 sessionStorage.setItem('userTokenSession', result.data.token);
+                sessionStorage.setItem('CompanyName', result.data.company_name);
                 localStorage.setItem('userTokenLocal', JSON.stringify(result.data.token));
                 history('/dashboard');
             }

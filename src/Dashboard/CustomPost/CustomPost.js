@@ -1,4 +1,7 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { postInfo, quotesPending, quotesSuccess, quotesFailure, imageLinkSuccess, imageLinkFailure, imageLinksConvert, generatedImageLinksSuccess, generatedImageLinksFailure, generatedImageLinksConvert, hashtagSuccess, hashtagFailure } from "./CustomPostSlice";
 import DashboardNavbar from "../Common/DashboardNavbar";
 import Footer from "../../Common/Footer";
 import StepOne from './Steps/StepOne';
@@ -29,6 +32,7 @@ function CustomPost() {
     const [post, setPost] = React.useState('');
     const [mediaType, setMediaType] = React.useState('');
     const [step, setStep] = React.useState(1);
+    const dispatch = useDispatch();
 
     const incrementStep = () => {
         setStep(step + 1);
@@ -36,34 +40,6 @@ function CustomPost() {
 
     const decrementStep = () => {
         setStep(step - 1);
-    }
-
-    console.log("step count" + step);
-
-    function nextStep() {
-        /* var tagline = document.getElementById("day")
-        console.log(tagline.value)
-        console.log(tagLine + category + post + mediaType) */
-        /* if (tagLine === '' || category === '' || post === '' || mediaType === '') {
-            alert("Please fill all the fields");
-        } */
-        var data = {
-            tagLine: tagLine,
-            category: category,
-            post: post,
-            mediaType: mediaType
-        }
-        console.log(data)
-    }
-
-    var data = {
-        tagLine: tagLine,
-        category: category,
-        post: post,
-        mediaType: mediaType
-    }
-    if (step === 2) {
-        console.log(data)
     }
 
     const tagLineHandler = (e) => {
@@ -78,6 +54,146 @@ function CustomPost() {
     const mediaTypeHandler = (e) => {
         setMediaType(e.target.value)
     }
+
+    console.log("step count" + step);
+
+    const { isLoadingQoutes, quotesSuccessFlag, quotesError, quotesErrorFlag, imageLinksSuccessFlag, imageLinks, imageLinkDictFlag, imageLinkDict, selectedQuote, selectedImageLink, generatedImageLinksSuccessFlag, generatedImageLinksDictFlag, generatedImageLinks } = useSelector(state => state.customPost);
+    const { companyName } = useSelector(state => state.login);
+
+    const getQuotes = useCallback(async () => {
+        const token = sessionStorage.getItem('userTokenSession');
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        };
+        var quoteData = {
+            category: category
+        }
+        let getQuotes = await axios.post(process.env.REACT_APP_BURL + '/quote/get_quote', quoteData, config, { withCredentials: true })
+            .then(res => {
+                dispatch(quotesSuccess(res.data))
+            })
+            .catch(err => {
+                console.log(err)
+                dispatch(quotesFailure(err.message))
+            })
+    }, [dispatch, category])
+
+    const getImageLinks = useCallback(async () => {
+        const token = sessionStorage.getItem('userTokenSession');
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        };
+        var imageData = {
+            tag: tagLine,
+            type: post
+        }
+        let getImageLinks = await axios.post(process.env.REACT_APP_BURL + '/image/generate_image', imageData, config, { withCredentials: true })
+            .then(res => {
+                dispatch(imageLinkSuccess(res.data))
+            })
+            .catch(err => {
+                console.log(err)
+                dispatch(imageLinkFailure(err.message))
+            })
+    }, [dispatch, tagLine, post])
+
+    const generateImages = useCallback(async () => {
+        const token = sessionStorage.getItem('userTokenSession');
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        };
+        var imageGenerateData = {
+            quote: selectedQuote,
+            p_name: sessionStorage.getItem('CompanyName'),
+            url: selectedImageLink,
+            type: post
+        }
+        console.log(imageGenerateData)
+        let generateImages = await axios.post(process.env.REACT_APP_BURL + '/image_post/generate', imageGenerateData, config, { withCredentials: true })
+            .then(res => {
+                dispatch(generatedImageLinksSuccess(res.data))
+            })
+            .catch(err => {
+                console.log(err)
+                dispatch(generatedImageLinksFailure(err.message))
+            })
+    }, [dispatch, selectedQuote, selectedImageLink, post])
+
+    const getHashtags = useCallback(async () => {
+        const token = sessionStorage.getItem('userTokenSession');
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        };
+        var hashtagsData = {
+            tag: tagLine,
+        }
+        let getHashtags = await axios.post(process.env.REACT_APP_BURL + '/ai/get_hashtags', hashtagsData, config, { withCredentials: true })
+            .then(res => {
+                dispatch(hashtagSuccess(res.data))
+            })
+            .catch(err => {
+                console.log(err)
+                dispatch(hashtagFailure(err.message))
+            })
+    }, [dispatch, tagLine])
+
+    /* step-2 */
+    useEffect(() => {
+        var data = {
+            tagLine: tagLine,
+            category: category,
+            post: post,
+            mediaType: mediaType
+        }
+        if (step === 2) {
+            dispatch(postInfo(data));
+            console.log(data)
+            const quotes = getQuotes();
+            console.log(quotes);
+        }
+    }, [dispatch, step, getQuotes, tagLine, category, post, mediaType])
+
+    /* step-3 */
+    useEffect(() => {
+        if (step === 3) {
+            const imageLinksList = getImageLinks();
+        }
+    }, [step, getImageLinks])
+
+    /* step-4 */
+    useEffect(() => {
+        if (step === 4) {
+            const generatedImageLinks = generateImages()
+        }
+    }, [step, generateImages])
+
+    /* step-5 */
+    useEffect(() => {
+        if (step === 5) {
+            const fetchHashtags = getHashtags()
+        }
+    }, [step, getHashtags])
+
+    useEffect(() => {
+        let imageList = imageLinks.image_list;
+        if (imageLinksSuccessFlag) {
+            let linkDict = {};
+            let key = 0;
+            linkDict = imageList.map(x => { return ({ src: x, width: 3, height: 2, key: (key++).toString() }) });
+            dispatch(imageLinksConvert(linkDict));
+        }
+    }, [imageLinks, dispatch, imageLinksSuccessFlag])
+
+    useEffect(() => {
+        let generatedImageList = generatedImageLinks.data;
+        if (generatedImageLinksSuccessFlag) {
+            let linkDict = {};
+            let key = 0;
+            linkDict = generatedImageList.map(x => { return ({ src: x, key: (key++).toString() }) })
+            dispatch(generatedImageLinksConvert(linkDict));
+        }
+
+    }, [generatedImageLinks, dispatch, generatedImageLinksSuccessFlag])
 
     return (
         <>

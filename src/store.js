@@ -4,17 +4,20 @@ import storage from 'reduxjs-toolkit-persist/lib/storage' // defaults to localSt
 import signupReducer from '../src/Auth/Signup/SignupSlice'
 import loginReducer from '../src/Auth/Login/LoginSlice'
 import forgotPasswordReducer from '../src/Auth/ForgotPassword/ForgotPasswordSlice'
+import customPostReducer from './Dashboard/CustomPost/CustomPostSlice'
 
 const reducer = combineReducers({
     signup: signupReducer,
     login: loginReducer,
-    forgotPassword: forgotPasswordReducer
+    forgotPassword: forgotPasswordReducer,
+    customPost: customPostReducer
 })
 
 const persistConfig = {
     key: 'root',
     storage,
-    whitelist: ['signupReducer', 'loginReducer', 'forgotPasswordReducer']
+    whitelist: ['signupReducer', 'loginReducer', 'forgotPasswordReducer'],
+
 }
 
 const persistedReducer = persistReducer(persistConfig, reducer);

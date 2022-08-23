@@ -49,9 +49,9 @@ function StepOne(props) {
                         <label htmlFor="day-2" className="field-label-11">Post</label>
                         <select id="day-2" onChange={props.postHandler} name="day-2" data-name="Day 2" required className="form-field select-field wide w-select">
                             <option value>Select Post Medium</option>
-                            <option value="Facebook">Facebook</option>
-                            <option value="Instagram">Instagram</option>
-                            <option value="Story">Story</option>
+                            <option value="facebook">Facebook</option>
+                            <option value="instagram">Instagram</option>
+                            <option value="story">Story</option>
                         </select>
                         <label htmlFor="day-2" className="field-label-11">Media Type</label>
                         <select id="day-3" onChange={props.mediaTypeHandler} name="day-2" data-name="Day 2" required className="form-field select-field wide w-select">
