@@ -1,0 +1,164 @@
+/* const convertImageLinks = useCallback(async () => {
+                let imageList = imageLinks.image_list;
+                let linkDict = {};
+                linkDict = imageList.map(x => { return ({ src: x, width: 3, height: 2 }) });
+                dispatch(imageLinksConvert(linkDict))
+                console.log(linkDict);
+            }, [dispatch, imageLinks]) */
+
+import React, { useState, useEffect, useRef } from "react";
+const Checkmark = ({ selected }) => (
+    <div
+        style={
+            selected
+                ? { left: "4px", top: "4px", position: "absolute", zIndex: "1" }
+                : { display: "none" }
+        }
+    >
+        <svg
+            style={{ fill: "white", position: "absolute" }}
+            width="24px"
+            height="24px"
+        >
+            <circle cx="12.5" cy="12.2" r="8.292" />
+        </svg>
+        <svg
+            style={{ fill: "#06befa", position: "absolute" }}
+            width="24px"
+            height="24px"
+        >
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+        </svg>
+    </div>
+);
+
+const imgStyle = {
+    transition: "transform .135s cubic-bezier(0.0,0.0,0.2,1),opacity linear .15s"
+};
+const selectedImgStyle = {
+    transform: "translateZ(0px) scale3d(0.9, 0.9, 1)",
+    transition: "transform .135s cubic-bezier(0.0,0.0,0.2,1),opacity linear .15s"
+};
+const cont = {
+    backgroundColor: "#eee",
+    cursor: "pointer",
+    overflow: "hidden",
+    position: "relative"
+};
+const SelectedImage = ({
+    index,
+    photo,
+    margin,
+    direction,
+    top,
+    left,
+    selected
+}) => {
+    const [isSelected, setIsSelected] = useState(selected);
+    //calculate x,y scale
+    const sx = (100 - (30 / photo.width) * 100) / 100;
+    const sy = (100 - (30 / photo.height) * 100) / 100;
+    selectedImgStyle.transform = `translateZ(0px) scale3d(${sx}, ${sy}, 1)`;
+
+    if (direction === "column") {
+        cont.position = "absolute";
+        cont.left = left;
+        cont.top = top;
+    }
+
+    const previousUrl = useRef("");
+    var [url, setUrl] = useState('');
+    previousUrl.current = url;
+
+    const handleOnClick = e => {
+        setUrl(photo.src);
+        console.log("previous url " + previousUrl.current)
+
+        if (previousUrl.current !== photo.src) {
+            console.log("select one image only")
+        }
+        else {
+            /* setUrl(e.target.src) */
+            console.log(url);
+            /* console.log(photo.key) */
+            var id = document.getElementsByClassName("not-selected")[0].id;
+            console.log("id " + id)
+        }
+
+        setIsSelected(!isSelected);
+    };
+
+    useEffect(() => {
+        setIsSelected(selected);
+    }, [selected]);
+    return (
+        <div
+            style={{ margin, height: photo.height, width: photo.width, ...cont }}
+            className={!isSelected ? "not-selected" : ""} id={photo.key}
+        >
+            <Checkmark selected={isSelected ? true : false} />
+
+            <img
+                alt={photo.title}
+                style={
+                    isSelected ? { ...imgStyle, ...selectedImgStyle } : { ...imgStyle }
+                }
+                {...photo}
+                onClick={handleOnClick}
+            />
+            {/* <style>{`.not-selected:hover{outline:2px solid #06befa}`}</style> */}
+        </div>
+    );
+};
+
+export default SelectedImage;
+
+
+
+
+<div id="carouselExampleIndicators" className="carousel slide" data-ride="carousel">
+    <div className="carousel-inner">
+        {generatedPhotos.map(photo => {
+            return (
+                <div className="carousel-item" style={{ minHeight: '300px' }} key={photo.key}>
+                    <img src={photo.src} className="d-block w-100" alt="..." />
+                </div>
+            )
+        })
+        }
+    </div>
+    <a className="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+        <span className="carousel-control-prev-icon" aria-hidden="true" />
+        <span className="sr-only">Previous</span>
+    </a>
+    <a className="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+        <span className="carousel-control-next-icon" aria-hidden="true" />
+        <span className="sr-only">Next</span>
+    </a>
+</div>
+
+
+
+<div id="carouselExampleControls" className="carousel slide" data-bs-ride="carousel">
+                                    <div className="carousel-inner">
+                                        {generatedPhotos.map(photo => {
+                                            return (
+                                                <div className="carousel-item">
+                                                    <img
+                                                        style={{ border: selectedImg === photo.src ? "5px solid red" : "" }}
+                                                        src={photo.src}
+                                                        alt="..." />
+                                                </div>
+                                            )
+                                        }
+                                        )}
+                                    </div>
+                                    <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                                        <span className="carousel-control-prev-icon" aria-hidden="true" />
+                                        <span className="visually-hidden">Previous</span>
+                                    </button>
+                                    <button className="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                                        <span className="carousel-control-next-icon" aria-hidden="true" />
+                                        <span className="visually-hidden">Next</span>
+                                    </button>
+                                </div>
