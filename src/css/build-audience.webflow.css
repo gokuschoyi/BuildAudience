@@ -2,6 +2,48 @@ html {
   scroll-behavior: smooth;
 }
 
+.fadeOut {
+  animation: fadeIn ease-in 1;
+  animation-fill-mode: forwards;
+  animation-duration: 1s;
+}
+
+.fadeIn {
+  animation: fadeIn ease-out 1;
+  animation-fill-mode: backwards;
+  animation-duration: 1s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+.carouselInner {
+  background-color: #343638;
+}
+
+.image1 {
+
+  height: 400px;
+  object-fit: cover;
+}
+
 /* Bootstrap grid  start */
 
 /* IMAGE GRID STYLES
@@ -4171,7 +4213,7 @@ html {
 .slider-2 {
   position: relative;
   height: 100%;
-  max-width: 700px;
+
   background-color: transparent;
 }
 
@@ -4445,6 +4487,7 @@ html {
   display: block;
   margin-bottom: 0px;
   padding: 0px;
+  width: 100%;
 }
 
 .form-5 {
@@ -4590,6 +4633,7 @@ html {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
+  align-items: center;
   display: flex;
   overflow: visible;
   min-height: auto;
@@ -4769,10 +4813,10 @@ html {
   background-size: cover;
 }
 
-.image-24 {
+/* .image-24 {
   width: 70%;
 
-}
+} */
 
 @media screen and (max-width: 991px) {
   .buttondash {

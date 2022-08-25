@@ -14,7 +14,7 @@ function StepOne(props) {
                         <input type="text" onChange={props.tagLineHandler} className="text-field-3 w-input" maxLength={256} name="Name" data-name="Name" placeholder="eg. Nike - Just Do It" id="Name" required />
                         <label htmlFor="day" className="field-label-11">Category</label>
                         <select id="day" onChange={props.categoryHandler} name="day" data-name="day" required className="form-field select-field wide w-select" >
-                            <option value>Select a Category</option>
+                            <option value=''>Select a Category</option>
                             <option value="Anxiety">Anxiety</option>
                             <option value="Change">Change</option>
                             <option value="Choice">Choice</option>
@@ -48,14 +48,14 @@ function StepOne(props) {
                         </select>
                         <label htmlFor="day-2" className="field-label-11">Post</label>
                         <select id="day-2" onChange={props.postHandler} name="day-2" data-name="Day 2" required className="form-field select-field wide w-select">
-                            <option value>Select Post Medium</option>
+                            <option value=''>Select Post Medium</option>
                             <option value="facebook">Facebook</option>
                             <option value="instagram">Instagram</option>
                             <option value="story">Story</option>
                         </select>
                         <label htmlFor="day-2" className="field-label-11">Media Type</label>
                         <select id="day-3" onChange={props.mediaTypeHandler} name="day-2" data-name="Day 2" required className="form-field select-field wide w-select">
-                            <option value>Select Media Type</option>
+                            <option value=''>Select Media Type</option>
                             <option value="Image">Image</option>
                             <option value="Video">Video</option>
                         </select>

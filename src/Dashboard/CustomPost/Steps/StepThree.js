@@ -32,7 +32,11 @@ function StepThree() {
                     </div>
                     <div style={{ overflowY: 'scroll', height: '400px' }}>
                         <div>
-                            {!imageLinkDictFlag ? "Loading..." : <div className="container">
+                            {!imageLinkDictFlag ? <div className="d-flex justify-content-center" style={{ zIndex: '2', paddingTop: '20px' }}>
+                                <div className="spinner-border text-danger" role="status">
+                                    <span className="sr-only"></span>
+                                </div>
+                            </div> : <div className="container">
                                 {galleryPhotos.map(photo => {
                                     return (
                                         <div key={photo.key}>
@@ -49,9 +53,9 @@ function StepThree() {
                             </div>}
                         </div>
                     </div>
-                    <div className="div-block-14">
+                    {/* <div className="div-block-14">
                         <a href="!#" className="button-2 w-button">Load More</a>
-                    </div>
+                    </div> */}
                 </div>
                 <div className="details-right"><img src="https://uploads-ssl.webflow.com/62e8ac4303b3e8c902ffdfc0/62e8ac4303b3e820deffdfd8_3.svg" alt="counterImage" className="counter-image" />
                     <div className="text-counter">3 / 5</div>

@@ -10,7 +10,7 @@ import StepThree from "./Steps/StepThree";
 import StepFour from "./Steps/StepFour";
 import StepFive from "./Steps/StepFive";
 function CustomPost() {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- required for webflow to work
     useMemo(() => {
         const WEBFLOW_PAGE_ID = '62e88b73fbcb3a42622e64de'
         const WEBFLOW_SITE_ID = '62c7a74dd5c3fb4c886564d2'
@@ -20,6 +20,7 @@ function CustomPost() {
         doc.setAttribute('data-wf-site', WEBFLOW_SITE_ID)
     });
 
+    /* required for webflow js file to work */
     useEffect(() => {
         window.Webflow && window.Webflow.destroy();
         window.Webflow && window.Webflow.ready();
@@ -32,6 +33,11 @@ function CustomPost() {
     const [post, setPost] = React.useState('');
     const [mediaType, setMediaType] = React.useState('');
     const [step, setStep] = React.useState(1);
+
+    const { isLoadingQoutes, quotesSuccessFlag, quotesError, quotesErrorFlag, imageLinksSuccessFlag, imageLinks, imageLinkDictFlag, imageLinkDict, selectedQuote, selectedImageLink, generatedImageLinksSuccessFlag, generatedImageLinksDictFlag, generatedImageLinks, selectOneGeneratedImageLink } = useSelector(state => state.customPost);
+    const { companyName } = useSelector(state => state.login);
+
+    const [buttonFlag, setButtonFlag] = React.useState(false);
     const dispatch = useDispatch();
 
     const incrementStep = () => {
@@ -56,9 +62,6 @@ function CustomPost() {
     }
 
     console.log("step count" + step);
-
-    const { isLoadingQoutes, quotesSuccessFlag, quotesError, quotesErrorFlag, imageLinksSuccessFlag, imageLinks, imageLinkDictFlag, imageLinkDict, selectedQuote, selectedImageLink, generatedImageLinksSuccessFlag, generatedImageLinksDictFlag, generatedImageLinks } = useSelector(state => state.customPost);
-    const { companyName } = useSelector(state => state.login);
 
     const getQuotes = useCallback(async () => {
         const token = sessionStorage.getItem('userTokenSession');
@@ -137,6 +140,32 @@ function CustomPost() {
             })
     }, [dispatch, tagLine])
 
+    /* checking for input values and setting button flag */
+    useEffect(() => {
+        if (tagLine !== '' && category !== '' && post !== '' && mediaType !== '') {
+            setButtonFlag(true)
+        }
+        if (tagLine === '' || category === '' || post === '' || mediaType === '') {
+            setButtonFlag(false)
+        }
+        if (step === 3) {
+            if (selectedImageLink === '') {
+                setButtonFlag(false)
+            }
+            else {
+                setButtonFlag(true)
+            }
+        }
+        if (step === 4) {
+            if (selectOneGeneratedImageLink === '') {
+                setButtonFlag(false)
+            }
+            else {
+                setButtonFlag(true)
+            }
+        }
+    }, [tagLine, category, post, mediaType, step, selectedImageLink, selectOneGeneratedImageLink])
+
     /* step-2 */
     useEffect(() => {
         var data = {
@@ -214,8 +243,11 @@ function CustomPost() {
                                 <div className="previous w-slider-arrow-left"><img src="https://uploads-ssl.webflow.com/62e8ac4303b3e8c902ffdfc0/62e8ac4303b3e8d55effdfd0_arrow.svg" alt="" className="arrow-2" />
                                     <div className="previous-button-2" onClick={decrementStep}>Previous</div>
                                 </div>
-                                <div className="next w-slider-arrow-right">
-                                    <div className="next-button-2" onClick={incrementStep}>Next</div>
+                                <div className="next w-slider-arrow-right" type='submit'>
+                                    {buttonFlag ?
+                                        <div className={buttonFlag ? 'fadeIn' : 'fadeOut'}>
+                                            <div className="next-button-2" onClick={incrementStep}>Next</div>
+                                        </div> : ""}
                                 </div>
                             </div>
                             {/*  <div className="mobile-nav-bottom" /> */}

@@ -25,6 +25,9 @@ function StepTwo(props) {
 
     const regenerate = () => {
         setQuoteCount(quoteCount + 1);
+        if (quoteCount === quotes.quotes.length - 1) {
+            setQuoteCount(0);
+        }
     }
 
     return (
