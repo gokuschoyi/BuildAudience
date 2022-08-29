@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useMemo } from "react";
+import SelectTagInput from "../../Dashboard/BlogPost/SelectTagInput";
 import plus from '../../images/addIcon.png';
 import project1 from '../../images/pexels-photo-539711-1.jpeg';
 import project2 from '../../images/beautiful-bloom-blooming-979932.jpg';
@@ -26,7 +27,6 @@ function NavigationMenu() {
         console.log("quickImagePost function called");
 
     }
-
 
     return (
         <div data-duration-in="300" data-duration-out="100" data-current="Blog" data-easing="ease" className="tabs-2 w-tabs">
@@ -104,14 +104,17 @@ function NavigationMenu() {
                                 </div>
                                 <h1 className="form-heading">Blog Generation</h1>
                                 <div className="field-wrap">
-                                    <label htmlFor="name" className="form-field-label">Article URL</label>
-                                    <input type="text" className="form-field w-input" autoComplete="off" maxLength={256} name="name" data-name="name" placeholder="https://www.agegracefullyamerica.com/technology-help/" id="name" required />
+                                    <SelectTagInput />
+                                </div>
+                                <div className="field-wrap">
+                                    {/* <label htmlFor="name" className="form-field-label">Article URL</label> */}
+                                    <input type="text" className="form-field w-input" autoComplete="off" maxLength={256} name="name" data-name="name" placeholder="Enter a URL" id="name" required />
                                 </div>
                                 <div className="orfield">
                                     <h3 className="heading-24">OR</h3>
                                 </div>
                                 <div className="field-wrap">
-                                    <label htmlFor="day" className="form-field-label">Select</label>
+                                    {/* <label htmlFor="day" className="form-field-label">Select</label> */}
                                     <select id="day" name="day" data-name="day" required className="form-field select-field wide w-select">
                                         <option value>Select From Saved Article</option>
                                         <option value="Monday">https://www.agegracefullyamerica.com/technology-help/</option>
