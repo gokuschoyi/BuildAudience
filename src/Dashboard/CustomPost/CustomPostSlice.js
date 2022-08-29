@@ -11,6 +11,7 @@ const initialState = {
     quotesSuccessFlag: false,
     quotesError: '',
     quotesErrorFlag: false,
+    quotesLoaderFlag: false,
 
     selectedQuote: '',
     selectedQuoteAuthor: '',
@@ -21,6 +22,7 @@ const initialState = {
     imageLinksSuccessFlag: false,
     imageLinksError: '',
     imageLinksErrorFlag: false,
+    imageLinksLoaderFlag: false,
 
     selectedImageLink: '',
 
@@ -30,6 +32,7 @@ const initialState = {
     generatedImageLinksSuccessFlag: false,
     generatedImageLinksError: '',
     generatedImageLinksErrorFlag: false,
+    generatedImageLinksLoaderFlag: false,
 
     selectOneGeneratedImageLink: '',
 
@@ -37,6 +40,7 @@ const initialState = {
     hashtagSuccessFlag: false,
     hashtagError: '',
     hashtagErrorFlag: false,
+    hashtagLoaderFlag: false,
 }
 
 const quotesSlice = createSlice({
@@ -56,6 +60,10 @@ const quotesSlice = createSlice({
             state.isLoadingQoutes = false;
             state.quotesSuccessFlag = true;
             state.quotes = action.payload;
+            state.quotesLoaderFlag = true;
+        },
+        resetQuotesLoaderFlag: (state) => {
+            state.quotesLoaderFlag = false;
         },
         quotesFailure(state, action) {
             state.isLoadingQoutes = false;
@@ -70,6 +78,11 @@ const quotesSlice = createSlice({
         imageLinkSuccess(state, action) {
             state.imageLinksSuccessFlag = true;
             state.imageLinks = action.payload;
+            state.imageLinksLoaderFlag = true;
+        },
+        resetImageLinksLoaderFlag: (state) => {
+            state.imageLinksLoaderFlag = false;
+            state.selectedImageLink = '';
         },
         imageLinkFailure(state, action) {
             state.imageLinksSuccessFlag = false;
@@ -79,6 +92,7 @@ const quotesSlice = createSlice({
         imageLinksConvert(state, action) {
             state.imageLinkDict = action.payload;
             state.imageLinkDictFlag = true;
+
         },
         userSelectedImageLink(state, action) {
             state.selectedImageLink = action.payload;
@@ -86,6 +100,10 @@ const quotesSlice = createSlice({
         generatedImageLinksSuccess(state, action) {
             state.generatedImageLinksSuccessFlag = true;
             state.generatedImageLinks = action.payload;
+        },
+        resetGeneratedImageLinksLoaderFlag: (state) => {
+            state.generatedImageLinksLoaderFlag = false;
+            state.selectOneGeneratedImageLink = '';
         },
         generatedImageLinksFailure(state, action) {
             state.generatedImageLinksSuccessFlag = false;
@@ -95,6 +113,7 @@ const quotesSlice = createSlice({
         generatedImageLinksConvert(state, action) {
             state.generatedImageLinksDict = action.payload;
             state.generatedImageLinksDictFlag = true;
+            state.generatedImageLinksLoaderFlag = true;
         },
         userSelectedGeneratedLink(state, action) {
             state.selectOneGeneratedImageLink = action.payload;
@@ -102,6 +121,10 @@ const quotesSlice = createSlice({
         hashtagSuccess(state, action) {
             state.hashtag = action.payload;
             state.hashtagSuccessFlag = true;
+            state.hashtagLoaderFlag = true;
+        },
+        resetHashtagLoaderFlag: (state) => {
+            state.hashtagLoaderFlag = false;
         },
         hashtagFailure(state, action) {
             state.hashtagSuccessFlag = false;
@@ -112,5 +135,25 @@ const quotesSlice = createSlice({
 });
 
 const { reducer, actions } = quotesSlice;
-export const { postInfo, quotesPending, quotesSuccess, quotesFailure, userSelectedQuote, imageLinkSuccess, imageLinkFailure, imageLinksConvert, userSelectedImageLink, generatedImageLinksSuccess, generatedImageLinksFailure, userSelectedGeneratedLink, generatedImageLinksConvert, hashtagSuccess, hashtagFailure } = actions;
+export const {
+    postInfo,
+    quotesPending,
+    quotesSuccess,
+    quotesFailure,
+    userSelectedQuote,
+    imageLinkSuccess,
+    imageLinkFailure,
+    imageLinksConvert,
+    userSelectedImageLink,
+    generatedImageLinksSuccess,
+    generatedImageLinksFailure,
+    userSelectedGeneratedLink,
+    generatedImageLinksConvert,
+    hashtagSuccess,
+    hashtagFailure,
+    resetQuotesLoaderFlag,
+    resetImageLinksLoaderFlag,
+    resetGeneratedImageLinksLoaderFlag,
+    resetHashtagLoaderFlag
+} = actions;
 export default reducer;

@@ -162,3 +162,41 @@ export default SelectedImage;
                                         <span className="visually-hidden">Next</span>
                                     </button>
                                 </div>
+
+
+
+
+
+
+
+/* if (postI !== post) { generateImages(); dispatch(resetGeneratedImageLinksLoaderFlag()); console.log("condition 1") }
+            if (selectedQuoteI !== selectedQuote) { generateImages(); dispatch(resetGeneratedImageLinksLoaderFlag()); console.log("condition 2") }
+            if (urlI !== selectedImageLink) { generateImages(); dispatch(resetGeneratedImageLinksLoaderFlag()); console.log("condition 3") } */
+
+
+useEffect(() => {
+    if (step === 3 && imageLinksSuccessFlag === true) {
+        if (tagLineI !== tagline || postI !== post) {
+            dispatch(resetImageLinksLoaderFlag());
+            getImageLinks();
+        }
+        /* if (tagLineI !== tagline) { getImageLinks(); dispatch(resetImageLinksLoaderFlag()); }
+        if (postI !== post) { getImageLinks(); dispatch(resetImageLinksLoaderFlag()); } */
+    }
+}, [step, getImageLinks, imageLinksSuccessFlag, tagLineI, postI, tagline, post, dispatch]);
+
+
+/* step-1 */
+/* useEffect(() => {
+    if (step === 1) {
+        if (tagLineI !== tagline || categoryI !== category || postI !== post || mediaTypeI !== mediaType) {
+            var data = {
+                tagLine: tagLineI,
+                category: categoryI,
+                post: postI,
+                mediaType: mediaTypeI
+            }
+            dispatch(postInfo(data));
+        }
+    }
+}, [tagLineI, categoryI, postI, mediaTypeI, step, tagline, category, post, mediaType, dispatch]) */

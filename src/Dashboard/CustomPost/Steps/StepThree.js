@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { userSelectedImageLink } from '../CustomPostSlice'
 function StepThree() {
-    const { imageLinkDictFlag, imageLinkDict } = useSelector(state => state.customPost)
+    const { imageLinkDictFlag, imageLinkDict, imageLinksLoaderFlag } = useSelector(state => state.customPost)
     const dispatch = useDispatch()
 
     let galleryPhotos = [];
@@ -32,7 +32,7 @@ function StepThree() {
                     </div>
                     <div style={{ overflowY: 'scroll', height: '400px' }}>
                         <div>
-                            {!imageLinkDictFlag ? <div className="d-flex justify-content-center" style={{ zIndex: '2', paddingTop: '20px' }}>
+                            {!imageLinksLoaderFlag ? <div className="d-flex justify-content-center" style={{ zIndex: '2', paddingTop: '20px' }}>
                                 <div className="spinner-border text-danger" role="status">
                                     <span className="sr-only"></span>
                                 </div>

@@ -5,7 +5,7 @@ function StepFive() {
 
     const [postStyle, setPostStyle] = React.useState('')
 
-    const { selectOneGeneratedImageLink, selectedQuote, hashtag, hashtagSuccessFlag, post } = useSelector(state => state.customPost);
+    const { selectOneGeneratedImageLink, selectedQuote, hashtag, post, hashtagLoaderFlag } = useSelector(state => state.customPost);
 
     useMemo(() => {
         const facebookStyleClassName = {
@@ -46,7 +46,7 @@ function StepFive() {
                                 <div className={postStyle.classname}>
                                     {/*  <div className="form-section-title-2">Create Post</div> */}
                                     <p className="paragraph-3"><strong>{selectedQuote}</strong><br /></p>
-                                    {!hashtagSuccessFlag ? <div className="d-flex justify-content-center" style={{ zIndex: '2', paddingTop: '10px', paddingBottom: '10px' }}>
+                                    {!hashtagLoaderFlag ? <div className="d-flex justify-content-center" style={{ zIndex: '2', paddingTop: '10px', paddingBottom: '10px' }}>
                                         <div className="spinner-border text-danger" role="status">
                                             <span className="sr-only"></span>
                                         </div>

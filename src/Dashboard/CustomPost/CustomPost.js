@@ -1,7 +1,23 @@
-import React, { useEffect, useMemo, useCallback } from "react";
+import React, { useEffect, useMemo, useCallback, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { postInfo, quotesPending, quotesSuccess, quotesFailure, imageLinkSuccess, imageLinkFailure, imageLinksConvert, generatedImageLinksSuccess, generatedImageLinksFailure, generatedImageLinksConvert, hashtagSuccess, hashtagFailure } from "./CustomPostSlice";
+import {
+    postInfo,
+    quotesSuccess,
+    quotesFailure,
+    imageLinkSuccess,
+    imageLinkFailure,
+    imageLinksConvert,
+    generatedImageLinksSuccess,
+    generatedImageLinksFailure,
+    generatedImageLinksConvert,
+    hashtagSuccess,
+    hashtagFailure,
+    resetQuotesLoaderFlag,
+    resetImageLinksLoaderFlag,
+    resetGeneratedImageLinksLoaderFlag,
+    resetHashtagLoaderFlag
+} from "./CustomPostSlice";
 import DashboardNavbar from "../Common/DashboardNavbar";
 import Footer from "../../Common/Footer";
 import StepOne from './Steps/StepOne';
@@ -28,16 +44,34 @@ function CustomPost() {
         document.dispatchEvent(new Event('readystatechange'))
     })
 
-    const [tagLine, setTagLine] = React.useState('');
-    const [category, setCategory] = React.useState('');
-    const [post, setPost] = React.useState('');
-    const [mediaType, setMediaType] = React.useState('');
+    const [tagLineI, setTagLine] = React.useState('');
+    const [categoryI, setCategory] = React.useState('');
+    const [postI, setPost] = React.useState('');
+    const [mediaTypeI, setMediaType] = React.useState('');
+    const [selectedQuoteI, setSelectedQuote] = React.useState('');
+    const [urlI, setUrl] = React.useState('');
     const [step, setStep] = React.useState(1);
+    const stepFiveTagLine = useRef("");
 
-    const { isLoadingQoutes, quotesSuccessFlag, quotesError, quotesErrorFlag, imageLinksSuccessFlag, imageLinks, imageLinkDictFlag, imageLinkDict, selectedQuote, selectedImageLink, generatedImageLinksSuccessFlag, generatedImageLinksDictFlag, generatedImageLinks, selectOneGeneratedImageLink } = useSelector(state => state.customPost);
-    const { companyName } = useSelector(state => state.login);
+    const {
+        category,
+        tagline,
+        post,
+        mediaType,
+        quotesSuccessFlag,
+        imageLinksSuccessFlag,
+        imageLinks,
+        selectedQuote,
+        selectedImageLink,
+        generatedImageLinksSuccessFlag,
+        generatedImageLinks,
+        selectOneGeneratedImageLink,
+        hashtagSuccessFlag,
+        generatedImageLinksLoaderFlag,
+        imageLinksLoaderFlag,
+        quotesLoaderFlag
+    } = useSelector(state => state.customPost);
 
-    const [buttonFlag, setButtonFlag] = React.useState(false);
     const dispatch = useDispatch();
 
     const incrementStep = () => {
@@ -69,7 +103,7 @@ function CustomPost() {
             headers: { Authorization: `Bearer ${token}` }
         };
         var quoteData = {
-            category: category
+            category: categoryI
         }
         let getQuotes = await axios.post(process.env.REACT_APP_BURL + '/quote/get_quote', quoteData, config, { withCredentials: true })
             .then(res => {
@@ -79,7 +113,7 @@ function CustomPost() {
                 console.log(err)
                 dispatch(quotesFailure(err.message))
             })
-    }, [dispatch, category])
+    }, [dispatch, categoryI])
 
     const getImageLinks = useCallback(async () => {
         const token = sessionStorage.getItem('userTokenSession');
@@ -87,8 +121,8 @@ function CustomPost() {
             headers: { Authorization: `Bearer ${token}` }
         };
         var imageData = {
-            tag: tagLine,
-            type: post
+            tag: tagLineI,
+            type: postI
         }
         let getImageLinks = await axios.post(process.env.REACT_APP_BURL + '/image/generate_image', imageData, config, { withCredentials: true })
             .then(res => {
@@ -98,10 +132,12 @@ function CustomPost() {
                 console.log(err)
                 dispatch(imageLinkFailure(err.message))
             })
-    }, [dispatch, tagLine, post])
+    }, [dispatch, tagLineI, postI])
 
     const generateImages = useCallback(async () => {
         const token = sessionStorage.getItem('userTokenSession');
+        setSelectedQuote(selectedQuote);
+        setUrl(selectedImageLink)
         const config = {
             headers: { Authorization: `Bearer ${token}` }
         };
@@ -109,7 +145,7 @@ function CustomPost() {
             quote: selectedQuote,
             p_name: sessionStorage.getItem('CompanyName'),
             url: selectedImageLink,
-            type: post
+            type: postI
         }
         console.log(imageGenerateData)
         let generateImages = await axios.post(process.env.REACT_APP_BURL + '/image_post/generate', imageGenerateData, config, { withCredentials: true })
@@ -120,7 +156,7 @@ function CustomPost() {
                 console.log(err)
                 dispatch(generatedImageLinksFailure(err.message))
             })
-    }, [dispatch, selectedQuote, selectedImageLink, post])
+    }, [dispatch, selectedQuote, selectedImageLink, postI])
 
     const getHashtags = useCallback(async () => {
         const token = sessionStorage.getItem('userTokenSession');
@@ -128,7 +164,7 @@ function CustomPost() {
             headers: { Authorization: `Bearer ${token}` }
         };
         var hashtagsData = {
-            tag: tagLine,
+            tag: tagLineI,
         }
         let getHashtags = await axios.post(process.env.REACT_APP_BURL + '/ai/get_hashtags', hashtagsData, config, { withCredentials: true })
             .then(res => {
@@ -138,71 +174,168 @@ function CustomPost() {
                 console.log(err)
                 dispatch(hashtagFailure(err.message))
             })
-    }, [dispatch, tagLine])
+    }, [dispatch, tagLineI])
 
     /* checking for input values and setting button flag */
     useEffect(() => {
-        if (tagLine !== '' && category !== '' && post !== '' && mediaType !== '') {
-            setButtonFlag(true)
+        var button = document.getElementById('nextButton')
+        if (tagLineI !== '' && categoryI !== '' && postI !== '' && mediaTypeI !== '') {
+            button.style.display = 'block'
+            button.classList.add("fadeIn")
         }
-        if (tagLine === '' || category === '' || post === '' || mediaType === '') {
-            setButtonFlag(false)
+        else {
+            button.style.display = 'none'
+        }
+        if (step === 2) {
+            if (quotesSuccessFlag) {
+                button.style.display = 'block'
+                button.classList.add("fadeIn")
+            }
+            else {
+                button.style.display = 'none'
+            }
+            if (!quotesLoaderFlag) {
+                button.style.display = 'none'
+            }
+            else {
+                button.style.display = 'block'
+                button.classList.add("fadeIn")
+            }
         }
         if (step === 3) {
             if (selectedImageLink === '') {
-                setButtonFlag(false)
+                button.style.display = 'none'
             }
             else {
-                setButtonFlag(true)
+                button.classList.add("fadeIn")
+                button.style.display = 'block'
             }
         }
         if (step === 4) {
             if (selectOneGeneratedImageLink === '') {
-                setButtonFlag(false)
+                button.style.display = 'none'
             }
             else {
-                setButtonFlag(true)
+                button.classList.add("fadeIn")
+                button.style.display = 'block'
             }
         }
-    }, [tagLine, category, post, mediaType, step, selectedImageLink, selectOneGeneratedImageLink])
+    }, [tagLineI, categoryI, postI, mediaTypeI, step, selectedImageLink, selectOneGeneratedImageLink, quotesSuccessFlag, quotesLoaderFlag, imageLinksLoaderFlag, generatedImageLinksLoaderFlag])
+
+    /* step-1 */
+    useEffect(() => {
+        if (step === 1) {
+            stepFiveTagLine.current = tagline;
+        }
+    }, [step, tagline])
 
     /* step-2 */
     useEffect(() => {
         var data = {
-            tagLine: tagLine,
-            category: category,
-            post: post,
-            mediaType: mediaType
+            tagLine: tagLineI,
+            category: categoryI,
+            post: postI,
+            mediaType: mediaTypeI
         }
-        if (step === 2) {
+        if (step === 2 && quotesSuccessFlag === false) {
             dispatch(postInfo(data));
             console.log(data)
             const quotes = getQuotes();
-            console.log(quotes);
         }
-    }, [dispatch, step, getQuotes, tagLine, category, post, mediaType])
+    }, [dispatch, step, getQuotes, tagLineI, categoryI, postI, mediaTypeI, quotesSuccessFlag]);
+
+    useEffect(() => {
+        var data = {
+            tagLine: tagLineI,
+            category: categoryI,
+            post: postI,
+            mediaType: mediaTypeI
+        }
+        if (step === 2 && quotesSuccessFlag === true && categoryI !== category) {
+            dispatch(resetQuotesLoaderFlag());
+            dispatch(postInfo(data));
+            console.log(data)
+            const quotes = getQuotes();
+        }
+    }, [dispatch, step, getQuotes, tagLineI, categoryI, postI, mediaTypeI, quotesSuccessFlag, category]);
 
     /* step-3 */
     useEffect(() => {
-        if (step === 3) {
-            const imageLinksList = getImageLinks();
+        if (step === 3 && imageLinksSuccessFlag === false) {
+            getImageLinks();
         }
-    }, [step, getImageLinks])
+    }, [step, getImageLinks, imageLinksSuccessFlag])
+
+    useEffect(() => {
+        var data = {
+            tagLine: tagLineI,
+            category: categoryI,
+            post: postI,
+            mediaType: mediaTypeI
+        }
+        if (step === 3 && imageLinksSuccessFlag === true && tagLineI !== tagline) {
+            console.log(tagline + ' ' + tagLineI)
+            dispatch(resetImageLinksLoaderFlag());
+            dispatch(postInfo(data));
+            getImageLinks();
+        }
+    }, [step, getImageLinks, imageLinksSuccessFlag, tagLineI, tagline, dispatch, categoryI, postI, mediaTypeI]);
+
+    useEffect(() => {
+        var data = {
+            tagLine: tagLineI,
+            category: categoryI,
+            post: postI,
+            mediaType: mediaTypeI
+        }
+        if (step === 3 && imageLinksSuccessFlag === true && postI !== post) {
+            console.log(post + ' ' + postI)
+            dispatch(resetImageLinksLoaderFlag());
+            dispatch(postInfo(data));
+            getImageLinks();
+        }
+    }, [step, getImageLinks, imageLinksSuccessFlag, postI, post, dispatch, categoryI, tagLineI, mediaTypeI]);
 
     /* step-4 */
     useEffect(() => {
-        if (step === 4) {
-            const generatedImageLinks = generateImages()
+        if (step === 4 && generatedImageLinksSuccessFlag === false) {
+            generateImages()
         }
-    }, [step, generateImages])
+    }, [step, generateImages, generatedImageLinksSuccessFlag])
+
+    useEffect(() => {
+        if (step === 4 && generatedImageLinksSuccessFlag === true) {
+            if (postI !== post || selectedQuoteI !== selectedQuote || urlI !== selectedImageLink) {
+                dispatch(resetGeneratedImageLinksLoaderFlag());
+                generateImages();
+            }
+        }
+    }, [step, generateImages, generatedImageLinksSuccessFlag, postI, post, selectedQuoteI, selectedQuote, selectedImageLink, urlI, dispatch])
 
     /* step-5 */
     useEffect(() => {
-        if (step === 5) {
-            const fetchHashtags = getHashtags()
+        if (step === 5 && hashtagSuccessFlag === false) {
+            getHashtags()
         }
-    }, [step, getHashtags])
+    }, [step, getHashtags, hashtagSuccessFlag])
 
+    useEffect(() => {
+        var data = {
+            tagLine: tagLineI,
+            category: categoryI,
+            post: postI,
+            mediaType: mediaTypeI
+        }
+        if (step === 5 && tagline !== stepFiveTagLine) {
+            console.log(stepFiveTagLine + ' ' + tagLineI)
+            stepFiveTagLine.current = tagLineI;
+            dispatch(resetHashtagLoaderFlag());
+            dispatch(postInfo(data));
+            getHashtags()
+        }
+    }, [step, getHashtags, hashtagSuccessFlag, tagLineI, tagline, dispatch, categoryI, postI, mediaTypeI]);
+
+    /* convert image links list to dict */
     useEffect(() => {
         let imageList = imageLinks.image_list;
         if (imageLinksSuccessFlag) {
@@ -221,7 +354,6 @@ function CustomPost() {
             linkDict = generatedImageList.map(x => { return ({ src: x, key: (key++).toString() }) })
             dispatch(generatedImageLinksConvert(linkDict));
         }
-
     }, [generatedImageLinks, dispatch, generatedImageLinksSuccessFlag])
 
     return (
@@ -244,10 +376,9 @@ function CustomPost() {
                                     <div className="previous-button-2" onClick={decrementStep}>Previous</div>
                                 </div>
                                 <div className="next w-slider-arrow-right" type='submit'>
-                                    {buttonFlag ?
-                                        <div className={buttonFlag ? 'fadeIn' : 'fadeOut'}>
-                                            <div className="next-button-2" onClick={incrementStep}>Next</div>
-                                        </div> : ""}
+                                    <div id="nextButton" >
+                                        <div className="next-button-2" onClick={incrementStep}>Next</div>
+                                    </div>
                                 </div>
                             </div>
                             {/*  <div className="mobile-nav-bottom" /> */}

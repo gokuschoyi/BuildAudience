@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { userSelectedGeneratedLink } from '../CustomPostSlice'
 function StepFour() {
     const dispatch = useDispatch();
-    const { generatedImageLinksDictFlag, generatedImageLinksDict, tagline } = useSelector(state => state.customPost);
+    const { generatedImageLinksDictFlag, generatedImageLinksDict, tagline, generatedImageLinksLoaderFlag } = useSelector(state => state.customPost);
 
     let generatedPhotos = [];
     if (generatedImageLinksDictFlag) {
@@ -23,13 +23,13 @@ function StepFour() {
             <div className="slider-content-wrap" >
                 <div className="form-content-3" >
                     <div className="form-title-wrap-2">
-                        {!generatedImageLinksDictFlag ?
+                        {!generatedImageLinksLoaderFlag ?
                             <div className="form-section-title-2">Generating Posts</div> :
                             <div className="form-section-title-2">Select an Image</div>}
                         <p className="paragraph-3">{tagline}<br /></p>
                     </div>
                     <div >
-                        {!generatedImageLinksDictFlag ? <div className="d-flex justify-content-center" style={{ zIndex: '2', paddingTop: '20px' }}>
+                        {!generatedImageLinksLoaderFlag ? <div className="d-flex justify-content-center" style={{ zIndex: '2', paddingTop: '20px' }}>
                             <div className="spinner-border text-danger" role="status">
                                 <span className="sr-only"></span>
                             </div>
