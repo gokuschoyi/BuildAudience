@@ -24,6 +24,13 @@ const initialState = {
     imageLinksErrorFlag: false,
     imageLinksLoaderFlag: false,
 
+    searchImages: '',
+    searchImagesSuccessFlag: false,
+    searchImagesError: '',
+    searchImagesErrorFlag: false,
+    searchImagesLoaderFlag: false,
+    searchLinksDict: '',
+
     selectedImageLink: '',
 
     generatedImageLinks: '',
@@ -130,6 +137,23 @@ const quotesSlice = createSlice({
             state.hashtagSuccessFlag = false;
             state.hashtagError = action.payload;
             state.hashtagErrorFlag = true;
+        },
+        searchImagesSuccess(state, action) {
+            state.searchImagesSuccessFlag = true;
+            state.searchImages = action.payload;
+            state.searchImagesLoaderFlag = true;
+        },
+        searchLinksConvert(state, action) {
+            state.searchLinksDict = action.payload;
+            state.imageLinksLoaderFlag = true;
+        },
+        resetSearchImagesLoaderFlag: (state) => {
+            state.searchImagesLoaderFlag = false;
+        },
+        searchImagesFailure(state, action) {
+            state.searchImagesSuccessFlag = false;
+            state.searchImagesError = action.payload;
+            state.searchImagesErrorFlag = true;
         }
     }
 });
@@ -154,6 +178,10 @@ export const {
     resetQuotesLoaderFlag,
     resetImageLinksLoaderFlag,
     resetGeneratedImageLinksLoaderFlag,
-    resetHashtagLoaderFlag
+    resetHashtagLoaderFlag,
+    searchImagesSuccess,
+    resetSearchImagesLoaderFlag,
+    searchImagesFailure,
+    searchLinksConvert
 } = actions;
 export default reducer;

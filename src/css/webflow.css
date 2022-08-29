@@ -2108,7 +2108,7 @@ textarea.w-select {
   display: inline-block;
   vertical-align: top;
   text-decoration: none;
-  padding: 8px 30px;
+  /* padding: 8px 30px; */
   text-align: center;
   cursor: pointer;
   color: #222222;
