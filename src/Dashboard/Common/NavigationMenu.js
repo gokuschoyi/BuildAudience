@@ -104,7 +104,7 @@ function NavigationMenu() {
                                         className="image-18" />
                                 </div>
                             </a>
-                            <div className="modal modal-centered fade" id="quickImagePost" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div className="modal modal-centered fade" id="quickImagePost" data-bs-backdrop="false" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                 <div className="modal-dialog modal-lg modal-dialog-centered">
                                     <div className="modal-content">
                                         <div className="modal-header">
