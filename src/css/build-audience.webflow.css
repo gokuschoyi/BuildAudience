@@ -6112,6 +6112,7 @@ html {
 
   .navigation-menu-2 {
     position: fixed;
+    -webkit-transform: translateZ(0);
     left: 0%;
     top: 0%;
     right: 0%;
