@@ -63,7 +63,7 @@ function Signup(props) {
         console.log(data);
         try {
             dispatch(signupPending());
-            let result = await axios.post(process.env.REACT_APP_BURL + 'user/signup', data, {
+            let result = await axios.post(process.env.REACT_APP_BURL + '/user/signup', data, {
                 withCredentials: false
             });
             if (result.data.error) {
@@ -87,7 +87,7 @@ function Signup(props) {
                     <div className="column-8 w-col w-col-6 w-col-stack w-col-small-small-stack">
                         {error && <div><div className="alert alert-warning alert-dismissible fade show" role="alert">
                             <strong>{SignupError}</strong>
-                            <button type="button" className="btn-close" data-dismiss="alert" onClick={removeError}>
+                            <button type="button" className="btn-close" data-bs-dismiss="alert" onClick={removeError}>
                             </button>
                         </div></div>}
                         <div className="w-form">

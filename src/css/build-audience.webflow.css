@@ -1450,9 +1450,9 @@ html {
 }
 
 .heading-9 {
-  margin-top: 12px;
+  /* margin-top: 12px; */
   margin-left: 0px;
-  padding-left: 278px;
+  /* padding-left: 278px; */
   color: hsla(0, 0%, 100%, 0.84);
   font-weight: 700;
   letter-spacing: 8px;
@@ -2655,7 +2655,7 @@ html {
   overflow: visible;
   width: auto;
   height: 60px;
-  margin-top: -6px;
+  margin-top: -9px;
   margin-right: auto;
   margin-left: auto;
   padding-top: 30px;
@@ -4161,7 +4161,7 @@ html {
 }
 
 .submit-button-4 {
-  position: absolute;
+  /* position: absolute; */
   left: 0px;
   right: 0px;
   bottom: 0px;
@@ -4985,9 +4985,9 @@ html {
     color: #fff;
   }
 
-  .heading-9 {
+  /* .heading-9 {
     margin-left: -541px;
-  }
+  } */
 
   .bold-text-3 {
     text-align: center;
@@ -5103,9 +5103,9 @@ html {
     height: auto;
   }
 
-  /* .navigation-menu-2 {
-    margin-top: -30px;
-  } */
+  .navigation-menu-2 {
+    margin-top: 1px;
+  }
 
   .mobile-footer-spacing {
     display: block;
@@ -6254,7 +6254,7 @@ html {
   }
 
   .submit-button-4 {
-    position: absolute;
+    /* position: absolute; */
     left: 0px;
     right: 0px;
     bottom: 0px;
