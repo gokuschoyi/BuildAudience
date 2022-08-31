@@ -1,10 +1,13 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useCallback } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { resetPasswordReset } from './DashboardNavbarSlice'
 import SelectTagInput from "../../Dashboard/BlogPost/SelectTagInput";
 import plus from '../../images/addIcon.png';
 import project1 from '../../images/pexels-photo-539711-1.jpeg';
 import project2 from '../../images/beautiful-bloom-blooming-979932.jpg';
 import project3 from '../../images/pexels-photo-167699.jpeg'
+import axios from "axios";
 function NavigationMenu() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useMemo(() => {
@@ -22,11 +25,33 @@ function NavigationMenu() {
         window.Webflow && window.Webflow.require('ix2').init();
         document.dispatchEvent(new Event('readystatechange'))
     })
-
-    function quickImagePost() {
-        console.log("quickImagePost function called");
-
+    const { resetPasswordSuccess, resetPasswordError, resetPasswordErrorMsg } = useSelector(state => state.resetPassword);
+    const dispatch = useDispatch();
+    const [qipUrl, setQipUrl] = React.useState('');
+    const [qipUrlError, setQipUrlError] = React.useState('');
+    function removeError() {
+        dispatch(resetPasswordReset())
     }
+
+    function removeQipLink() {
+        setQipUrl('');
+        setQipUrlError('');
+    }
+
+    const getQuickImagePost = useCallback(async () => {
+        const token = sessionStorage.getItem('userTokenSession');
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        };
+        let qip = await axios.post(process.env.REACT_APP_BURL + '/image_post/quick_post', { withCredentials: true }, config)
+            .then(res => {
+                setQipUrl(res.data)
+                console.log(qipUrl.data)
+            })
+            .catch(err => {
+                setQipUrlError(err.response.data)
+            })
+    }, [qipUrl])
 
     return (
         <div data-duration-in="300" data-duration-out="100" data-current="Blog" data-easing="ease" className="tabs-2 w-tabs">
@@ -44,12 +69,30 @@ function NavigationMenu() {
                     <div className="text-block-16">My Project</div>
                 </a>
             </div>
+            {resetPasswordSuccess &&
+                <div>
+                    <div className="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>A link to reset your password has been sent to your email address.</strong>
+                        <button type="button" className="btn-close" data-bs-dismiss="alert" onClick={removeError}>
+                        </button>
+                    </div>
+                </div>
+            }
+            {resetPasswordError &&
+                <div>
+                    <div className="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>{resetPasswordErrorMsg}</strong>
+                        <button type="button" className="btn-close" data-bs-dismiss="alert" onClick={removeError}>
+                        </button>
+                    </div>
+                </div>
+            }
             <div className="dash-tab-wrapper w-tab-content">
                 <div data-w-tab="ImagePost" className="dashboard-section w-tab-pane">
                     <div className="container-13">
                         <h1 className="heading-18">Quick Post </h1>
                         <div className="dash-row">
-                            <a href="#" className="white-box link-box paper-box w-inline-block">
+                            <a href="#quickImagePost" data-bs-toggle="modal" data-bs-target="#quickImagePost" onClick={getQuickImagePost} className="white-box link-box paper-box w-inline-block">
                                 <div className="box-padding paper-padding">
                                     <h3 className="doc-heading">Quick Image Post</h3>
                                     <img
@@ -61,7 +104,31 @@ function NavigationMenu() {
                                         className="image-18" />
                                 </div>
                             </a>
-                            <a href="#" className="white-box link-box paper-box w-inline-block">
+                            <div className="modal modal-centered fade" id="quickImagePost" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div className="modal-dialog modal-lg modal-dialog-centered">
+                                    <div className="modal-content">
+                                        <div className="modal-header">
+                                            <h5 className="modal-title" id="staticBackdropLabel">Quick Image Post</h5>
+                                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+                                        </div>
+                                        <div className="modal-body">
+                                            {qipUrl === '' ?
+                                                <div className="d-flex justify-content-center" style={{ zIndex: '2', paddingTop: '20px' }}>
+                                                    <div className="spinner-border text-danger" role="status">
+                                                        <span className="sr-only"></span>
+                                                    </div>
+                                                </div> :
+                                                <img src={qipUrl.data} alt="qip" />}
+                                        </div>
+                                        <div className="modal-footer">
+                                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={removeQipLink}>Close</button>
+                                            <button type="button" className="btn btn-primary">Download</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <a href="quickVideoPost" data-bs-toggle="modal" data-bs-target="#quickVideoPost" className="white-box link-box paper-box w-inline-block">
                                 <div className="box-padding paper-padding">
                                     <h3 className="doc-heading">Quick Video  Post</h3>
                                     <img
@@ -73,6 +140,23 @@ function NavigationMenu() {
                                         className="image-18" />
                                 </div>
                             </a>
+                            <div className="modal modal-centered fade" id="quickVideoPost" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div className="modal-dialog modal-lg modal-dialog-centered">
+                                    <div className="modal-content">
+                                        <div className="modal-header">
+                                            <h5 className="modal-title" id="staticBackdropLabel">Quick Image Post</h5>
+                                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+                                        </div>
+                                        <div className="modal-body">
+                                            ...
+                                        </div>
+                                        <div className="modal-footer">
+                                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="button" className="btn btn-primary">Download</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

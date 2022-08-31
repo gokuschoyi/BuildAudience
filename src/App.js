@@ -10,6 +10,7 @@ import store, { persistor } from './store';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'reduxjs-toolkit-persist/integration/react'
 import RegistrationSuccess from "./Auth/Signup/RegistrationSuccess";
+import VideoTest from "./Dashboard/VideoTest";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
               <Route path='/Dashboard' element={<Dashboard />}> </Route>
               <Route path='/CustomPost' element={<CustomPost />}> </Route>
               <Route path='/BlogPost' element={<BlogPost />}> </Route>
+              <Route path='/VideoTest' element={<VideoTest />}> </Route>
             </Routes>
           </div>
         </Router>

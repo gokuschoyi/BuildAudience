@@ -50,7 +50,7 @@ function Login(props) {
         }
         try {
             dispatch(loginPending());
-            let result = await axios.post(process.env.REACT_APP_BURL + 'user/signin', data, {
+            let result = await axios.post(process.env.REACT_APP_BURL + '/user/signin', data, {
                 withCredentials: false
             });
             if (result.data.error) {
@@ -61,6 +61,7 @@ function Login(props) {
                 dispatch(loginSuccess(result.data));
                 sessionStorage.setItem('userTokenSession', result.data.token);
                 sessionStorage.setItem('CompanyName', result.data.company_name);
+                sessionStorage.setItem('userEmail', email)
                 localStorage.setItem('userTokenLocal', JSON.stringify(result.data.token));
                 history('/dashboard');
             }
@@ -83,7 +84,7 @@ function Login(props) {
                     <div className="column-8 w-col w-col-6 w-col-stack">
                         {errorFlag && <div><div className="alert alert-warning alert-dismissible fade show" role="alert">
                             <strong>{error}</strong>
-                            <button type="button" className="btn-close" data-dismiss="alert" onClick={removeError}>
+                            <button type="button" className="btn-close" data-bs-dismiss="alert" onClick={removeError}>
                             </button>
                         </div></div>}
                         <div className="form-block-5 w-form">
@@ -107,7 +108,7 @@ function Login(props) {
                         {success && <div>
                             <div className="alert alert-success alert-dismissible fade show" role="alert">
                                 <strong>Reset password link sent to {emailR}</strong>
-                                <button type="button" className="btn-close" data-dismiss="alert" onClick={removeError}>
+                                <button type="button" className="btn-close" data-bs-dismiss="alert" onClick={removeError}>
                                 </button>
                             </div>
                         </div>}

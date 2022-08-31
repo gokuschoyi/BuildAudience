@@ -5,12 +5,14 @@ import signupReducer from '../src/Auth/Signup/SignupSlice'
 import loginReducer from '../src/Auth/Login/LoginSlice'
 import forgotPasswordReducer from '../src/Auth/ForgotPassword/ForgotPasswordSlice'
 import customPostReducer from './Dashboard/CustomPost/CustomPostSlice'
+import DashboardNavbarSlice from './Dashboard/Common/DashboardNavbarSlice'
 
 const reducer = combineReducers({
     signup: signupReducer,
     login: loginReducer,
     forgotPassword: forgotPasswordReducer,
-    customPost: customPostReducer
+    customPost: customPostReducer,
+    resetPassword: DashboardNavbarSlice
 })
 
 const persistConfig = {

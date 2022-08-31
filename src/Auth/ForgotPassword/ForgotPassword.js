@@ -31,7 +31,7 @@ function ForgotPassword() {
         }
         try {
             dispatch(forgotPasswordPending());
-            let result = await axios.post(process.env.REACT_APP_BURL + 'user/reset_password', data, {
+            let result = await axios.post(process.env.REACT_APP_BURL + '/user/reset_password', data, {
                 withCredentials: false
             });
             if (result.data.error) {
@@ -67,7 +67,7 @@ function ForgotPassword() {
                     <div className="column-8 w-col w-col-6 w-col-stack">
                         {errorFlag && <div><div className="alert alert-warning alert-dismissible fade show" role="alert">
                             <strong>{error}</strong>
-                            <button type="button" className="btn-close" data-dismiss="alert" onClick={removeError}>
+                            <button type="button" className="btn-close" data-bs-dismiss="alert" onClick={removeError}>
                             </button>
                         </div></div>}
                         <div className="form-block-5 w-form">
