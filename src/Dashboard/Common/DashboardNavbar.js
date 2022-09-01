@@ -27,7 +27,7 @@ function DashboardNavbar() {
         }
         try {
             dispatch(resetPasswordPending());
-            let result = await axios.post(process.env.REACT_APP_BURL + 'user/reset_password', data, {
+            let result = await axios.post(process.env.REACT_APP_BURL + '/user/reset_password', data, {
                 withCredentials: false
             });
             if (result.data.error) {

@@ -12,7 +12,7 @@ export default function VideoTest() {
             type: "facebook",
             tag: "just do it"
         }
-        let getVideoUrl = await axios.post(process.env.REACT_APP_BURL + 'video/generate_videos', queryData, config, { withCredentials: true })
+        let getVideoUrl = await axios.post(process.env.REACT_APP_BURL + '/video/generate_videos', queryData, config, { withCredentials: true })
             .then(res => {
                 /* console.log(res.data) */
                 setVideoUrl(res.data)
@@ -20,7 +20,7 @@ export default function VideoTest() {
             .catch(err => {
                 console.log(err)
             })
-    })
+    }, [])
     const getVideoUrlHandler = (e) => {
         console.log(e.target.value)
     }
