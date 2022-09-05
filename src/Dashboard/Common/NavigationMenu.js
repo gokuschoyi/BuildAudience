@@ -13,6 +13,7 @@ import project2 from '../../images/beautiful-bloom-blooming-979932.jpg';
 import project3 from '../../images/pexels-photo-167699.jpeg'
 import infoIcon from '../../images/information.png'
 import axios from "axios";
+import CustomPost from "../CustomPost/CustomPost";
 function NavigationMenu() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useMemo(() => {
@@ -35,6 +36,16 @@ function NavigationMenu() {
     const [tooltip, showTooltip] = React.useState(true);
     const [qipUrl, setQipUrl] = React.useState('');
     const [qipUrlError, setQipUrlError] = React.useState('');
+
+    const [custopmPostSwitch, setCustomPostSwitch] = React.useState(false);
+    const changeCustomPostSwitch = () => {
+        setCustomPostSwitch(true);
+    }
+
+    function resetCustomPostSwitch() {
+        setCustomPostSwitch(false);
+    }
+
     function removeError() {
         dispatch(resetPasswordReset())
     }
@@ -66,15 +77,17 @@ function NavigationMenu() {
     }
 
     const toastId = React.useRef(null);
+    const customId = "custom-id-yes";
 
     const Pending = () => toastId.current = toast.warn('Sending you the reset Link', {
         position: "top-right",
-        autoClose: 5000,
+        autoClose: false,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
+        toastId: customId
     });
 
     const updateSuccess = () => toast.update(toastId.current, { render: "An email has been sent to you.", type: toast.TYPE.SUCCESS, autoClose: 5000, transition: Zoom });
@@ -84,9 +97,11 @@ function NavigationMenu() {
         Pending()
     }
     if (resetPasswordSuccess) {
+        removeError()
         updateSuccess()
     }
     if (resetPasswordError) {
+        removeError()
         updateError()
     }
 
@@ -108,7 +123,7 @@ function NavigationMenu() {
                     <a data-w-tab="ImagePost" className="navigation-item w-inline-block w-tab-link w--current">
                         <div className="text-block-13">Quick Post</div>
                     </a>
-                    <a data-w-tab="VideoPost" className="navigation-item w-inline-block w-tab-link">
+                    <a data-w-tab="CustomPost" className="navigation-item w-inline-block w-tab-link">
                         <div className="text-block-14">Custom Post</div>
                     </a>
                     <a data-w-tab="Blog" className="navigation-item w-inline-block w-tab-link">
@@ -192,24 +207,27 @@ function NavigationMenu() {
                             </div>
                         </div>
                     </div>
-                    <div data-w-tab="VideoPost" className="dashboard-section w-tab-pane">
-                        <div className="container-13">
-                            <h1 className="heading-18">Custom Post </h1>
-                            <div className="dash-row">
-                                <a href="/CustomPost" className="white-box link-box paper-box w-inline-block">
-                                    <div className="box-padding paper-padding">
-                                        <h3 className="doc-heading">Custom Post</h3>
-                                        <img
-                                            sizes="60px"
-                                            width={60}
-                                            src={plus}
-                                            loading="lazy"
-                                            alt="plusicon"
-                                            className="image-18" />
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
+                    <div data-w-tab="CustomPost" className="dashboard-section w-tab-pane" style={{ padding: '0' }}>
+                        {!custopmPostSwitch ?
+                            <div className="container-13" style={{ padding: '5em' }}>
+                                <h1 className="heading-18">Custom Post </h1>
+                                <div className="dash-row">
+                                    <a href="#CustomPost" className="white-box link-box paper-box w-inline-block" onClick={changeCustomPostSwitch}>
+                                        <div className="box-padding paper-padding">
+                                            <h3 className="doc-heading">Custom Post</h3>
+                                            <img
+                                                sizes="60px"
+                                                width={60}
+                                                src={plus}
+                                                loading="lazy"
+                                                alt="plusicon"
+                                                className="image-18" />
+                                        </div>
+                                    </a>
+                                </div>
+                            </div> : <CustomPost />}
+
+
                     </div>
                     <div data-w-tab="Blog" className="dashboard-section w-tab-pane w--tab-active">
                         <div className="container-18 w-container">

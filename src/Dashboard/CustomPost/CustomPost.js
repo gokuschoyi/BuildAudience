@@ -18,8 +18,8 @@ import {
     resetGeneratedImageLinksLoaderFlag,
     resetHashtagLoaderFlag
 } from "./CustomPostSlice";
-import DashboardNavbar from "../Common/DashboardNavbar";
-import Footer from "../../Common/Footer";
+/* import DashboardNavbar from "../Common/DashboardNavbar";
+import Footer from "../../Common/Footer"; */
 import StepOne from './Steps/StepOne';
 import StepTwo from './Steps/StepTwo';
 import StepThree from "./Steps/StepThree";
@@ -358,35 +358,35 @@ function CustomPost() {
 
     return (
         <>
-            <div className="body-5">
-                <DashboardNavbar />
-                <div className="form-full-3">
-                    <div className="form-wrapper-2 w-form">
-                        <form id="email-form" type="submit" name="email-form" data-name="Email Form" redirect="/success" data-redirect="/success" method="get">
-                            <div data-delay={4000} data-animation="cross" className="slider-2 w-slider" data-autoplay="false" data-easing="ease" data-hide-arrows="true" data-disable-swipe="true" data-autoplay-limit={0} data-nav-spacing={3} data-duration={240} data-infinite="false">
-                                <div className="mask-2 w-slider-mask">
-                                    <StepOne tagLineHandler={tagLineHandler} categoryHandler={categoryHandler} postHandler={postHandler} mediaTypeHandler={mediaTypeHandler} />
-                                    <StepTwo />
-                                    <StepThree />
-                                    <StepFour />
-                                    <StepFive />
-                                </div>
-                                <div className="line-bottom" />
-                                <div className="previous w-slider-arrow-left"><img src="https://uploads-ssl.webflow.com/62e8ac4303b3e8c902ffdfc0/62e8ac4303b3e8d55effdfd0_arrow.svg" alt="" className="arrow-2" />
-                                    <div className="previous-button-2" onClick={decrementStep}>Previous</div>
-                                </div>
-                                <div className="next w-slider-arrow-right" type='submit'>
-                                    <div id="nextButton" >
-                                        <div className="next-button-2" onClick={incrementStep}>Next</div>
-                                    </div>
-                                </div>
+            {/* <div className="body-5">
+                <DashboardNavbar /> */}
+            {/* <div className="form-full-3"> */}
+            <div className="form-wrapper-2 w-form">
+                <form id="email-form" type="submit" name="email-form" data-name="Email Form" redirect="/success" data-redirect="/success" method="get">
+                    <div data-delay={4000} data-animation="cross" className="slider-2 w-slider" data-autoplay="false" data-easing="ease" data-hide-arrows="true" data-disable-swipe="true" data-autoplay-limit={0} data-nav-spacing={3} data-duration={240} data-infinite="false">
+                        <div className="mask-2 w-slider-mask">
+                            <StepOne tagLineHandler={tagLineHandler} categoryHandler={categoryHandler} postHandler={postHandler} mediaTypeHandler={mediaTypeHandler} />
+                            <StepTwo />
+                            <StepThree />
+                            <StepFour />
+                            <StepFive />
+                        </div>
+                        <div className="line-bottom" />
+                        <div className="previous w-slider-arrow-left"><img src="https://uploads-ssl.webflow.com/62e8ac4303b3e8c902ffdfc0/62e8ac4303b3e8d55effdfd0_arrow.svg" alt="" className="arrow-2" />
+                            <div className="previous-button-2" onClick={decrementStep}>Previous</div>
+                        </div>
+                        <div className="next w-slider-arrow-right" type='submit'>
+                            <div id="nextButton" >
+                                <div className="next-button-2" onClick={incrementStep}>Next</div>
                             </div>
-                            {/*  <div className="mobile-nav-bottom" /> */}
-                        </form>
+                        </div>
                     </div>
-                </div>
+                    {/*  <div className="mobile-nav-bottom" /> */}
+                </form>
             </div>
-            <Footer />
+            {/* </div> */}
+            {/* </div> */}
+            {/* <Footer /> */}
         </>
     )
 }

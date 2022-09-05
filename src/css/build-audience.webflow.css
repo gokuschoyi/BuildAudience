@@ -2053,7 +2053,7 @@ html {
 
 .dashboard-section {
   margin-top: 10px;
-  padding: 1em 2em;
+  padding: 5em;
 }
 
 .filter-drawer {
@@ -2380,14 +2380,13 @@ html {
 .dash-tab-wrapper {
   height: auto;
   min-height: auto;
-  padding-top: 5em;
+  /* padding-top: 5em; */
   padding-bottom: 5em;
 }
 
 .doc-heading {
-  margin-top: 0px;
-  margin-bottom: auto;
-  padding-top: 43px;
+  margin: 20px;
+  /* padding-top: 43px; */
   -webkit-align-self: center;
   -ms-flex-item-align: center;
   -ms-grid-row-align: center;
@@ -2429,9 +2428,9 @@ html {
 
 .white-box {
   width: 48%;
-  margin-right: 1%;
+  /* margin-right: 1%; */
   margin-bottom: 2%;
-  margin-left: 1%;
+  margin: 1%;
   border-style: solid;
   border-width: 1px;
   border-color: #f3f3f3;
@@ -2472,7 +2471,7 @@ html {
 
 .white-box.link-box.paper-box {
   position: relative;
-  width: 15%;
+  width: 25%;
   height: 25vh
 }
 
@@ -2670,21 +2669,21 @@ html {
   text-align: center;
 }
 
-.box-padding {
-  padding: 1.6em;
-}
+/* .box-padding {
+  margin: 1.6em;
+} */
 
 .box-padding.paper-padding {
   position: absolute;
   left: 0%;
-  top: 0%;
+  /* top: 0%; */
   right: 0%;
-  bottom: 0%;
+  /* bottom: 0%; */
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  padding-top: 1.25em;
+  padding-top: 2.25em;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
   -webkit-flex-direction: column;
@@ -2929,7 +2928,7 @@ html {
 }
 
 .image-18 {
-  margin-bottom: 42px;
+  /* margin-bottom: 42px; */
   -webkit-align-self: center;
   -ms-flex-item-align: center;
   -ms-grid-row-align: center;
@@ -5170,9 +5169,9 @@ html {
     padding-top: 0.5em;
   }
 
-  .dash-tab-wrapper {
+  /* .dash-tab-wrapper {
     padding-top: 5em;
-  }
+  } */
 
   .doc-heading {
     text-align: center;
@@ -6126,7 +6125,7 @@ html {
 
   .dashboard-section {
     /* height: 80vh; */
-    margin-top: 50px;
+    /* margin-top: 50px; */
     padding-right: 1em;
     padding-left: 1em;
   }
@@ -6170,9 +6169,9 @@ html {
     width: auto;
   }
 
-  .dash-tab-wrapper {
+  /* .dash-tab-wrapper {
     padding-top: 0em;
-  }
+  } */
 
   .doc-heading {
     text-align: center;
