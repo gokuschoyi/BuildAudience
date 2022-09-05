@@ -116,7 +116,7 @@ export default SelectedImage;
 
 
 
-<div id="carouselExampleIndicators" className="carousel slide" data-ride="carousel">
+{/* <div id="carouselExampleIndicators" className="carousel slide" data-ride="carousel">
     <div className="carousel-inner">
         {generatedPhotos.map(photo => {
             return (
@@ -161,7 +161,7 @@ export default SelectedImage;
                                         <span className="carousel-control-next-icon" aria-hidden="true" />
                                         <span className="visually-hidden">Next</span>
                                     </button>
-                                </div>
+                                </div> */}
 
 
 
@@ -200,3 +200,25 @@ useEffect(() => {
         }
     }
 }, [tagLineI, categoryI, postI, mediaTypeI, step, tagline, category, post, mediaType, dispatch]) */
+
+
+{
+    resetPasswordSuccess &&
+        <div>
+            <div className="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>A link to reset your password has been sent to your email address.</strong>
+                <button type="button" className="btn-close" data-bs-dismiss="alert" onClick={removeError}>
+                </button>
+            </div>
+        </div>
+}
+{
+    resetPasswordError &&
+        <div>
+            <div className="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>{resetPasswordErrorMsg}</strong>
+                <button type="button" className="btn-close" data-bs-dismiss="alert" onClick={removeError}>
+                </button>
+            </div>
+        </div>
+}

@@ -134,7 +134,7 @@ html.w-mod-touch * {
   text-decoration: none;
   cursor: pointer;
   border-radius: 5px;
-  margin: 5px;
+  /* margin: 5px; */
 }
 
 input.w-button {
@@ -2046,6 +2046,16 @@ textarea.w-select {
 
 .w--nav-dropdown-list-open {
   position: static;
+}
+
+@media screen and (max-width: 1125px) {
+  .w-nav[data-collapse="medium"] .w-nav-menu {
+    display: none;
+  }
+
+  .w-nav[data-collapse="medium"] .w-nav-button {
+    display: block;
+  }
 }
 
 @media screen and (max-width: 991px) {

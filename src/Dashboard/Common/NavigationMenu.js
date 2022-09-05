@@ -2,12 +2,18 @@
 import React, { useEffect, useMemo, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { resetPasswordReset } from './DashboardNavbarSlice'
+import { ToastContainer, toast } from 'react-toastify';
+import { Zoom } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
+import ReactTooltip from 'react-tooltip';
 import SelectTagInput from "../../Dashboard/BlogPost/SelectTagInput";
 import plus from '../../images/addIcon.png';
 import project1 from '../../images/pexels-photo-539711-1.jpeg';
 import project2 from '../../images/beautiful-bloom-blooming-979932.jpg';
 import project3 from '../../images/pexels-photo-167699.jpeg'
+import infoIcon from '../../images/information.png'
 import axios from "axios";
+import CustomPost from "../CustomPost/CustomPost";
 function NavigationMenu() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useMemo(() => {
@@ -25,10 +31,21 @@ function NavigationMenu() {
         window.Webflow && window.Webflow.require('ix2').init();
         document.dispatchEvent(new Event('readystatechange'))
     })
-    const { resetPasswordSuccess, resetPasswordError, resetPasswordErrorMsg } = useSelector(state => state.resetPassword);
+    const { resetPasswordPending, resetPasswordSuccess, resetPasswordError, resetPasswordErrorMsg } = useSelector(state => state.resetPassword);
     const dispatch = useDispatch();
+    const [tooltip, showTooltip] = React.useState(true);
     const [qipUrl, setQipUrl] = React.useState('');
     const [qipUrlError, setQipUrlError] = React.useState('');
+
+    const [custopmPostSwitch, setCustomPostSwitch] = React.useState(false);
+    const changeCustomPostSwitch = () => {
+        setCustomPostSwitch(true);
+    }
+
+    function resetCustomPostSwitch() {
+        setCustomPostSwitch(false);
+    }
+
     function removeError() {
         dispatch(resetPasswordReset())
     }
@@ -53,225 +70,300 @@ function NavigationMenu() {
             })
     }, [qipUrl])
 
-    return (
-        <div data-duration-in="300" data-duration-out="100" data-current="Blog" data-easing="ease" className="tabs-2 w-tabs">
-            <div className="navigation-menu-2 w-tab-menu">
-                <a data-w-tab="ImagePost" className="navigation-item w-inline-block w-tab-link w--current">
-                    <div className="text-block-13">Quick Post</div>
-                </a>
-                <a data-w-tab="VideoPost" className="navigation-item w-inline-block w-tab-link">
-                    <div className="text-block-14">Custom Post</div>
-                </a>
-                <a data-w-tab="Blog" className="navigation-item w-inline-block w-tab-link">
-                    <div className="text-block-15">Blog Post</div>
-                </a>
-                <a data-w-tab="MyProjects" className="navigation-item w-inline-block w-tab-link">
-                    <div className="text-block-16">My Project</div>
-                </a>
-            </div>
-            {resetPasswordSuccess &&
-                <div>
-                    <div className="alert alert-success alert-dismissible fade show" role="alert">
-                        <strong>A link to reset your password has been sent to your email address.</strong>
-                        <button type="button" className="btn-close" data-bs-dismiss="alert" onClick={removeError}>
-                        </button>
-                    </div>
-                </div>
-            }
-            {resetPasswordError &&
-                <div>
-                    <div className="alert alert-danger alert-dismissible fade show" role="alert">
-                        <strong>{resetPasswordErrorMsg}</strong>
-                        <button type="button" className="btn-close" data-bs-dismiss="alert" onClick={removeError}>
-                        </button>
-                    </div>
-                </div>
-            }
-            <div className="dash-tab-wrapper w-tab-content">
-                <div data-w-tab="ImagePost" className="dashboard-section w-tab-pane">
-                    <div className="container-13">
-                        <h1 className="heading-18">Quick Post </h1>
-                        <div className="dash-row">
-                            <a href="#quickImagePost" data-bs-toggle="modal" data-bs-target="#quickImagePost" onClick={getQuickImagePost} className="white-box link-box paper-box w-inline-block">
-                                <div className="box-padding paper-padding">
-                                    <h3 className="doc-heading">Quick Image Post</h3>
-                                    <img
-                                        sizes="60px"
-                                        width={60}
-                                        src={plus}
-                                        loading="lazy"
-                                        alt="plusicon"
-                                        className="image-18" />
-                                </div>
-                            </a>
-                            <div className="modal modal-centered fade" id="quickImagePost" data-bs-backdrop="false" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                <div className="modal-dialog modal-lg modal-dialog-centered">
-                                    <div className="modal-content">
-                                        <div className="modal-header">
-                                            <h5 className="modal-title" id="staticBackdropLabel">Quick Image Post</h5>
-                                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
-                                        </div>
-                                        <div className="modal-body">
-                                            {qipUrl === '' ?
-                                                <div className="d-flex justify-content-center" style={{ zIndex: '2', paddingTop: '20px' }}>
-                                                    <div className="spinner-border text-danger" role="status">
-                                                        <span className="sr-only"></span>
-                                                    </div>
-                                                </div> :
-                                                <img src={qipUrl.data} alt="qip" />}
-                                        </div>
-                                        <div className="modal-footer">
-                                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={removeQipLink}>Close</button>
-                                            <button type="button" className="btn btn-primary">Download</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+    function downloadQIP() {
+        var FileSaver = require('file-saver');
+        console.log(qipUrl.data)
+        FileSaver.saveAs(qipUrl.data[0], "image.jpg");
+    }
 
-                            <a href="quickVideoPost" data-bs-toggle="modal" data-bs-target="#quickVideoPost" className="white-box link-box paper-box w-inline-block">
-                                <div className="box-padding paper-padding">
-                                    <h3 className="doc-heading">Quick Video  Post</h3>
-                                    <img
-                                        sizes="60px"
-                                        width={60}
-                                        src={plus}
-                                        loading="lazy"
-                                        alt="plusicon"
-                                        className="image-18" />
+    const toastId = React.useRef(null);
+    const customId = "custom-id-yes";
+
+    const Pending = () => toastId.current = toast.warn('Sending you the reset Link', {
+        position: "top-right",
+        autoClose: false,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        toastId: customId
+    });
+
+    const updateSuccess = () => toast.update(toastId.current, { render: "An email has been sent to you.", type: toast.TYPE.SUCCESS, autoClose: 5000, transition: Zoom });
+    const updateError = () => toast.update(toastId.current, { render: "Oops, something went wrong.", type: toast.TYPE.SUCCESS, autoClose: 5000, transition: Zoom });
+
+    if (resetPasswordPending) {
+        Pending()
+    }
+    if (resetPasswordSuccess) {
+        removeError()
+        updateSuccess()
+    }
+    if (resetPasswordError) {
+        removeError()
+        updateError()
+    }
+
+    return (
+        <>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
+            <div data-duration-in="300" data-duration-out="100" data-current="Blog" data-easing="ease" className="tabs-2 w-tabs">
+                <div className="navigation-menu-2 w-tab-menu">
+                    <a data-w-tab="ImagePost" className="navigation-item w-inline-block w-tab-link w--current">
+                        <div className="text-block-13">Quick Post</div>
+                    </a>
+                    <a data-w-tab="CustomPost" className="navigation-item w-inline-block w-tab-link">
+                        <div className="text-block-14">Custom Post</div>
+                    </a>
+                    <a data-w-tab="Blog" className="navigation-item w-inline-block w-tab-link">
+                        <div className="text-block-15">Blog Post</div>
+                    </a>
+                    <a data-w-tab="MyProjects" className="navigation-item w-inline-block w-tab-link">
+                        <div className="text-block-16">My Project</div>
+                    </a>
+                </div>
+
+                <div className="dash-tab-wrapper w-tab-content">
+                    <div data-w-tab="ImagePost" className="dashboard-section w-tab-pane">
+                        <div className="container-13">
+                            <h1 className="heading-18">Quick Post </h1>
+                            <div className="dash-row">
+                                <a href="#quickImagePost" data-bs-toggle="modal" data-bs-target="#quickImagePost" onClick={getQuickImagePost} className="white-box link-box paper-box w-inline-block">
+                                    <div className="box-padding paper-padding">
+                                        <h3 className="doc-heading">Quick Image Post</h3>
+                                        <img
+                                            sizes="60px"
+                                            width={60}
+                                            src={plus}
+                                            loading="lazy"
+                                            alt="plusicon"
+                                            className="image-18" />
+                                    </div>
+                                </a>
+                                <div className="modal modal-centered fade" id="quickImagePost" data-bs-backdrop="false" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                    <div className="modal-dialog modal-lg modal-dialog-centered">
+                                        <div className="modal-content">
+                                            <div className="modal-header">
+                                                <h5 className="modal-title" id="staticBackdropLabel">Quick Image Post</h5>
+                                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+                                            </div>
+                                            <div className="modal-body">
+                                                {qipUrl === '' ?
+                                                    <div className="d-flex justify-content-center" style={{ zIndex: '2', paddingTop: '20px' }}>
+                                                        <div className="spinner-border text-danger" role="status">
+                                                            <span className="sr-only"></span>
+                                                        </div>
+                                                    </div> :
+                                                    <img src={qipUrl.data} alt="qip" />}
+                                            </div>
+                                            <div className="modal-footer">
+                                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={removeQipLink}>Close</button>
+                                                <button type="button" className="btn btn-primary" onClick={downloadQIP}>Download</button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </a>
-                            <div className="modal modal-centered fade" id="quickVideoPost" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                <div className="modal-dialog modal-lg modal-dialog-centered">
-                                    <div className="modal-content">
-                                        <div className="modal-header">
-                                            <h5 className="modal-title" id="staticBackdropLabel">Quick Image Post</h5>
-                                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
-                                        </div>
-                                        <div className="modal-body">
-                                            ...
-                                        </div>
-                                        <div className="modal-footer">
-                                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                            <button type="button" className="btn btn-primary">Download</button>
+
+                                <a href="quickVideoPost" data-bs-toggle="modal" data-bs-target="#quickVideoPost" className="white-box link-box paper-box w-inline-block">
+                                    <div className="box-padding paper-padding">
+                                        <h3 className="doc-heading">Quick Video  Post</h3>
+                                        <img
+                                            sizes="60px"
+                                            width={60}
+                                            src={plus}
+                                            loading="lazy"
+                                            alt="plusicon"
+                                            className="image-18" />
+                                    </div>
+                                </a>
+                                <div className="modal modal-centered fade" id="quickVideoPost" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                    <div className="modal-dialog modal-lg modal-dialog-centered">
+                                        <div className="modal-content">
+                                            <div className="modal-header">
+                                                <h5 className="modal-title" id="staticBackdropLabel">Quick Image Post</h5>
+                                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+                                            </div>
+                                            <div className="modal-body">
+                                                ...
+                                            </div>
+                                            <div className="modal-footer">
+                                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="button" className="btn btn-primary">Download</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div data-w-tab="VideoPost" className="dashboard-section w-tab-pane">
-                    <div className="container-13">
-                        <h1 className="heading-18">Custom Post </h1>
-                        <div className="dash-row">
-                            <a href="/CustomPost" className="white-box link-box paper-box w-inline-block">
-                                <div className="box-padding paper-padding">
-                                    <h3 className="doc-heading">Custom Post</h3>
-                                    <img
-                                        sizes="60px"
-                                        width={60}
-                                        src={plus}
-                                        loading="lazy"
-                                        alt="plusicon"
-                                        className="image-18" />
+                    <div data-w-tab="CustomPost" className="dashboard-section w-tab-pane" style={{ padding: '0' }}>
+                        {!custopmPostSwitch ?
+                            <div className="container-13" style={{ padding: '5em' }}>
+                                <h1 className="heading-18">Custom Post </h1>
+                                <div className="dash-row">
+                                    <a href="#CustomPost" className="white-box link-box paper-box w-inline-block" onClick={changeCustomPostSwitch}>
+                                        <div className="box-padding paper-padding">
+                                            <h3 className="doc-heading">Custom Post</h3>
+                                            <img
+                                                sizes="60px"
+                                                width={60}
+                                                src={plus}
+                                                loading="lazy"
+                                                alt="plusicon"
+                                                className="image-18" />
+                                        </div>
+                                    </a>
                                 </div>
-                            </a>
+                            </div> : <CustomPost />}
+
+
+                    </div>
+                    <div data-w-tab="Blog" className="dashboard-section w-tab-pane w--tab-active">
+                        <div className="container-18 w-container">
+                            <div className="form-wrap w-form">
+                                <form id="email-form" name="email-form" data-name="Email Form" method="get" className="form-4">
+                                    <div className="ios-style-reset w-embed">
+                                        <style dangerouslySetInnerHTML={{ __html: "\n input[type=text],\n input[type=email],\n input[type=tel] {\n /* Removes innershadow on form fields on iOS */\n border-radius: 0;\n                        -webkit-appearance: none;\n                        -moz-appearance: none;\n                        appearance: none;\n                      }\n                    " }} />
+                                    </div>
+                                    <h1 className="form-heading">Blog Generation</h1>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '50px' }}>
+                                        <div style={{ width: '90%' }}>
+                                            <SelectTagInput />
+                                        </div>
+                                        <p data-for="tooltipTag" data-tip style={{ paddingTop: '5px' }} onMouseEnter={() => showTooltip(true)}
+                                            onMouseLeave={() => {
+                                                showTooltip(false);
+                                                setTimeout(() => showTooltip(true), 50);
+                                            }}>
+                                            <img src={infoIcon} alt='...' style={{ width: '25px' }}></img>
+                                        </p>
+                                        {tooltip &&
+                                            <ReactTooltip id="tooltipTag" data-effect="float" delayHide={1000} >
+                                                <span>Select relevent tags from the list to customize your blog post</span>
+                                            </ReactTooltip>
+                                        }
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                        <div className="field-wrap">
+                                            <input type="text" className="form-field w-input" autoComplete="off" maxLength={256} name="name" data-name="name" placeholder="Enter a URL" id="name" required />
+                                        </div>
+                                        <p data-for="tooltipURL" data-tip style={{ paddingTop: '5px' }} onMouseEnter={() => showTooltip(true)}
+                                            onMouseLeave={() => {
+                                                showTooltip(false);
+                                                setTimeout(() => showTooltip(true), 50);
+                                            }}>
+                                            <img src={infoIcon} alt='...' style={{ width: '25px' }}></img>
+                                        </p>
+                                        {tooltip &&
+                                            <ReactTooltip id="tooltipURL" data-effect="float" delayHide={1000} >
+                                                <span>Enter a URL of a post that you want a blog created from</span>
+                                            </ReactTooltip>
+                                        }
+                                    </div>
+                                    <div className="orfield">
+                                        <h3 className="heading-24">OR</h3>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                        <div className="field-wrap">
+                                            {/* <label htmlFor="day" className="form-field-label">Select</label> */}
+                                            <select id="day" name="day" data-name="day" required className="form-field select-field wide w-select">
+                                                <option value>Select From Saved Article</option>
+                                                <option value="Monday">https://www.agegracefullyamerica.com/technology-help/</option>
+                                                <option value="Tuesday">https://www.internetsociety.org/issues/technology/</option>
+                                                <option value="Wednesday">https://www.computerweekly.com/blogs</option>
+                                                <option value="Thursday">https://www.gartner.com/en/information-technology/insights/information-technology-blogs</option>
+                                            </select>
+                                        </div>
+                                        <p data-for="tooltipSaved" data-tip style={{ paddingTop: '5px' }} onMouseEnter={() => showTooltip(true)}
+                                            onMouseLeave={() => {
+                                                showTooltip(false);
+                                                setTimeout(() => showTooltip(true), 50);
+                                            }}>
+                                            <img src={infoIcon} alt='...' style={{ width: '25px' }}></img>
+                                        </p>
+                                        {tooltip &&
+                                            <ReactTooltip id="tooltipSaved" data-effect="float" delayHide={1000} >
+                                                <span>Select one Blog from your saved Articles</span>
+                                            </ReactTooltip>
+                                        }
+                                    </div>
+                                </form>
+                                <div className="w-form-done">
+                                    <div>Thank you! Your submission has been received!</div>
+                                </div>
+                                <div className="w-form-fail">
+                                    <div>Oops! Something went wrong while submitting the form.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="container-15 w-container">
+                            <a href="/BlogPost" className="button-3 w-button">Submit</a>
                         </div>
                     </div>
-                </div>
-                <div data-w-tab="Blog" className="dashboard-section w-tab-pane w--tab-active">
-                    <div className="container-18 w-container">
-                        <div className="form-wrap w-form">
-                            <form id="email-form" name="email-form" data-name="Email Form" method="get" className="form-4">
-                                <div className="ios-style-reset w-embed">
-                                    <style dangerouslySetInnerHTML={{ __html: "\n input[type=text],\n input[type=email],\n input[type=tel] {\n /* Removes innershadow on form fields on iOS */\n border-radius: 0;\n                        -webkit-appearance: none;\n                        -moz-appearance: none;\n                        appearance: none;\n                      }\n                    " }} />
-                                </div>
-                                <h1 className="form-heading">Blog Generation</h1>
-                                <div className="field-wrap">
-                                    <SelectTagInput />
-                                </div>
-                                <div className="field-wrap">
-                                    {/* <label htmlFor="name" className="form-field-label">Article URL</label> */}
-                                    <input type="text" className="form-field w-input" autoComplete="off" maxLength={256} name="name" data-name="name" placeholder="Enter a URL" id="name" required />
-                                </div>
-                                <div className="orfield">
-                                    <h3 className="heading-24">OR</h3>
-                                </div>
-                                <div className="field-wrap">
-                                    {/* <label htmlFor="day" className="form-field-label">Select</label> */}
-                                    <select id="day" name="day" data-name="day" required className="form-field select-field wide w-select">
-                                        <option value>Select From Saved Article</option>
-                                        <option value="Monday">https://www.agegracefullyamerica.com/technology-help/</option>
-                                        <option value="Tuesday">https://www.internetsociety.org/issues/technology/</option>
-                                        <option value="Wednesday">https://www.computerweekly.com/blogs</option>
-                                        <option value="Thursday">https://www.gartner.com/en/information-technology/insights/information-technology-blogs</option>
-                                    </select>
-                                </div>
-                            </form>
-                            <div className="w-form-done">
-                                <div>Thank you! Your submission has been received!</div>
-                            </div>
-                            <div className="w-form-fail">
-                                <div>Oops! Something went wrong while submitting the form.</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="container-15 w-container">
-                        <a href="/BlogPost" className="button-3 w-button">Submit</a>
-                    </div>
-                </div>
-                <div data-w-tab="MyProjects" className="dashboard-section w-tab-pane">
-                    <div className="container-13">
-                        <h3 className="heading-20">Projects</h3>
-                        <div className="project-grid">
-                            <div className="template-left">
-                                <div className="white-box full-width">
-                                    <div className="box-padding">
-                                        <img
-                                            sizes="(max-width: 479px) 100vw, (max-width: 767px) 87vw, (max-width: 991px) 90vw, 25vw"
-                                            loading="lazy"
-                                            src={project1}
-                                            alt="project 1" />
-                                        <h4 className="heading-19">Buzz - Fly High</h4>
-                                        <h4 className="heading-21"><strong className="bold-text-5">The most efficient way of rendering the poor
-                                            harm...</strong></h4>
-                                        <h4 className="heading-21">#imitation #rich #poor #harmless #efficiency #teaching #wanting
-                                            #socialmedia #hashtags</h4>
-                                        <div className="project-message"><strong className="bold-text-6">Author - Carlos Ruiz Zafon</strong></div>
+                    <div data-w-tab="MyProjects" className="dashboard-section w-tab-pane">
+                        <div className="container-13">
+                            <h3 className="heading-20">Projects</h3>
+                            <div className="project-grid">
+                                <div className="template-left">
+                                    <div className="white-box full-width">
+                                        <div className="box-padding">
+                                            <img
+                                                sizes="(max-width: 479px) 100vw, (max-width: 767px) 87vw, (max-width: 991px) 90vw, 25vw"
+                                                loading="lazy"
+                                                src={project1}
+                                                alt="project 1" />
+                                            <h4 className="heading-19">Buzz - Fly High</h4>
+                                            <h4 className="heading-21"><strong className="bold-text-5">The most efficient way of rendering the poor
+                                                harm...</strong></h4>
+                                            <h4 className="heading-21">#imitation #rich #poor #harmless #efficiency #teaching #wanting
+                                                #socialmedia #hashtags</h4>
+                                            <div className="project-message"><strong className="bold-text-6">Author - Carlos Ruiz Zafon</strong></div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="template-left">
-                                <div className="white-box full-width">
-                                    <div className="box-padding">
-                                        <img
-                                            sizes="(max-width: 479px) 100vw, (max-width: 767px) 87vw, (max-width: 991px) 90vw, 25vw"
-                                            loading="lazy"
-                                            src={project2}
-                                            alt="project2" />
-                                        <h4 className="heading-19">Buzz - Fly High</h4>
-                                        <h4 className="bold-text-5"><strong className="heading-21">The most efficient way of rendering the poor
-                                            harm...</strong></h4>
-                                        <h4 className="heading-21">#imitation #rich #poor #harmless #efficiency #teaching #wanting
-                                            #socialmedia #hashtags</h4>
-                                        <div className="project-message"><strong>Author - Carlos Ruiz Zafon</strong></div>
+                                <div className="template-left">
+                                    <div className="white-box full-width">
+                                        <div className="box-padding">
+                                            <img
+                                                sizes="(max-width: 479px) 100vw, (max-width: 767px) 87vw, (max-width: 991px) 90vw, 25vw"
+                                                loading="lazy"
+                                                src={project2}
+                                                alt="project2" />
+                                            <h4 className="heading-19">Buzz - Fly High</h4>
+                                            <h4 className="bold-text-5"><strong className="heading-21">The most efficient way of rendering the poor
+                                                harm...</strong></h4>
+                                            <h4 className="heading-21">#imitation #rich #poor #harmless #efficiency #teaching #wanting
+                                                #socialmedia #hashtags</h4>
+                                            <div className="project-message"><strong>Author - Carlos Ruiz Zafon</strong></div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="template-left">
-                                <div className="white-box full-width">
-                                    <div className="box-padding">
-                                        <img
-                                            sizes="(max-width: 479px) 100vw, (max-width: 767px) 87vw, (max-width: 991px) 90vw, 25vw"
-                                            loading="lazy"
-                                            src={project3}
-                                            alt="project3" />
-                                        <h4 className="heading-19">Buzz - Fly High</h4>
-                                        <h4 className="bold-text-5"><strong className="heading-21">The most efficient way of rendering the poor
-                                            harm...</strong></h4>
-                                        <h4 className="heading-21">#imitation #rich #poor #harmless #efficiency #teaching #wanting
-                                            #socialmedia #hashtags</h4>
-                                        <div className="project-message"><strong>Author - Carlos Ruiz Zafon</strong></div>
+                                <div className="template-left">
+                                    <div className="white-box full-width">
+                                        <div className="box-padding">
+                                            <img
+                                                sizes="(max-width: 479px) 100vw, (max-width: 767px) 87vw, (max-width: 991px) 90vw, 25vw"
+                                                loading="lazy"
+                                                src={project3}
+                                                alt="project3" />
+                                            <h4 className="heading-19">Buzz - Fly High</h4>
+                                            <h4 className="bold-text-5"><strong className="heading-21">The most efficient way of rendering the poor
+                                                harm...</strong></h4>
+                                            <h4 className="heading-21">#imitation #rich #poor #harmless #efficiency #teaching #wanting
+                                                #socialmedia #hashtags</h4>
+                                            <div className="project-message"><strong>Author - Carlos Ruiz Zafon</strong></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -279,7 +371,7 @@ function NavigationMenu() {
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }
 

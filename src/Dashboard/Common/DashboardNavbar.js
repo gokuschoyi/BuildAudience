@@ -27,7 +27,7 @@ function DashboardNavbar() {
         }
         try {
             dispatch(resetPasswordPending());
-            let result = await axios.post(process.env.REACT_APP_BURL + 'user/reset_password', data, {
+            let result = await axios.post(process.env.REACT_APP_BURL + '/user/reset_password', data, {
                 withCredentials: false
             });
             if (result.data.error) {
@@ -61,10 +61,10 @@ function DashboardNavbar() {
                                 <div className="nav-divider-2" />
                             </li>
                             <li>
-                                <a href="!" className="button-primary w-button" onClick={(e) => setEmail(e)}>Reset Password</a>
+                                <a href="!" className="button-primary w-button" style={{ margin: '5px' }} onClick={(e) => setEmail(e)}>Reset Password</a>
                             </li>
                             <li className="mobile-margin-top-11">
-                                <a href="/Auth" className="button-primary w-button">Signout</a>
+                                <a href="/Auth" className="button-primary w-button" style={{ margin: '5px' }}>Signout</a>
                             </li>
                         </ul>
                     </nav>

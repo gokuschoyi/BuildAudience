@@ -4,7 +4,6 @@ import LandingPage from "./LandingPage";
 import AuthSwitch from "./Auth/AuthSwitch";
 import ForgotPassword from "./Auth/ForgotPassword/ForgotPassword";
 import Dashboard from "./Dashboard/Dashboard";
-import CustomPost from "./Dashboard/CustomPost/CustomPost";
 import BlogPost from "./Dashboard/BlogPost/BlogPost";
 import store, { persistor } from './store';
 import { Provider } from 'react-redux';
@@ -24,7 +23,6 @@ function App() {
               <Route path='/ForgotPassword' element={<ForgotPassword />}> </Route>
               <Route path='/RegistrationSuccess' element={<RegistrationSuccess />}> </Route>
               <Route path='/Dashboard' element={<Dashboard />}> </Route>
-              <Route path='/CustomPost' element={<CustomPost />}> </Route>
               <Route path='/BlogPost' element={<BlogPost />}> </Route>
               <Route path='/VideoTest' element={<VideoTest />}> </Route>
             </Routes>
