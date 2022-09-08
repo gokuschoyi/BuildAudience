@@ -25,7 +25,7 @@ import StepTwo from './Steps/StepTwo';
 import StepThree from "./Steps/StepThree";
 import StepFour from "./Steps/StepFour";
 import StepFive from "./Steps/StepFive";
-function CustomPost() {
+function CustomPost(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- required for webflow to work
     useMemo(() => {
         const WEBFLOW_PAGE_ID = '62e88b73fbcb3a42622e64de'
@@ -57,7 +57,6 @@ function CustomPost() {
         category,
         tagline,
         post,
-        mediaType,
         quotesSuccessFlag,
         imageLinksSuccessFlag,
         imageLinks,
@@ -226,6 +225,7 @@ function CustomPost() {
     useEffect(() => {
         if (step === 1) {
             stepFiveTagLine.current = tagline;
+            console.log("step one " + stepFiveTagLine.current)
         }
     }, [step, tagline])
 
@@ -240,7 +240,7 @@ function CustomPost() {
         if (step === 2 && quotesSuccessFlag === false) {
             dispatch(postInfo(data));
             console.log(data)
-            const quotes = getQuotes();
+            getQuotes();
         }
     }, [dispatch, step, getQuotes, tagLineI, categoryI, postI, mediaTypeI, quotesSuccessFlag]);
 
@@ -255,7 +255,7 @@ function CustomPost() {
             dispatch(resetQuotesLoaderFlag());
             dispatch(postInfo(data));
             console.log(data)
-            const quotes = getQuotes();
+            getQuotes();
         }
     }, [dispatch, step, getQuotes, tagLineI, categoryI, postI, mediaTypeI, quotesSuccessFlag, category]);
 
@@ -316,6 +316,7 @@ function CustomPost() {
     useEffect(() => {
         if (step === 5 && hashtagSuccessFlag === false) {
             getHashtags()
+            console.log("step5Five")
         }
     }, [step, getHashtags, hashtagSuccessFlag])
 
@@ -326,8 +327,8 @@ function CustomPost() {
             post: postI,
             mediaType: mediaTypeI
         }
-        if (step === 5 && tagline !== stepFiveTagLine) {
-            console.log(stepFiveTagLine + ' ' + tagLineI)
+        if (step === 5 && tagline !== stepFiveTagLine.current && stepFiveTagLine.current !== '') {
+            console.log(stepFiveTagLine.current + ' ' + tagLineI)
             stepFiveTagLine.current = tagLineI;
             dispatch(resetHashtagLoaderFlag());
             dispatch(postInfo(data));
@@ -369,7 +370,7 @@ function CustomPost() {
                             <StepTwo />
                             <StepThree />
                             <StepFour />
-                            <StepFive />
+                            <StepFive reset={props.reset} />
                         </div>
                         <div className="line-bottom" />
                         <div className="previous w-slider-arrow-left"><img src="https://uploads-ssl.webflow.com/62e8ac4303b3e8c902ffdfc0/62e8ac4303b3e8d55effdfd0_arrow.svg" alt="" className="arrow-2" />
