@@ -56,8 +56,8 @@ function StepOne(props) {
                         <label htmlFor="day-2" className="field-label-11">Media Type</label>
                         <select id="day-3" onChange={props.mediaTypeHandler} name="day-2" data-name="Day 2" required className="form-field select-field wide w-select">
                             <option value=''>Select Media Type</option>
-                            <option value="Image">Image</option>
-                            <option value="Video">Video</option>
+                            <option value="image">Image</option>
+                            <option value="video">Video</option>
                         </select>
                     </div>
                 </div>

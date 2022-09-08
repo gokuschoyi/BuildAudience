@@ -5,15 +5,15 @@ import { resetPasswordReset } from './DashboardNavbarSlice'
 import { ToastContainer, toast } from 'react-toastify';
 import { Zoom } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
+import { FaDownload } from 'react-icons/fa';
+import { AiFillDelete } from 'react-icons/ai';
 import ReactTooltip from 'react-tooltip';
 import SelectTagInput from "../../Dashboard/BlogPost/SelectTagInput";
 import plus from '../../images/addIcon.png';
-import project1 from '../../images/pexels-photo-539711-1.jpeg';
-import project2 from '../../images/beautiful-bloom-blooming-979932.jpg';
-import project3 from '../../images/pexels-photo-167699.jpeg'
 import infoIcon from '../../images/information.png'
 import axios from "axios";
 import CustomPost from "../CustomPost/CustomPost";
+import { resetCustomPostSlice } from '../CustomPost/CustomPostSlice'
 function NavigationMenu() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useMemo(() => {
@@ -31,28 +31,30 @@ function NavigationMenu() {
         window.Webflow && window.Webflow.require('ix2').init();
         document.dispatchEvent(new Event('readystatechange'))
     })
-    const { resetPasswordPending, resetPasswordSuccess, resetPasswordError, resetPasswordErrorMsg } = useSelector(state => state.resetPassword);
+
+    const { resetPasswordPending, resetPasswordSuccess, resetPasswordError } = useSelector(state => state.resetPassword);
     const dispatch = useDispatch();
     const [tooltip, showTooltip] = React.useState(true);
     const [qipUrl, setQipUrl] = React.useState('');
     const [qipUrlError, setQipUrlError] = React.useState('');
+    const [pDict, setPDict] = React.useState('');
+    const [project, setProjects] = React.useState('');
+    const [facebook, setFacebook] = React.useState('');
+    const [instagram, setInstagram] = React.useState('');
+    const [story, setStory] = React.useState('');
+    const [seed, setSeed] = React.useState(1);
+    const [deleteUrl, setDeleteUrl] = React.useState('');
+    const [customPostSwitch, setCustomPostSwitch] = React.useState(false);
 
-    const [custopmPostSwitch, setCustomPostSwitch] = React.useState(false);
+    const reset = useCallback(() => {
+        setSeed(Math.random());
+        dispatch(resetCustomPostSlice())
+        setCustomPostSwitch(false);
+        console.log('seed', seed);
+    }, [seed, dispatch]);
+
     const changeCustomPostSwitch = () => {
         setCustomPostSwitch(true);
-    }
-
-    function resetCustomPostSwitch() {
-        setCustomPostSwitch(false);
-    }
-
-    function removeError() {
-        dispatch(resetPasswordReset())
-    }
-
-    function removeQipLink() {
-        setQipUrl('');
-        setQipUrlError('');
     }
 
     const getQuickImagePost = useCallback(async () => {
@@ -70,10 +72,103 @@ function NavigationMenu() {
             })
     }, [qipUrl])
 
+    const getProjects = useCallback(async () => {
+        const token = sessionStorage.getItem('userTokenSession');
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        };
+
+        let allProjects = await axios.get(process.env.REACT_APP_BURL + '/user/projects', config, { withCredentials: true })
+            .then(res => {
+                setProjects(res.data)
+
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }, [])
+
+    useEffect(() => {
+        if (project === '') {
+            console.log("no Project data")
+        }
+        else {
+            let project_list = project.projects;
+            let projectDict = {};
+            let key = 0;
+            projectDict = project_list.map(x => {
+                return ({
+                    key: (key++).toString(),
+                    hashtags: x.hashtags,
+                    media_type: x.media_type,
+                    p_name: x.p_name,
+                    post_uid: x.post_uid,
+                    post_url: x.post_url,
+                    quote: x.quote,
+                    quote_author: x.quote_author,
+                    tag: x.tag,
+                    post_type: x.post_type,
+                })
+            })
+            setPDict(projectDict)
+        }
+    }, [project])
+
+    useEffect(() => {
+        if (pDict === '') {
+            console.log("no Facebook data")
+        }
+        else {
+            setFacebook(pDict.filter(x => x.post_type === 'facebook'))
+            setInstagram(pDict.filter(x => x.post_type === 'instagram'))
+            setStory(pDict.filter(x => x.post_type === 'story'))
+        }
+    }, [pDict])
+
+    function removeError() {
+        dispatch(resetPasswordReset())
+    }
+
+    function removeQipLink() {
+        setQipUrl('');
+        setQipUrlError('');
+    }
+
     function downloadQIP() {
         var FileSaver = require('file-saver');
         console.log(qipUrl.data)
         FileSaver.saveAs(qipUrl.data[0], "image.jpg");
+    }
+
+    const downloadImage = (e) => {
+        var url = e.target.value;
+        var FileSaver = require('file-saver');
+        console.log(url)
+        FileSaver.saveAs(url, "image.jpg");
+    }
+
+    const getDeleteProjectUrl = (e) => {
+        setDeleteUrl(e.target.value)
+        console.log('getDeleteProjectUrl', deleteUrl)
+    }
+
+    const deleteProject = (e) => {
+        const token = sessionStorage.getItem('userTokenSession');
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        };
+        var deletePostKey = {
+            post_uid: deleteUrl
+        }
+        let deleteProject = axios.post(process.env.REACT_APP_BURL + '/user/delete_project', deletePostKey, config, { withCredentials: true })
+            .then(res => {
+                console.log(res.data.success)
+                getProjects()
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        console.log('deleteProject')
     }
 
     const toastId = React.useRef(null);
@@ -129,7 +224,7 @@ function NavigationMenu() {
                     <a data-w-tab="Blog" className="navigation-item w-inline-block w-tab-link">
                         <div className="text-block-15">Blog Post</div>
                     </a>
-                    <a data-w-tab="MyProjects" className="navigation-item w-inline-block w-tab-link">
+                    <a data-w-tab="MyProjects" id="projects" className="navigation-item w-inline-block w-tab-link" onClick={getProjects}>
                         <div className="text-block-16">My Project</div>
                     </a>
                 </div>
@@ -208,11 +303,11 @@ function NavigationMenu() {
                         </div>
                     </div>
                     <div data-w-tab="CustomPost" className="dashboard-section w-tab-pane" style={{ padding: '0' }}>
-                        {!custopmPostSwitch ?
+                        {!customPostSwitch ?
                             <div className="container-13" style={{ padding: '5em' }}>
                                 <h1 className="heading-18">Custom Post </h1>
                                 <div className="dash-row">
-                                    <a href="#CustomPost" className="white-box link-box paper-box w-inline-block" onClick={changeCustomPostSwitch}>
+                                    <a href="#" className="white-box link-box paper-box w-inline-block" onClick={changeCustomPostSwitch}>
                                         <div className="box-padding paper-padding">
                                             <h3 className="doc-heading">Custom Post</h3>
                                             <img
@@ -225,9 +320,8 @@ function NavigationMenu() {
                                         </div>
                                     </a>
                                 </div>
-                            </div> : <CustomPost />}
-
-
+                            </div> : <CustomPost reset={reset} key={seed} />
+                        }
                     </div>
                     <div data-w-tab="Blog" className="dashboard-section w-tab-pane w--tab-active">
                         <div className="container-18 w-container">
@@ -313,57 +407,96 @@ function NavigationMenu() {
                     </div>
                     <div data-w-tab="MyProjects" className="dashboard-section w-tab-pane">
                         <div className="container-13">
-                            <h3 className="heading-20">Projects</h3>
-                            <div className="project-grid">
-                                <div className="template-left">
-                                    <div className="white-box full-width">
-                                        <div className="box-padding">
+                            <h3 className="heading-20">Saved Projects</h3>
+                            <div className="row">
+                                <h3 className="heading-projects">Your Facebook Posts</h3>
+                            </div>
+                            <div className="container" style={{ alignItems: 'baseline' }}>
+                                {facebook.length === 0 ? <div className="heading-21" style={{ padding: '20px' }}>No Facebook Posts Yet</div> : ""}
+                                {facebook && facebook.map(project => {
+                                    return (
+                                        <div className="card" key={project.key}>
                                             <img
-                                                sizes="(max-width: 479px) 100vw, (max-width: 767px) 87vw, (max-width: 991px) 90vw, 25vw"
-                                                loading="lazy"
-                                                src={project1}
+                                                src={project.post_url}
                                                 alt="project 1" />
-                                            <h4 className="heading-19">Buzz - Fly High</h4>
-                                            <h4 className="heading-21"><strong className="bold-text-5">The most efficient way of rendering the poor
-                                                harm...</strong></h4>
-                                            <h4 className="heading-21">#imitation #rich #poor #harmless #efficiency #teaching #wanting
-                                                #socialmedia #hashtags</h4>
-                                            <div className="project-message"><strong className="bold-text-6">Author - Carlos Ruiz Zafon</strong></div>
+                                            <div className="card-body">
+                                                <h4 className="heading-19">{project.p_name} - {project.tag}</h4>
+                                                <h4 className="heading-21"><strong className="bold-text-5">{project.quote}</strong></h4>
+                                                <h4 className="heading-21">{project.hashtags}</h4>
+                                                <div className="project-message"><strong className="bold-text-6">{project.quote_author}</strong></div>
+                                                <div>
+                                                    <button className="btn btn-dark" style={{ margin: '5px' }} onClick={(e) => downloadImage(e)} value={project.post_url}>Download <FaDownload /></button>
+                                                    <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal" value={project.post_uid} onClick={(e) => getDeleteProjectUrl(e)}>Delete <AiFillDelete /></button>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div className="template-left">
-                                    <div className="white-box full-width">
-                                        <div className="box-padding">
+                                    )
+                                })}
+                            </div>
+                            <div className="row">
+                                <h3 className="heading-projects">Your Instagram Posts</h3>
+                            </div>
+                            <div className="container" style={{ alignItems: 'baseline' }}>
+                                {instagram.length === 0 ? <div className="heading-21" style={{ padding: '20px' }}>No Instagram Posts Yet</div> : ""}
+                                {instagram && instagram.map(project => {
+                                    return (
+                                        <div className="card" key={project.key}>
                                             <img
-                                                sizes="(max-width: 479px) 100vw, (max-width: 767px) 87vw, (max-width: 991px) 90vw, 25vw"
-                                                loading="lazy"
-                                                src={project2}
-                                                alt="project2" />
-                                            <h4 className="heading-19">Buzz - Fly High</h4>
-                                            <h4 className="bold-text-5"><strong className="heading-21">The most efficient way of rendering the poor
-                                                harm...</strong></h4>
-                                            <h4 className="heading-21">#imitation #rich #poor #harmless #efficiency #teaching #wanting
-                                                #socialmedia #hashtags</h4>
-                                            <div className="project-message"><strong>Author - Carlos Ruiz Zafon</strong></div>
+                                                src={project.post_url}
+                                                alt="project 1" />
+                                            <div className="card-body">
+                                                <h4 className="heading-19">{project.p_name} - {project.tag}</h4>
+                                                <h4 className="heading-21"><strong className="bold-text-5">{project.quote}</strong></h4>
+                                                <h4 className="heading-21">{project.hashtags}</h4>
+                                                <div className="project-message"><strong className="bold-text-6">{project.quote_author}</strong></div>
+                                                <div>
+                                                    <button className="btn btn-dark" style={{ margin: '5px' }} onClick={(e) => downloadImage(e)} value={project.post_url}>Download <FaDownload /></button>
+                                                    <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal" value={project.post_uid} onClick={(e) => getDeleteProjectUrl(e)}>Delete <AiFillDelete /></button>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div className="template-left">
-                                    <div className="white-box full-width">
-                                        <div className="box-padding">
+                                    )
+                                })}
+                            </div>
+                            <div className="row">
+                                <h3 className="heading-projects">Your Story Posts</h3>
+                            </div>
+                            <div className="container" style={{ alignItems: 'baseline' }}>
+                                {story.length === 0 ? <div className="heading-21" style={{ padding: '20px' }}>No Story Posts Yet</div> : ""}
+                                {story && story.map(project => {
+                                    return (
+                                        <div className="card" key={project.key}>
                                             <img
-                                                sizes="(max-width: 479px) 100vw, (max-width: 767px) 87vw, (max-width: 991px) 90vw, 25vw"
-                                                loading="lazy"
-                                                src={project3}
-                                                alt="project3" />
-                                            <h4 className="heading-19">Buzz - Fly High</h4>
-                                            <h4 className="bold-text-5"><strong className="heading-21">The most efficient way of rendering the poor
-                                                harm...</strong></h4>
-                                            <h4 className="heading-21">#imitation #rich #poor #harmless #efficiency #teaching #wanting
-                                                #socialmedia #hashtags</h4>
-                                            <div className="project-message"><strong>Author - Carlos Ruiz Zafon</strong></div>
+                                                src={project.post_url}
+                                                alt="project 1" />
+                                            <div className="card-body">
+                                                <h4 className="heading-19">{project.p_name} - {project.tag}</h4>
+                                                <h4 className="heading-21"><strong className="bold-text-5">{project.quote}</strong></h4>
+                                                <h4 className="heading-21">{project.hashtags}</h4>
+                                                <div className="project-message"><strong className="bold-text-6">{project.quote_author}</strong></div>
+                                                <div>
+                                                    <button className="btn btn-dark" style={{ margin: '5px' }} onClick={(e) => downloadImage(e)} value={project.post_url}>Download <FaDownload /></button>
+                                                    <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal" value={project.post_uid} onClick={(e) => getDeleteProjectUrl(e)}>Delete <AiFillDelete /></button>
+                                                </div>
+                                            </div>
                                         </div>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                        <div className="modal fade" id="deleteModal" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div className="modal-dialog">
+                                <div className="modal-content">
+                                    <div className="modal-header">
+                                        <h5 className="modal-title" id="exampleModalLabel">Delete Project</h5>
+                                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+                                    </div>
+                                    <div className="modal-body">
+                                        You will not be able to recover this project.
+                                    </div>
+                                    <div className="modal-footer">
+                                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" className="btn btn-dark" data-bs-dismiss="modal" onClick={(e) => deleteProject(e)}>Confirm</button>
                                     </div>
                                 </div>
                             </div>

@@ -12,16 +12,20 @@ function StepTwo(props) {
         if (quotesSuccessFlag) {
             setSelectedQuote(quotes.quotes[quoteCount].quote)
             setSelectedQuoteAuthor(quotes.quotes[quoteCount].author)
+        }
+    }, [quotesSuccessFlag, quotes, quoteCount])
+
+    useEffect(() => {
+        if (selectedQuote !== '' && selectedQuoteAuthor !== '') {
             var selected = {
                 quote: selectedQuote,
                 author: selectedQuoteAuthor
             }
-            dispatch(userSelectedQuote(selected))
             console.log(selectedQuote)
             console.log(selectedQuoteAuthor)
-            /* console.log(props.stepCount) */
+            dispatch(userSelectedQuote(selected))
         }
-    }, [quotes, quoteCount, selectedQuote, selectedQuoteAuthor, quotesSuccessFlag, dispatch])
+    }, [selectedQuote, selectedQuoteAuthor, dispatch])
 
     const regenerate = () => {
         setQuoteCount(quoteCount + 1);

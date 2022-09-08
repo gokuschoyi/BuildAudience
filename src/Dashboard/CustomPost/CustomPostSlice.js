@@ -48,6 +48,11 @@ const initialState = {
     hashtagError: '',
     hashtagErrorFlag: false,
     hashtagLoaderFlag: false,
+
+    saveProjectSuccessFlag: false,
+    saveProjectError: '',
+    saveProjectErrorFlag: false,
+    saveProjectPendingFlag: false,
 }
 
 const quotesSlice = createSlice({
@@ -154,6 +159,22 @@ const quotesSlice = createSlice({
             state.searchImagesSuccessFlag = false;
             state.searchImagesError = action.payload;
             state.searchImagesErrorFlag = true;
+        },
+        saveProjectPending: (state) => {
+            state.saveProjectPendingFlag = true;
+            state.saveProjectSuccessFlag = false;
+        },
+        saveProjectSuccess: (state) => {
+            state.saveProjectSuccessFlag = true;
+            state.saveProjectPendingFlag = false;
+        },
+        saveProjectFailure: (state, action) => {
+            state.saveProjectError = action.payload;
+            state.saveProjectErrorFlag = true;
+            state.saveProjectPendingFlag = false;
+        },
+        resetCustomPostSlice: () => {
+            return initialState;
         }
     }
 });
@@ -182,6 +203,10 @@ export const {
     searchImagesSuccess,
     resetSearchImagesLoaderFlag,
     searchImagesFailure,
-    searchLinksConvert
+    searchLinksConvert,
+    saveProjectPending,
+    saveProjectSuccess,
+    saveProjectFailure,
+    resetCustomPostSlice
 } = actions;
 export default reducer;
