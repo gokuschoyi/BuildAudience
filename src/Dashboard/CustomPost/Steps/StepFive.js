@@ -114,7 +114,7 @@ function StepFive(props) {
 
     return (
         <div data-w-id="f2b31280-0b97-8741-e941-32cae7d4977d" className="slide-2 w-slide" id='stepFive'>
-            {saveProjectPendingFlag ? <div className="d-flex justify-content-center" style={{ zIndex: '2', paddingTop: '20px' }}>
+            {saveProjectPendingFlag ? <div className="d-flex justify-content-center" style={{ zIndex: '2', paddingTop: '200px' }}>
                 <div className="spinner-border text-danger" role="status">
                     <span className="sr-only"></span>
                 </div>

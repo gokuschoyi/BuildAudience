@@ -6,20 +6,23 @@ import loginReducer from '../src/Auth/Login/LoginSlice'
 import forgotPasswordReducer from '../src/Auth/ForgotPassword/ForgotPasswordSlice'
 import customPostReducer from './Dashboard/CustomPost/CustomPostSlice'
 import DashboardNavbarSlice from './Dashboard/Common/DashboardNavbarSlice'
+import BlogPostSlice from './Dashboard/BlogPost/BlogPostSlice'
 
 const reducer = combineReducers({
     signup: signupReducer,
     login: loginReducer,
     forgotPassword: forgotPasswordReducer,
     customPost: customPostReducer,
-    resetPassword: DashboardNavbarSlice
+    resetPassword: DashboardNavbarSlice,
+    blogPost: BlogPostSlice
 })
 
 const persistConfig = {
     key: 'root',
     storage,
-    whitelist: ['signupReducer', 'loginReducer', 'forgotPasswordReducer'],
-
+    /* whitelist: ['signupReducer', 'loginReducer', 'forgotPasswordReducer'],
+    version: 1 */
+    /* whitelisting casuing redux to not work */
 }
 
 const persistedReducer = persistReducer(persistConfig, reducer);

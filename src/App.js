@@ -4,7 +4,9 @@ import LandingPage from "./LandingPage";
 import AuthSwitch from "./Auth/AuthSwitch";
 import ForgotPassword from "./Auth/ForgotPassword/ForgotPassword";
 import Dashboard from "./Dashboard/Dashboard";
-import BlogPost from "./Dashboard/BlogPost/BlogPost";
+import BlogPost1 from "./Dashboard/BlogPost/Templates/BlogPost1";
+import BlogPost2 from "./Dashboard/BlogPost/Templates/BlogPost2";
+import BlogPost3 from "./Dashboard/BlogPost/Templates/BlogPost3";
 import store, { persistor } from './store';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'reduxjs-toolkit-persist/integration/react'
@@ -23,7 +25,9 @@ function App() {
               <Route path='/ForgotPassword' element={<ForgotPassword />}> </Route>
               <Route path='/RegistrationSuccess' element={<RegistrationSuccess />}> </Route>
               <Route path='/Dashboard' element={<Dashboard />}> </Route>
-              <Route path='/BlogPost' element={<BlogPost />}> </Route>
+              <Route path='/BlogPost1' element={<BlogPost1 />}> </Route>
+              <Route path='/BlogPost2' element={<BlogPost2 />}> </Route>
+              <Route path='/BlogPost3' element={<BlogPost3 />}> </Route>
               <Route path='/VideoTest' element={<VideoTest />}> </Route>
             </Routes>
           </div>

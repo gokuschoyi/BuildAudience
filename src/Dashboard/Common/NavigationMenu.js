@@ -14,6 +14,14 @@ import infoIcon from '../../images/information.png'
 import axios from "axios";
 import CustomPost from "../CustomPost/CustomPost";
 import { resetCustomPostSlice } from '../CustomPost/CustomPostSlice'
+import { useNavigate } from "react-router-dom";
+import {
+    blogPostPending,
+    saveBlogPost,
+    blogPostSuccess,
+    blogPostFailure,
+    blogPostReset
+} from '../BlogPost/BlogPostSlice'
 function NavigationMenu() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useMemo(() => {
@@ -33,18 +41,24 @@ function NavigationMenu() {
     })
 
     const { resetPasswordPending, resetPasswordSuccess, resetPasswordError } = useSelector(state => state.resetPassword);
+    const { blogPostPendingFlag } = useSelector(state => state.blogPost);
     const dispatch = useDispatch();
     const [tooltip, showTooltip] = React.useState(true);
     const [qipUrl, setQipUrl] = React.useState('');
     const [qipUrlError, setQipUrlError] = React.useState('');
     const [pDict, setPDict] = React.useState('');
     const [project, setProjects] = React.useState('');
+    const [defaultpDict, setDefaultpDict] = React.useState('');
+    const [defaultProject, setDefaultProject] = React.useState('');
     const [facebook, setFacebook] = React.useState('');
     const [instagram, setInstagram] = React.useState('');
     const [story, setStory] = React.useState('');
     const [seed, setSeed] = React.useState(1);
     const [deleteUrl, setDeleteUrl] = React.useState('');
     const [customPostSwitch, setCustomPostSwitch] = React.useState(false);
+    const [BPDescription, setBPDescription] = React.useState('');
+    const [BPUrl, setBPUrl] = React.useState('');
+    const history = useNavigate();
 
     const reset = useCallback(() => {
         setSeed(Math.random());
@@ -55,6 +69,16 @@ function NavigationMenu() {
 
     const changeCustomPostSwitch = () => {
         setCustomPostSwitch(true);
+    }
+
+    const handleBPDescription = (e) => {
+        setBPDescription(e.target.value)
+        console.log('BPDescription', BPDescription);
+    }
+
+    const handleBPUrl = (e) => {
+        setBPUrl(e.target.value)
+        console.log('BPUrl', BPUrl);
     }
 
     const getQuickImagePost = useCallback(async () => {
@@ -80,8 +104,14 @@ function NavigationMenu() {
 
         let allProjects = await axios.get(process.env.REACT_APP_BURL + '/user/projects', config, { withCredentials: true })
             .then(res => {
-                setProjects(res.data)
-
+                if (res.data.projects.length === 0) {
+                    setDefaultProject(res.data)
+                    setProjects('')
+                }
+                else {
+                    setProjects(res.data)
+                    setDefaultProject('')
+                }
             })
             .catch(err => {
                 console.log(err)
@@ -113,6 +143,29 @@ function NavigationMenu() {
             setPDict(projectDict)
         }
     }, [project])
+
+    useEffect(() => {
+        if (defaultProject === '') {
+            console.log("no  Default Project data")
+        }
+        else {
+            let project_list = defaultProject.dummy;
+            let projectDict = {};
+            let key = 0;
+            projectDict = project_list.map(x => {
+                return ({
+                    key: (key++).toString(),
+                    hashtags: x.hashtags,
+                    p_name: x.p_name,
+                    post_url: x.post_url,
+                    quote: x.quote,
+                    quote_author: x.quote_author,
+                    tag: x.tag,
+                })
+            })
+            setDefaultpDict(projectDict)
+        }
+    }, [defaultProject])
 
     useEffect(() => {
         if (pDict === '') {
@@ -200,6 +253,39 @@ function NavigationMenu() {
         updateError()
     }
 
+    function randomNumberInRange() {
+        var min = 1;
+        var max = 3;
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    const generateBlogPost = useCallback(async () => {
+        dispatch(blogPostReset())
+        dispatch(blogPostPending())
+        const token = sessionStorage.getItem('userTokenSession');
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        };
+        var BPData = {
+            p_desc: BPDescription,
+            ref_url: BPUrl,
+            p_name: sessionStorage.getItem('CompanyName')
+        }
+        console.log(BPData)
+        dispatch(saveBlogPost(BPData))
+        let blogPost = await axios.post(process.env.REACT_APP_BURL + '/blog_post/generate', BPData, config, { withCredentials: true })
+            .then(res => {
+                dispatch(blogPostSuccess(res.data))
+                var BPT = randomNumberInRange()
+                var url = "/BlogPost" + BPT
+                console.log(url)
+                history(url);
+            })
+            .catch(err => {
+                dispatch(blogPostFailure(err.data))
+            })
+    }, [BPDescription, BPUrl, dispatch, history])
+
     return (
         <>
             <ToastContainer
@@ -234,7 +320,7 @@ function NavigationMenu() {
                         <div className="container-13">
                             <h1 className="heading-18">Quick Post </h1>
                             <div className="dash-row">
-                                <a href="#quickImagePost" data-bs-toggle="modal" data-bs-target="#quickImagePost" onClick={getQuickImagePost} className="white-box link-box paper-box w-inline-block">
+                                <a href="" data-bs-toggle="modal" data-bs-target="#quickImagePost" onClick={getQuickImagePost} className="white-box link-box paper-box w-inline-block">
                                     <div className="box-padding paper-padding">
                                         <h3 className="doc-heading">Quick Image Post</h3>
                                         <img
@@ -300,6 +386,7 @@ function NavigationMenu() {
                                     </div>
                                 </div>
                             </div>
+                            <div style={{ height: '163px' }}></div>
                         </div>
                     </div>
                     <div data-w-tab="CustomPost" className="dashboard-section w-tab-pane" style={{ padding: '0' }}>
@@ -320,170 +407,240 @@ function NavigationMenu() {
                                         </div>
                                     </a>
                                 </div>
+                                <div style={{ height: '163px' }}></div>
                             </div> : <CustomPost reset={reset} key={seed} />
                         }
                     </div>
                     <div data-w-tab="Blog" className="dashboard-section w-tab-pane w--tab-active">
-                        <div className="container-18 w-container">
-                            <div className="form-wrap w-form">
-                                <form id="email-form" name="email-form" data-name="Email Form" method="get" className="form-4">
-                                    <div className="ios-style-reset w-embed">
-                                        <style dangerouslySetInnerHTML={{ __html: "\n input[type=text],\n input[type=email],\n input[type=tel] {\n /* Removes innershadow on form fields on iOS */\n border-radius: 0;\n                        -webkit-appearance: none;\n                        -moz-appearance: none;\n                        appearance: none;\n                      }\n                    " }} />
+                        {blogPostPendingFlag ?
+                            <div className="d-flex justify-content-center" style={{ zIndex: '2', paddingTop: '200px' }}>
+                                <div className="row justify-content-center align-items-center">
+                                    <div className="col-lg-6">
+                                        <div className="form-section-title-2">Generating Posts</div>
                                     </div>
-                                    <h1 className="form-heading">Blog Generation</h1>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '50px' }}>
-                                        <div style={{ width: '90%' }}>
-                                            <SelectTagInput />
-                                        </div>
-                                        <p data-for="tooltipTag" data-tip style={{ paddingTop: '5px' }} onMouseEnter={() => showTooltip(true)}
-                                            onMouseLeave={() => {
-                                                showTooltip(false);
-                                                setTimeout(() => showTooltip(true), 50);
-                                            }}>
-                                            <img src={infoIcon} alt='...' style={{ width: '25px' }}></img>
-                                        </p>
-                                        {tooltip &&
-                                            <ReactTooltip id="tooltipTag" data-effect="float" delayHide={1000} >
-                                                <span>Select relevent tags from the list to customize your blog post</span>
-                                            </ReactTooltip>
-                                        }
-                                    </div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                        <div className="field-wrap">
-                                            <input type="text" className="form-field w-input" autoComplete="off" maxLength={256} name="name" data-name="name" placeholder="Enter a URL" id="name" required />
-                                        </div>
-                                        <p data-for="tooltipURL" data-tip style={{ paddingTop: '5px' }} onMouseEnter={() => showTooltip(true)}
-                                            onMouseLeave={() => {
-                                                showTooltip(false);
-                                                setTimeout(() => showTooltip(true), 50);
-                                            }}>
-                                            <img src={infoIcon} alt='...' style={{ width: '25px' }}></img>
-                                        </p>
-                                        {tooltip &&
-                                            <ReactTooltip id="tooltipURL" data-effect="float" delayHide={1000} >
-                                                <span>Enter a URL of a post that you want a blog created from</span>
-                                            </ReactTooltip>
-                                        }
-                                    </div>
-                                    <div className="orfield">
-                                        <h3 className="heading-24">OR</h3>
-                                    </div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                        <div className="field-wrap">
-                                            {/* <label htmlFor="day" className="form-field-label">Select</label> */}
-                                            <select id="day" name="day" data-name="day" required className="form-field select-field wide w-select">
-                                                <option value>Select From Saved Article</option>
-                                                <option value="Monday">https://www.agegracefullyamerica.com/technology-help/</option>
-                                                <option value="Tuesday">https://www.internetsociety.org/issues/technology/</option>
-                                                <option value="Wednesday">https://www.computerweekly.com/blogs</option>
-                                                <option value="Thursday">https://www.gartner.com/en/information-technology/insights/information-technology-blogs</option>
-                                            </select>
-                                        </div>
-                                        <p data-for="tooltipSaved" data-tip style={{ paddingTop: '5px' }} onMouseEnter={() => showTooltip(true)}
-                                            onMouseLeave={() => {
-                                                showTooltip(false);
-                                                setTimeout(() => showTooltip(true), 50);
-                                            }}>
-                                            <img src={infoIcon} alt='...' style={{ width: '25px' }}></img>
-                                        </p>
-                                        {tooltip &&
-                                            <ReactTooltip id="tooltipSaved" data-effect="float" delayHide={1000} >
-                                                <span>Select one Blog from your saved Articles</span>
-                                            </ReactTooltip>
-                                        }
-                                    </div>
-                                </form>
-                                <div className="w-form-done">
-                                    <div>Thank you! Your submission has been received!</div>
                                 </div>
-                                <div className="w-form-fail">
-                                    <div>Oops! Something went wrong while submitting the form.</div>
+                                <div className="spinner-border text-danger" role="status">
+                                    <span className="sr-only"></span>
                                 </div>
                             </div>
-                        </div>
-                        <div className="container-15 w-container">
-                            <a href="/BlogPost" className="button-3 w-button">Submit</a>
-                        </div>
+                            :
+                            <>
+                                <div className="container-18 w-container">
+                                    <div className="form-wrap w-form">
+                                        <form id="email-form" name="email-form" data-name="Email Form" method="get" className="form-4">
+                                            <div className="ios-style-reset w-embed">
+                                                <style dangerouslySetInnerHTML={{ __html: "\n input[type=text],\n input[type=email],\n input[type=tel] {\n /* Removes innershadow on form fields on iOS */\n border-radius: 0;\n                        -webkit-appearance: none;\n                        -moz-appearance: none;\n                        appearance: none;\n                      }\n                    " }} />
+                                            </div>
+                                            <h1 className="form-heading">Blog Generation</h1>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '50px' }}>
+                                                <div style={{ width: '90%' }}>
+                                                    <SelectTagInput />
+                                                </div>
+                                                <p data-for="tooltipTag" data-tip style={{ paddingTop: '5px' }} onMouseEnter={() => showTooltip(true)}
+                                                    onMouseLeave={() => {
+                                                        showTooltip(false);
+                                                        setTimeout(() => showTooltip(true), 50);
+                                                    }}>
+                                                    <img src={infoIcon} alt='...' style={{ width: '25px' }}></img>
+                                                </p>
+                                                {tooltip &&
+                                                    <ReactTooltip id="tooltipTag" data-effect="float" delayHide={1000} >
+                                                        <span>Select relevent tags from the list to customize your blog post</span>
+                                                    </ReactTooltip>
+                                                }
+                                            </div>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '50px' }}>
+                                                <div className="field-wrap">
+                                                    <textarea
+                                                        type="text"
+                                                        onChange={handleBPDescription}
+                                                        className="form-field w-input"
+                                                        autoComplete="off"
+                                                        maxLength={1000}
+                                                        name="name"
+                                                        data-name="name"
+                                                        placeholder="Enter a short description for the blog"
+                                                        id="name"
+                                                        required
+                                                        style={{ height: '100px' }} />
+                                                </div>
+                                                <p data-for="tooltipURLdesc" data-tip style={{ paddingTop: '5px' }} onMouseEnter={() => showTooltip(true)}
+                                                    onMouseLeave={() => {
+                                                        showTooltip(false);
+                                                        setTimeout(() => showTooltip(true), 50);
+                                                    }}>
+                                                    <img src={infoIcon} alt='...' style={{ width: '25px' }}></img>
+                                                </p>
+                                                {tooltip &&
+                                                    <ReactTooltip id="tooltipURLdesc" data-effect="float" delayHide={1000} >
+                                                        <span>Enter a short description for the blog</span>
+                                                    </ReactTooltip>
+                                                }
+                                            </div>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                <div className="field-wrap">
+                                                    <input
+                                                        type="text"
+                                                        onChange={handleBPUrl}
+                                                        className="form-field w-input"
+                                                        autoComplete="off"
+                                                        maxLength={256}
+                                                        name="name"
+                                                        data-name="name"
+                                                        placeholder="Enter a URL"
+                                                        id="name"
+                                                        required />
+                                                </div>
+                                                <p data-for="tooltipURL" data-tip style={{ paddingTop: '5px' }} onMouseEnter={() => showTooltip(true)}
+                                                    onMouseLeave={() => {
+                                                        showTooltip(false);
+                                                        setTimeout(() => showTooltip(true), 50);
+                                                    }}>
+                                                    <img src={infoIcon} alt='...' style={{ width: '25px' }}></img>
+                                                </p>
+                                                {tooltip &&
+                                                    <ReactTooltip id="tooltipURL" data-effect="float" delayHide={1000} >
+                                                        <span>Enter a URL of a post that you want a blog created from</span>
+                                                    </ReactTooltip>
+                                                }
+                                            </div>
+                                            <div className="orfield">
+                                                <h3 className="heading-24">OR</h3>
+                                            </div>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                <div className="field-wrap">
+                                                    {/* <label htmlFor="day" className="form-field-label">Select</label> */}
+                                                    <select id="day" name="day" data-name="day" required className="form-field select-field wide w-select">
+                                                        <option value>Select From Saved Article</option>
+                                                        <option value="Monday">https://www.agegracefullyamerica.com/technology-help/</option>
+                                                        <option value="Tuesday">https://www.internetsociety.org/issues/technology/</option>
+                                                        <option value="Wednesday">https://www.computerweekly.com/blogs</option>
+                                                        <option value="Thursday">https://www.gartner.com/en/information-technology/insights/information-technology-blogs</option>
+                                                    </select>
+                                                </div>
+                                                <p data-for="tooltipSaved" data-tip style={{ paddingTop: '5px' }} onMouseEnter={() => showTooltip(true)}
+                                                    onMouseLeave={() => {
+                                                        showTooltip(false);
+                                                        setTimeout(() => showTooltip(true), 50);
+                                                    }}>
+                                                    <img src={infoIcon} alt='...' style={{ width: '25px' }}></img>
+                                                </p>
+                                                {tooltip &&
+                                                    <ReactTooltip id="tooltipSaved" data-effect="float" delayHide={1000} >
+                                                        <span>Select one Blog from your saved Articles</span>
+                                                    </ReactTooltip>
+                                                }
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div className="container-15 w-container">
+                                    <a href="#" className="button-3 w-button" onClick={generateBlogPost}>Submit</a>
+                                </div>
+                            </>
+                        }
                     </div>
                     <div data-w-tab="MyProjects" className="dashboard-section w-tab-pane">
-                        <div className="container-13">
-                            <h3 className="heading-20">Saved Projects</h3>
-                            <div className="row">
-                                <h3 className="heading-projects">Your Facebook Posts</h3>
-                            </div>
-                            <div className="container" style={{ alignItems: 'baseline' }}>
-                                {facebook.length === 0 ? <div className="heading-21" style={{ padding: '20px' }}>No Facebook Posts Yet</div> : ""}
-                                {facebook && facebook.map(project => {
-                                    return (
-                                        <div className="card" key={project.key}>
-                                            <img
-                                                src={project.post_url}
-                                                alt="project 1" />
-                                            <div className="card-body">
-                                                <h4 className="heading-19">{project.p_name} - {project.tag}</h4>
-                                                <h4 className="heading-21"><strong className="bold-text-5">{project.quote}</strong></h4>
-                                                <h4 className="heading-21">{project.hashtags}</h4>
-                                                <div className="project-message"><strong className="bold-text-6">{project.quote_author}</strong></div>
-                                                <div>
-                                                    <button className="btn btn-dark" style={{ margin: '5px' }} onClick={(e) => downloadImage(e)} value={project.post_url}>Download <FaDownload /></button>
-                                                    <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal" value={project.post_uid} onClick={(e) => getDeleteProjectUrl(e)}>Delete <AiFillDelete /></button>
+                        {defaultProject === "" ?
+                            <div className="container-13">
+                                <h3 className="heading-20">Saved Projects</h3>
+                                <div className="row">
+                                    <h3 className="heading-projects">Your Facebook Posts</h3>
+                                </div>
+                                <div className="container" style={{ alignItems: 'baseline' }}>
+                                    {facebook.length === 0 ? <div className="heading-21" style={{ padding: '20px' }}>No Facebook Posts Yet</div> : ""}
+                                    {facebook && facebook.map(project => {
+                                        return (
+                                            <div className="card" key={project.key}>
+                                                <img
+                                                    src={project.post_url}
+                                                    alt="project 1" />
+                                                <div className="card-body">
+                                                    <h4 className="heading-19">{project.p_name} - {project.tag}</h4>
+                                                    <h4 className="heading-21"><strong className="bold-text-5">{project.quote}</strong></h4>
+                                                    <h4 className="heading-21">{project.hashtags}</h4>
+                                                    <div className="project-message"><strong className="bold-text-6">{project.quote_author}</strong></div>
+                                                    <div>
+                                                        <button className="btn btn-dark" style={{ margin: '5px' }} onClick={(e) => downloadImage(e)} value={project.post_url}>Download <FaDownload /></button>
+                                                        <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal" value={project.post_uid} onClick={(e) => getDeleteProjectUrl(e)}>Delete <AiFillDelete /></button>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    )
-                                })}
-                            </div>
-                            <div className="row">
-                                <h3 className="heading-projects">Your Instagram Posts</h3>
-                            </div>
-                            <div className="container" style={{ alignItems: 'baseline' }}>
-                                {instagram.length === 0 ? <div className="heading-21" style={{ padding: '20px' }}>No Instagram Posts Yet</div> : ""}
-                                {instagram && instagram.map(project => {
-                                    return (
-                                        <div className="card" key={project.key}>
-                                            <img
-                                                src={project.post_url}
-                                                alt="project 1" />
-                                            <div className="card-body">
-                                                <h4 className="heading-19">{project.p_name} - {project.tag}</h4>
-                                                <h4 className="heading-21"><strong className="bold-text-5">{project.quote}</strong></h4>
-                                                <h4 className="heading-21">{project.hashtags}</h4>
-                                                <div className="project-message"><strong className="bold-text-6">{project.quote_author}</strong></div>
-                                                <div>
-                                                    <button className="btn btn-dark" style={{ margin: '5px' }} onClick={(e) => downloadImage(e)} value={project.post_url}>Download <FaDownload /></button>
-                                                    <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal" value={project.post_uid} onClick={(e) => getDeleteProjectUrl(e)}>Delete <AiFillDelete /></button>
+                                        )
+                                    })}
+                                </div>
+                                <div className="row">
+                                    <h3 className="heading-projects">Your Instagram Posts</h3>
+                                </div>
+                                <div className="container" style={{ alignItems: 'baseline' }}>
+                                    {instagram.length === 0 ? <div className="heading-21" style={{ padding: '20px' }}>No Instagram Posts Yet</div> : ""}
+                                    {instagram && instagram.map(project => {
+                                        return (
+                                            <div className="card" key={project.key}>
+                                                <img
+                                                    src={project.post_url}
+                                                    alt="project 1" />
+                                                <div className="card-body">
+                                                    <h4 className="heading-19">{project.p_name} - {project.tag}</h4>
+                                                    <h4 className="heading-21"><strong className="bold-text-5">{project.quote}</strong></h4>
+                                                    <h4 className="heading-21">{project.hashtags}</h4>
+                                                    <div className="project-message"><strong className="bold-text-6">{project.quote_author}</strong></div>
+                                                    <div>
+                                                        <button className="btn btn-dark" style={{ margin: '5px' }} onClick={(e) => downloadImage(e)} value={project.post_url}>Download <FaDownload /></button>
+                                                        <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal" value={project.post_uid} onClick={(e) => getDeleteProjectUrl(e)}>Delete <AiFillDelete /></button>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    )
-                                })}
-                            </div>
-                            <div className="row">
-                                <h3 className="heading-projects">Your Story Posts</h3>
-                            </div>
-                            <div className="container" style={{ alignItems: 'baseline' }}>
-                                {story.length === 0 ? <div className="heading-21" style={{ padding: '20px' }}>No Story Posts Yet</div> : ""}
-                                {story && story.map(project => {
-                                    return (
-                                        <div className="card" key={project.key}>
-                                            <img
-                                                src={project.post_url}
-                                                alt="project 1" />
-                                            <div className="card-body">
-                                                <h4 className="heading-19">{project.p_name} - {project.tag}</h4>
-                                                <h4 className="heading-21"><strong className="bold-text-5">{project.quote}</strong></h4>
-                                                <h4 className="heading-21">{project.hashtags}</h4>
-                                                <div className="project-message"><strong className="bold-text-6">{project.quote_author}</strong></div>
-                                                <div>
-                                                    <button className="btn btn-dark" style={{ margin: '5px' }} onClick={(e) => downloadImage(e)} value={project.post_url}>Download <FaDownload /></button>
-                                                    <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal" value={project.post_uid} onClick={(e) => getDeleteProjectUrl(e)}>Delete <AiFillDelete /></button>
+                                        )
+                                    })}
+                                </div>
+                                <div className="row">
+                                    <h3 className="heading-projects">Your Story Posts</h3>
+                                </div>
+                                <div className="container" style={{ alignItems: 'baseline' }}>
+                                    {story.length === 0 ? <div className="heading-21" style={{ padding: '20px' }}>No Story Posts Yet</div> : ""}
+                                    {story && story.map(project => {
+                                        return (
+                                            <div className="card" key={project.key}>
+                                                <img
+                                                    src={project.post_url}
+                                                    alt="project 1" />
+                                                <div className="card-body">
+                                                    <h4 className="heading-19">{project.p_name} - {project.tag}</h4>
+                                                    <h4 className="heading-21"><strong className="bold-text-5">{project.quote}</strong></h4>
+                                                    <h4 className="heading-21">{project.hashtags}</h4>
+                                                    <div className="project-message"><strong className="bold-text-6">{project.quote_author}</strong></div>
+                                                    <div>
+                                                        <button className="btn btn-dark" style={{ margin: '5px' }} onClick={(e) => downloadImage(e)} value={project.post_url}>Download <FaDownload /></button>
+                                                        <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal" value={project.post_uid} onClick={(e) => getDeleteProjectUrl(e)}>Delete <AiFillDelete /></button>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    )
-                                })}
+                                        )
+                                    })}
+                                </div>
+                            </div> :
+                            <div className="container-13">
+                                <h3 className="heading-20">Saved Projects</h3>
+                                <div className="container" style={{ alignItems: 'baseline' }}>
+                                    {defaultpDict && defaultpDict.map(project => {
+                                        return (
+                                            <div className="card" key={project.key}>
+                                                <img
+                                                    src={project.post_url}
+                                                    alt="project 1" />
+                                                <div className="card-body">
+                                                    <h4 className="heading-19">{project.p_name} - {project.tag}</h4>
+                                                    <h4 className="heading-21"><strong className="bold-text-5">{project.quote}</strong></h4>
+                                                    <h4 className="heading-21">{project.hashtags}</h4>
+                                                    <div className="project-message"><strong className="bold-text-6">{project.quote_author}</strong></div>
+                                                </div>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
                             </div>
-                        </div>
+                        }
                         <div className="modal fade" id="deleteModal" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div className="modal-dialog">
                                 <div className="modal-content">
