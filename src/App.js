@@ -7,6 +7,7 @@ import Dashboard from "./Dashboard/Dashboard";
 import BlogPost1 from "./Dashboard/BlogPost/Templates/BlogPost1";
 import BlogPost2 from "./Dashboard/BlogPost/Templates/BlogPost2";
 import BlogPost3 from "./Dashboard/BlogPost/Templates/BlogPost3";
+import Blogs from './PublicBlogs/Blogs';
 import store, { persistor } from './store';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'reduxjs-toolkit-persist/integration/react'
@@ -28,6 +29,7 @@ function App() {
               <Route path='/BlogPost1' element={<BlogPost1 />}> </Route>
               <Route path='/BlogPost2' element={<BlogPost2 />}> </Route>
               <Route path='/BlogPost3' element={<BlogPost3 />}> </Route>
+              <Route path='/Blogs/:id' element={<Blogs />}> </Route>
               <Route path='/VideoTest' element={<VideoTest />}> </Route>
             </Routes>
           </div>

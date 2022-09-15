@@ -413,14 +413,19 @@ function NavigationMenu() {
                     </div>
                     <div data-w-tab="Blog" className="dashboard-section w-tab-pane w--tab-active">
                         {blogPostPendingFlag ?
-                            <div className="d-flex justify-content-center" style={{ zIndex: '2', paddingTop: '200px' }}>
+                            <div style={{ zIndex: '2', paddingTop: '260px', paddingBottom: '225px' }}>
                                 <div className="row justify-content-center align-items-center">
-                                    <div className="col-lg-6">
+                                    <div className="col-lg-4 d-flex justify-content-center">
                                         <div className="form-section-title-2">Generating Posts</div>
                                     </div>
                                 </div>
-                                <div className="spinner-border text-danger" role="status">
-                                    <span className="sr-only"></span>
+                                <div class="w-100"></div>
+                                <div className="row justify-content-center align-items-center">
+                                    <div className="col-lg-4 d-flex justify-content-center">
+                                        <div className="spinner-border text-danger" role="status">
+                                            <span className="sr-only"></span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             :

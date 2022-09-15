@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react'
-import DashboardNavbar from '../../Common/DashboardNavbar'
+import BlogPostNavbar from '../BlogPostnavbar'
 import Footer from '../../../Common/Footer'
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -37,12 +37,11 @@ function BlogPost() {
     }, [blogPostdata, history])
 
     var bg = blogPostdata?.data?.main_image?.image === undefined ? Image5 : blogPostdata?.data?.main_image.image
-    var bS = blogPostdata.data.blog_sections.length
 
     return (
         <>
             <div className="body-6">
-                <DashboardNavbar />
+                <BlogPostNavbar />
                 {blogPostdata === '' ? <div className="section-3 wf-section">
                     <div className="row justify-content-center">
                         <div className="col-10">
@@ -122,33 +121,15 @@ function BlogPost() {
                                 </div>
                             </div>
                         </div>
-                        {bS === 4 ?
-                            <div className="blog_sections wf-section">
-                                <div className="container">
-                                    <div className="row justify-content-center align-items-center">
-                                        <div className="col-lg-6 col-md-10 col-sm-10">
-                                            <h2><strong className="blog_section_headings">{blogPostdata.data.blog_sections[3].header}</strong></h2>
-                                            <p className="blogh_section_body">{blogPostdata.data.blog_sections[3].content}</p>
-                                        </div>
-                                        <div className="col-lg-4 col-md-8 col-sm-8">
-                                            <img src={blogPostdata?.data?.blog_sections[3]?.image?.image !== undefined ? blogPostdata.data.blog_sections[3].image.image : Image4}
-                                                loading="lazy"
-                                                sizes="(max-width: 479px) 100vw, (max-width: 767px) 46vw, (max-width: 991px) 229.328125px, 299.984375px"
-                                                alt=""
-                                                className="blog_section_images" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> : ''}
-                        {/* <div className="blog_sections wf-section">
+                        <div className="blog_sections wf-section">
                             <div className="container">
                                 <div className="row justify-content-center align-items-center">
                                     <div className="col-lg-6 col-md-10 col-sm-10">
-                                        <h2><strong className="blog_section_headings">{blogPostdata.data.blog_sections[4].header}</strong></h2>
-                                        <p className="blogh_section_body">{blogPostdata.data.blog_sections[4].content}</p>
+                                        <h2><strong className="blog_section_headings">{blogPostdata.data.blog_sections[3].header}</strong></h2>
+                                        <p className="blogh_section_body">{blogPostdata.data.blog_sections[3].content}</p>
                                     </div>
                                     <div className="col-lg-4 col-md-8 col-sm-8">
-                                        <img src={blogPostdata.hasOwnProperty('image') ? blogPostdata.data.blog_sections[4].image.image : Image5}
+                                        <img src={blogPostdata?.data?.blog_sections[3]?.image?.image !== undefined ? blogPostdata.data.blog_sections[3].image.image : Image4}
                                             loading="lazy"
                                             sizes="(max-width: 479px) 100vw, (max-width: 767px) 46vw, (max-width: 991px) 229.328125px, 299.984375px"
                                             alt=""
@@ -156,7 +137,7 @@ function BlogPost() {
                                     </div>
                                 </div>
                             </div>
-                        </div> */}
+                        </div>
                         <div className="container">
                             <div className="row justify-content-center">
                                 <div className="col-10">
