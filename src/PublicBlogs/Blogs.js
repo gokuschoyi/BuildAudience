@@ -9,6 +9,7 @@ function Blogs() {
     const [result, setResult] = React.useState('');
     const [error, setError] = React.useState('');
     const [template, setTemplate] = React.useState('');
+    const [loading, setLoading] = React.useState(false);
     useEffect(() => {
         var blogID = {
             uid: id
@@ -16,6 +17,7 @@ function Blogs() {
         var res = axios.post(process.env.REACT_APP_BURL + '/blog_post/get_blog', blogID)
             .then(res => {
                 setResult(res);
+                setLoading(true)
             })
             .catch(err => {
                 console.log(err);
@@ -29,10 +31,16 @@ function Blogs() {
         }
     }, [result, template]);
     return (
-        <>
-            {template === 'BlogPost1' ? <BlogPost1 blogData={result.data.data} /> : ''}
-            {template === 'BlogPost2' ? <BlogPost2 blogData={result.data.data} /> : ''}
-            {template === 'BlogPost3' ? <BlogPost3 blogData={result.data.data} /> : ''}
+        <>{!loading ?
+            <div id="preloader">
+                <div id="loader"></div>
+            </div> :
+            <>
+                {template === 'BlogPost1' ? <BlogPost1 blogData={result.data.data} /> : ''}
+                {template === 'BlogPost2' ? <BlogPost2 blogData={result.data.data} /> : ''}
+                {template === 'BlogPost3' ? <BlogPost3 blogData={result.data.data} /> : ''}
+            </>
+        }
         </>
     )
 }
