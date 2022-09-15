@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo } from 'react'
+import Footer from '../Footer';
 import Image1 from '../../images/photo-1561480643-94fba607e578.jpeg'
 import Image2 from '../../images/photo-1543336472-fcf478c443db.jpeg'
 import Image3 from '../../images/photo-1507646227500-4d389b0012be.jpeg'
@@ -124,6 +125,7 @@ function BlogPost(props) {
                             </div>
                         </div> : ''}
                 </>
+                <Footer />
             </div >
         </>
     )
