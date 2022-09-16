@@ -1,10 +1,13 @@
 import React, { useCallback, useEffect } from "react";
 import axios from "axios";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from "react-redux";
 import BuildAudienceLogo from '../../images/5.png';
 function DashboardNavbar() {
     const [template, setTemplate] = React.useState('');
     const [templateName, setTemplateName] = React.useState('');
+    const [saved, setSaved] = React.useState(false);
     useEffect(() => {
         setTemplate(window.location.pathname.slice(1));
         console.log(template);
@@ -22,7 +25,7 @@ function DashboardNavbar() {
         }
     }, [template]);
 
-    const { blogPostdata } = useSelector(state => state.blogPost);
+    const { blogPostdata, blogPostSuccessFlag } = useSelector(state => state.blogPost);
 
     const saveBlogPost = useCallback(async () => {
         const token = sessionStorage.getItem('userTokenSession');
@@ -38,12 +41,33 @@ function DashboardNavbar() {
         console.log(blogData)
         let saveBlogPost = await axios.post(process.env.REACT_APP_BURL + '/blog_post/save', blogData, config)
             .then(res => {
+                if (res.data.message === 'success') {
+                    setSaved(true);
+                }
                 console.log(res);
             })
             .catch(err => {
                 console.log(err.response);
             })
     }, [blogPostdata, template]);
+
+    const toastId = React.useRef(null);
+    const customId = "blogPostID";
+
+    const success = () => toastId.current = toast.success('Blog Post saved', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        toastId: customId
+    });
+
+    if (saved) {
+        success();
+    }
 
     return (
         <div className="navbar-logo-left-2 wf-section">

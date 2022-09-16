@@ -7,6 +7,7 @@ import { Zoom } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 import { FaDownload } from 'react-icons/fa';
 import { AiFillDelete } from 'react-icons/ai';
+import { FiShare2 } from 'react-icons/fi';
 import ReactTooltip from 'react-tooltip';
 import SelectTagInput from "../../Dashboard/BlogPost/SelectTagInput";
 import plus from '../../images/addIcon.png';
@@ -140,7 +141,8 @@ function NavigationMenu() {
                     tag: x.tag,
                     post_type: x.post_type,
                     blogTitle: x.title,
-                    blogUrl: x.image
+                    blogUrl: x.image,
+                    blogTitleUrl: x.url_title
                 })
             })
             setPDict(projectDict)
@@ -219,6 +221,9 @@ function NavigationMenu() {
         }
         let deleteProject = axios.post(process.env.REACT_APP_BURL + '/user/delete_project', deletePostKey, config, { withCredentials: true })
             .then(res => {
+                if (res.data.success === 'Deleted project!') {
+                    deleteSuccess()
+                }
                 console.log(res.data.success)
                 getProjects()
             })
@@ -228,9 +233,30 @@ function NavigationMenu() {
         console.log('deleteProject')
     }
 
+    const deleteBlogProject = (e) => {
+        const token = sessionStorage.getItem('userTokenSession');
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        };
+        var deleteBlogKey = {
+            post_uid: deleteUrl,
+            type: 'blog'
+        }
+        let deleteProject = axios.post(process.env.REACT_APP_BURL + '/user/delete_project', deleteBlogKey, config, { withCredentials: true })
+            .then(res => {
+                if (res.data.success === 'Deleted project!') {
+                    deleteSuccess()
+                }
+                console.log(res.data.success)
+                getProjects()
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+
     const toastId = React.useRef(null);
     const customId = "custom-id-yes";
-
     const Pending = () => toastId.current = toast.warn('Sending you the reset Link', {
         position: "top-right",
         autoClose: false,
@@ -241,9 +267,34 @@ function NavigationMenu() {
         progress: undefined,
         toastId: customId
     });
-
     const updateSuccess = () => toast.update(toastId.current, { render: "An email has been sent to you.", type: toast.TYPE.SUCCESS, autoClose: 5000, transition: Zoom });
     const updateError = () => toast.update(toastId.current, { render: "Oops, something went wrong.", type: toast.TYPE.SUCCESS, autoClose: 5000, transition: Zoom });
+
+    const toastIdCopied = React.useRef(null);
+    const customIdCopied = "custom-id-yes";
+    const copied = () => toastIdCopied.current = toast.success('Link Copied', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        toastId: customIdCopied
+    });
+
+    const toastIdDelete = React.useRef(null);
+    const customIdDelete = "custom-id-yes";
+    const deleteSuccess = () => toastIdDelete.current = toast.success('Project Deleted', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        toastId: customIdDelete
+    });
 
     if (resetPasswordPending) {
         Pending()
@@ -289,6 +340,24 @@ function NavigationMenu() {
                 dispatch(blogPostFailure(err.data))
             })
     }, [BPDescription, BPUrl, dispatch, history])
+
+    useEffect(() => {
+        var exampleModal = document.getElementById('shareBlog')
+        exampleModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget
+            var blogURL = button.getAttribute('data-bs-whatever')
+            var modalBodyInput = exampleModal.querySelector('.modal-body input')
+            modalBodyInput.value = blogURL
+        })
+    })
+
+    const copyLink = () => {
+        var copyText = document.getElementById("recipient-name");
+        copyText.select();
+        copyText.setSelectionRange(0, 99999)
+        document.execCommand("copy");
+        copied()
+    }
 
     return (
         <>
@@ -423,7 +492,7 @@ function NavigationMenu() {
                                         <div className="form-section-title-2">Generating Posts</div>
                                     </div>
                                 </div>
-                                <div class="w-100"></div>
+                                <div className="w-100"></div>
                                 <div className="row justify-content-center align-items-center">
                                     <div className="col-lg-4 d-flex justify-content-center">
                                         <div className="spinner-border text-danger" role="status">
@@ -556,12 +625,12 @@ function NavigationMenu() {
                                 <div className="row">
                                     <h3 className="heading-projects">Your Facebook Posts</h3>
                                 </div>
-                                <div className="container" style={{ alignItems: 'baseline' }}>
+                                <div className="container">
                                     {facebook.length === 0 ? <div className="heading-21" style={{ padding: '20px' }}>No Facebook Posts Yet</div> : ""}
                                     <div className="row">
                                         {facebook && facebook.map(project => {
                                             return (
-                                                <div className="col-lg-4 col-md-6 col-sm-12" key={project.key}>
+                                                <div className="col-lg-4 col-md-6 col-sm-12 d-flex align-items-stretch" key={project.key}>
                                                     <div className="card mb-3">
                                                         <img
                                                             src={project.post_url}
@@ -585,12 +654,12 @@ function NavigationMenu() {
                                 <div className="row">
                                     <h3 className="heading-projects">Your Instagram Posts</h3>
                                 </div>
-                                <div className="container" style={{ alignItems: 'baseline', justifyContent: 'center' }}>
+                                <div className="container">
                                     {instagram.length === 0 ? <div className="heading-21" style={{ padding: '20px' }}>No Instagram Posts Yet</div> : ""}
                                     <div className="row">
                                         {instagram && instagram.map(project => {
                                             return (
-                                                <div className="col-lg-4 col-md-6 col-sm-12" key={project.key}>
+                                                <div className="col-lg-4 col-md-6 col-sm-12 d-flex align-items-stretch" key={project.key}>
                                                     <div className="card mb-3" >
                                                         <img
                                                             src={project.post_url}
@@ -614,12 +683,12 @@ function NavigationMenu() {
                                 <div className="row">
                                     <h3 className="heading-projects">Your Story Posts</h3>
                                 </div>
-                                <div className="container" style={{ alignItems: 'baseline' }}>
+                                <div className="container">
                                     {story.length === 0 ? <div className="heading-21" style={{ padding: '20px' }}>No Story Posts Yet</div> : ""}
                                     <div className="row">
                                         {story && story.map(project => {
                                             return (
-                                                <div className="col-lg-4 col-md-6 col-sm-12" key={project.key}>
+                                                <div className="col-lg-4 col-md-6 col-sm-12 d-flex align-items-stretch" key={project.key}>
                                                     <div className="card mb-3" >
                                                         <img
                                                             src={project.post_url}
@@ -643,23 +712,23 @@ function NavigationMenu() {
                                 <div className="row">
                                     <h3 className="heading-projects">Your Blogs</h3>
                                 </div>
-                                <div className="container" style={{ alignItems: 'baseline' }}>
+                                <div className="container">
                                     {blog.length === 0 ? <div className="heading-21" style={{ padding: '20px' }}>No Blogs Yet</div> : ""}
                                     <div className="row">
                                         {blog && blog.map(project => {
                                             return (
-                                                <div className="col-lg-4 col-md-6 col-sm-12" key={project.key}>
+                                                <div className="col-lg-4 col-md-6 col-sm-12 d-flex align-items-stretch" key={project.key}>
                                                     <div className="card mb-3">
                                                         <img
                                                             src={project.blogUrl}
                                                             alt="project 1" />
                                                         <div className="card-body">
                                                             <h4 className="heading-19">{project.blogTitle}</h4>
-                                                            <h4 className="heading-21"><strong className="bold-text-5">{window.location.origin}/Blogs/{project.post_uid}</strong></h4>
-                                                            {/* <div>
-                                                        <button className="btn btn-dark" style={{ margin: '5px' }} onClick={(e) => downloadImage(e)} value={project.post_url}>Download <FaDownload /></button>
-                                                        <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal" value={project.post_uid} onClick={(e) => getDeleteProjectUrl(e)}>Delete <AiFillDelete /></button>
-                                                    </div> */}
+                                                            {/* <h4 className="heading-21"><strong className="bold-text-5">{window.location.origin}/Blogs/{project.blogTitle}{project.post_uid}</strong></h4> */}
+                                                            <div>
+                                                                <button className="btn btn-dark" style={{ margin: '5px' }} data-bs-target="#shareBlog" data-bs-toggle="modal" data-bs-whatever={window.location.origin + "/blogs/" + project.blogTitleUrl + "/" + project.post_uid}>Share <FiShare2 /></button>
+                                                                <button className="btn btn-dark " data-bs-target="#deleteBlogModal" data-bs-toggle="modal" value={project.post_uid} onClick={(e) => getDeleteProjectUrl(e)}>Delete <AiFillDelete /></button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -706,6 +775,44 @@ function NavigationMenu() {
                                 </div>
                             </div>
                         </div>
+                        <div className="modal fade" id="shareBlog" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div className="modal-dialog modal-dialog-centered">
+                                <div className="modal-content">
+                                    <div className="modal-header">
+                                        <h5 className="modal-title" id="exampleModalLabel">BLOG URL</h5>
+                                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+                                    </div>
+                                    <div className="modal-body">
+                                        <div className="mb-3">
+                                            <label htmlFor="recipient-name" className="col-form-label">URL:</label>
+                                            <input type="text" className="form-control" id="recipient-name" />
+                                        </div>
+                                    </div>
+                                    <div className="modal-footer">
+                                        <button type="button" className="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" className="btn btn-dark" onClick={copyLink}>Copy URL</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="modal fade" id="deleteBlogModal" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div className="modal-dialog">
+                                <div className="modal-content">
+                                    <div className="modal-header">
+                                        <h5 className="modal-title" id="exampleModalLabel">Delete Blog</h5>
+                                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+                                    </div>
+                                    <div className="modal-body">
+                                        You will not be able to recover this blog and URL will stop working.
+                                    </div>
+                                    <div className="modal-footer">
+                                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" className="btn btn-dark" data-bs-dismiss="modal" onClick={(e) => deleteBlogProject(e)}>Confirm</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>

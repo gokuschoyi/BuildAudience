@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo } from 'react'
+import { ToastContainer } from 'react-toastify';
 import BlogPostNavbar from '../BlogPostnavbar'
 import Footer from '../../../Common/Footer'
 import { useSelector } from "react-redux";
@@ -41,6 +42,17 @@ function BlogPost() {
 
     return (
         <>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
             <div className="body-6">
                 <BlogPostNavbar />
                 {blogPostdata === '' ? <div className="section-3 wf-section">
