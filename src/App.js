@@ -12,6 +12,7 @@ import store, { persistor } from './store';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'reduxjs-toolkit-persist/integration/react'
 import RegistrationSuccess from "./Auth/Signup/RegistrationSuccess";
+import UserProfile from "./Auth/UserProfile/UserProfile";
 import VideoTest from "./Dashboard/VideoTest";
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
               <Route path='/BlogPost2' element={<BlogPost2 />}> </Route>
               <Route path='/BlogPost3' element={<BlogPost3 />}> </Route>
               <Route path='/Blogs/:title/:id' element={<Blogs />}> </Route>
+              <Route path='/UserProfile' element={<UserProfile />}> </Route>
               <Route path='/VideoTest' element={<VideoTest />}> </Route>
             </Routes>
           </div>

@@ -59,6 +59,10 @@ function DashboardNavbar() {
         history('/Auth');
     }, [history]);
 
+    const handleProfile = useCallback(() => {
+        history('/UserProfile');
+    }, [history]);
+
     return (
         <div className="navbar-logo-left-2 wf-section">
             <div data-animation="default" data-collapse="medium" data-duration={400} data-easing="ease" data-easing2="ease" role="banner" className="navbar-logo-left-container shadow-three w-nav">
@@ -72,6 +76,9 @@ function DashboardNavbar() {
                             </li>
                             <li>
                                 <a href="!" className="button-primary w-button" style={{ margin: '5px' }} onClick={(e) => setEmail(e)}>Reset Password</a>
+                            </li>
+                            <li className="mobile-margin-top-11">
+                                <button className="button-primary w-button" style={{ margin: '5px' }} onClick={handleProfile} >Profile</button>
                             </li>
                             <li className="mobile-margin-top-11">
                                 <button className="button-primary w-button" style={{ margin: '5px' }} onClick={handleLogout}>Signout</button>

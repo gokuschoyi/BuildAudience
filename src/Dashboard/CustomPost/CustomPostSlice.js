@@ -31,7 +31,23 @@ const initialState = {
     searchImagesLoaderFlag: false,
     searchLinksDict: '',
 
+    videoLinks: '',
+    videoLinkDict: '',
+    videoLinkDictFlag: false,
+    videoLinksSuccessFlag: false,
+    videoLinksError: '',
+    videoLinksErrorFlag: false,
+    videoLinksLoaderFlag: false,
+
+    searchVideos: '',
+    searchVideosSuccessFlag: false,
+    searchVideosError: '',
+    searchVideosErrorFlag: false,
+    searchVideosLoaderFlag: false,
+    searchLinksVideoDict: '',
+
     selectedImageLink: '',
+    selectedVideoLink: '',
 
     generatedImageLinks: '',
     generatedImageLinksDict: '',
@@ -50,13 +66,14 @@ const initialState = {
     hashtagLoaderFlag: false,
 
     saveProjectSuccessFlag: false,
+    saveProjectNotificationFlag: false,
     saveProjectError: '',
     saveProjectErrorFlag: false,
     saveProjectPendingFlag: false,
 }
 
 const quotesSlice = createSlice({
-    name: "quotes",
+    name: "customPost",
     initialState,
     reducers: {
         postInfo: (state, action) => {
@@ -104,10 +121,30 @@ const quotesSlice = createSlice({
         imageLinksConvert(state, action) {
             state.imageLinkDict = action.payload;
             state.imageLinkDictFlag = true;
-
         },
         userSelectedImageLink(state, action) {
             state.selectedImageLink = action.payload;
+        },
+        videoLinkSuccess(state, action) {
+            state.videoLinksSuccessFlag = true;
+            state.videoLinks = action.payload;
+            state.videoLinksLoaderFlag = true;
+        },
+        resetVideoLinksLoaderFlag: (state) => {
+            state.videoLinksLoaderFlag = false;
+            state.selectedVideoLink = '';
+        },
+        videoLinkFailure(state, action) {
+            state.videoLinksSuccessFlag = false;
+            state.videoLinksError = action.payload;
+            state.videoLinksErrorFlag = true;
+        },
+        videoLinksConvert(state, action) {
+            state.videoLinkDict = action.payload;
+            state.videoLinkDictFlag = true;
+        },
+        userSelectedVideoLink(state, action) {
+            state.selectedVideoLink = action.payload;
         },
         generatedImageLinksSuccess(state, action) {
             state.generatedImageLinksSuccessFlag = true;
@@ -160,18 +197,39 @@ const quotesSlice = createSlice({
             state.searchImagesError = action.payload;
             state.searchImagesErrorFlag = true;
         },
+        searchVideosSuccess(state, action) {
+            state.searchVideosSuccessFlag = true;
+            state.searchVideos = action.payload;
+            state.searchVideosLoaderFlag = true;
+        },
+        searchVideosLinksConvert(state, action) {
+            state.searchLinksVideoDict = action.payload;
+            state.videoLinksLoaderFlag = true;
+        },
+        resetSearchVideosLoaderFlag: (state) => {
+            state.searchVideosLoaderFlag = false;
+        },
+        searchVideosFailure(state, action) {
+            state.searchVideosSuccessFlag = false;
+            state.searchVideosError = action.payload;
+            state.searchVideosErrorFlag = true;
+        },
         saveProjectPending: (state) => {
             state.saveProjectPendingFlag = true;
             state.saveProjectSuccessFlag = false;
         },
         saveProjectSuccess: (state) => {
             state.saveProjectSuccessFlag = true;
+            state.saveProjectNotificationFlag = true;
             state.saveProjectPendingFlag = false;
         },
         saveProjectFailure: (state, action) => {
             state.saveProjectError = action.payload;
             state.saveProjectErrorFlag = true;
             state.saveProjectPendingFlag = false;
+        },
+        resetSaveProjectSuccessFlag: (state) => {
+            state.saveProjectNotificationFlag = false;
         },
         resetCustomPostSlice: () => {
             return initialState;
@@ -189,7 +247,11 @@ export const {
     imageLinkSuccess,
     imageLinkFailure,
     imageLinksConvert,
+    videoLinkSuccess,
+    videoLinkFailure,
+    videoLinksConvert,
     userSelectedImageLink,
+    userSelectedVideoLink,
     generatedImageLinksSuccess,
     generatedImageLinksFailure,
     userSelectedGeneratedLink,
@@ -198,15 +260,22 @@ export const {
     hashtagFailure,
     resetQuotesLoaderFlag,
     resetImageLinksLoaderFlag,
+    resetVideoLinksLoaderFlag,
     resetGeneratedImageLinksLoaderFlag,
     resetHashtagLoaderFlag,
     searchImagesSuccess,
     resetSearchImagesLoaderFlag,
     searchImagesFailure,
     searchLinksConvert,
+    searchVideosSuccess,
+    searchVideosLinksConvert,
+    resetSearchVideosLoaderFlag,
+    searchVideosFailure,
     saveProjectPending,
     saveProjectSuccess,
+    resetSaveProjectSuccessFlag,
     saveProjectFailure,
-    resetCustomPostSlice
+    resetCustomPostSlice,
+    saveProjectVideoFlag
 } = actions;
 export default reducer;

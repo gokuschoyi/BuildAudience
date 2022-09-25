@@ -7,7 +7,10 @@ import {
     quotesFailure,
     imageLinkSuccess,
     imageLinkFailure,
+    videoLinkSuccess,
+    videoLinkFailure,
     imageLinksConvert,
+    videoLinksConvert,
     generatedImageLinksSuccess,
     generatedImageLinksFailure,
     generatedImageLinksConvert,
@@ -15,6 +18,7 @@ import {
     hashtagFailure,
     resetQuotesLoaderFlag,
     resetImageLinksLoaderFlag,
+    resetVideoLinksLoaderFlag,
     resetGeneratedImageLinksLoaderFlag,
     resetHashtagLoaderFlag
 } from "./CustomPostSlice";
@@ -23,7 +27,9 @@ import Footer from "../../Common/Footer"; */
 import StepOne from './Steps/StepOne';
 import StepTwo from './Steps/StepTwo';
 import StepThree from "./Steps/StepThree";
+import StepThreeVideo from "./Steps/StepThreeVideo";
 import StepFour from "./Steps/StepFour";
+import StepFourVideo from "./Steps/StepFourVideo";
 import StepFive from "./Steps/StepFive";
 function CustomPost(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- required for webflow to work
@@ -57,11 +63,15 @@ function CustomPost(props) {
         category,
         tagline,
         post,
+        mediaType,
         quotesSuccessFlag,
         imageLinksSuccessFlag,
+        videoLinksSuccessFlag,
         imageLinks,
+        videoLinks,
         selectedQuote,
         selectedImageLink,
+        selectedVideoLink,
         generatedImageLinksSuccessFlag,
         generatedImageLinks,
         selectOneGeneratedImageLink,
@@ -130,6 +140,25 @@ function CustomPost(props) {
             .catch(err => {
                 console.log(err)
                 dispatch(imageLinkFailure(err.message))
+            })
+    }, [dispatch, tagLineI, postI])
+
+    const getVideoLinks = useCallback(async () => {
+        const token = sessionStorage.getItem('userTokenSession');
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        };
+        var queryData = {
+            tag: tagLineI,
+            type: postI
+        }
+        let getVideoUrl = await axios.post(process.env.REACT_APP_BURL + '/video/generate_videos', queryData, config, { withCredentials: true })
+            .then(res => {
+                dispatch(videoLinkSuccess(res.data))
+            })
+            .catch(err => {
+                console.log(err)
+                dispatch(videoLinkFailure(err.message))
             })
     }, [dispatch, tagLineI, postI])
 
@@ -219,7 +248,20 @@ function CustomPost(props) {
                 button.style.display = 'block'
             }
         }
-    }, [tagLineI, categoryI, postI, mediaTypeI, step, selectedImageLink, selectOneGeneratedImageLink, quotesSuccessFlag, quotesLoaderFlag, imageLinksLoaderFlag, generatedImageLinksLoaderFlag])
+    }, [tagLineI, categoryI, postI, mediaTypeI, step, selectedImageLink, selectOneGeneratedImageLink, quotesSuccessFlag, quotesLoaderFlag, imageLinksLoaderFlag, generatedImageLinksLoaderFlag, selectedVideoLink])
+
+    useEffect(() => {
+        var button = document.getElementById('nextButton')
+        if (step === 3) {
+            if (selectedVideoLink === '') {
+                button.style.display = 'none'
+            }
+            else {
+                button.classList.add("fadeIn")
+                button.style.display = 'block'
+            }
+        }
+    }, [selectedVideoLink, step])
 
     /* step-1 */
     useEffect(() => {
@@ -259,12 +301,24 @@ function CustomPost(props) {
         }
     }, [dispatch, step, getQuotes, tagLineI, categoryI, postI, mediaTypeI, quotesSuccessFlag, category]);
 
+    useEffect(() => {
+        var data = {
+            tagLine: tagLineI,
+            category: categoryI,
+            post: postI,
+            mediaType: mediaTypeI
+        }
+        if (step === 2 && mediaTypeI !== mediaType) {
+            dispatch(postInfo(data));
+        }
+    }, [dispatch, step, tagLineI, categoryI, postI, mediaTypeI, mediaType])
+
     /* step-3 */
     useEffect(() => {
-        if (step === 3 && imageLinksSuccessFlag === false) {
+        if (step === 3 && imageLinksSuccessFlag === false && mediaType === 'image') {
             getImageLinks();
         }
-    }, [step, getImageLinks, imageLinksSuccessFlag])
+    }, [step, getImageLinks, imageLinksSuccessFlag, mediaType])
 
     useEffect(() => {
         var data = {
@@ -273,13 +327,13 @@ function CustomPost(props) {
             post: postI,
             mediaType: mediaTypeI
         }
-        if (step === 3 && imageLinksSuccessFlag === true && tagLineI !== tagline) {
+        if (step === 3 && imageLinksSuccessFlag === true && tagLineI !== tagline && mediaType === 'image') {
             console.log(tagline + ' ' + tagLineI)
             dispatch(resetImageLinksLoaderFlag());
             dispatch(postInfo(data));
             getImageLinks();
         }
-    }, [step, getImageLinks, imageLinksSuccessFlag, tagLineI, tagline, dispatch, categoryI, postI, mediaTypeI]);
+    }, [step, getImageLinks, imageLinksSuccessFlag, tagLineI, tagline, dispatch, categoryI, postI, mediaTypeI, mediaType]);
 
     useEffect(() => {
         var data = {
@@ -288,29 +342,88 @@ function CustomPost(props) {
             post: postI,
             mediaType: mediaTypeI
         }
-        if (step === 3 && imageLinksSuccessFlag === true && postI !== post) {
+        if (step === 3 && imageLinksSuccessFlag === true && postI !== post && mediaType === 'image') {
             console.log(post + ' ' + postI)
             dispatch(resetImageLinksLoaderFlag());
             dispatch(postInfo(data));
             getImageLinks();
         }
-    }, [step, getImageLinks, imageLinksSuccessFlag, postI, post, dispatch, categoryI, tagLineI, mediaTypeI]);
+    }, [step, getImageLinks, imageLinksSuccessFlag, postI, post, dispatch, categoryI, tagLineI, mediaTypeI, mediaType]);
+
+    useEffect(() => {
+        if (step === 3 && videoLinksSuccessFlag === false && mediaType === 'video') {
+            getVideoLinks();
+        }
+    }, [step, getVideoLinks, videoLinksSuccessFlag, mediaType])
+
+    useEffect(() => {
+        var data = {
+            tagLine: tagLineI,
+            category: categoryI,
+            post: postI,
+            mediaType: mediaTypeI
+        }
+        if (step === 3 && videoLinksSuccessFlag === true && tagLineI !== tagline && mediaType === 'video') {
+            console.log(tagline + ' ' + tagLineI)
+            dispatch(resetVideoLinksLoaderFlag());
+            dispatch(postInfo(data));
+            getVideoLinks();
+        }
+    }, [step, getVideoLinks, videoLinksSuccessFlag, tagLineI, tagline, dispatch, categoryI, postI, mediaTypeI, mediaType]);
+
+    useEffect(() => {
+        var data = {
+            tagLine: tagLineI,
+            category: categoryI,
+            post: postI,
+            mediaType: mediaTypeI
+        }
+        if (step === 3 && videoLinksSuccessFlag === true && postI !== post && mediaType === 'video') {
+            console.log(post + ' ' + postI)
+            dispatch(resetVideoLinksLoaderFlag());
+            dispatch(postInfo(data));
+            getVideoLinks();
+        }
+    }, [step, getVideoLinks, videoLinksSuccessFlag, postI, post, dispatch, categoryI, tagLineI, mediaTypeI, mediaType]);
 
     /* step-4 */
     useEffect(() => {
-        if (step === 4 && generatedImageLinksSuccessFlag === false) {
+        if (step === 4 && generatedImageLinksSuccessFlag === false && mediaType === 'image') {
             generateImages()
         }
-    }, [step, generateImages, generatedImageLinksSuccessFlag])
+    }, [step, generateImages, generatedImageLinksSuccessFlag, mediaType])
 
     useEffect(() => {
         if (step === 4 && generatedImageLinksSuccessFlag === true) {
-            if (postI !== post || selectedQuoteI !== selectedQuote || urlI !== selectedImageLink) {
+            if (postI !== post || selectedQuoteI !== selectedQuote || urlI !== selectedImageLink && mediaType === 'image') {
                 dispatch(resetGeneratedImageLinksLoaderFlag());
                 generateImages();
             }
         }
-    }, [step, generateImages, generatedImageLinksSuccessFlag, postI, post, selectedQuoteI, selectedQuote, selectedImageLink, urlI, dispatch])
+    }, [step, generateImages, generatedImageLinksSuccessFlag, postI, post, selectedQuoteI, selectedQuote, selectedImageLink, urlI, dispatch, mediaType])
+
+    useEffect(() => {
+        if (step === 4 && hashtagSuccessFlag === false && mediaType === 'video') {
+            getHashtags();
+            console.log('hashtags for video')
+        }
+    }, [step, getHashtags, hashtagSuccessFlag, mediaType])
+
+    useEffect(() => {
+        var data = {
+            tagLine: tagLineI,
+            category: categoryI,
+            post: postI,
+            mediaType: mediaTypeI
+        }
+        if (step === 4 && tagline !== stepFiveTagLine.current && stepFiveTagLine.current !== '' && mediaType === 'video') {
+            console.log("hashtag for video " + stepFiveTagLine.current + ' ' + tagLineI)
+            stepFiveTagLine.current = tagLineI;
+            dispatch(resetHashtagLoaderFlag());
+            dispatch(postInfo(data));
+            getHashtags()
+        }
+    }, [step, getHashtags, tagLineI, tagline, dispatch, categoryI, postI, mediaTypeI, mediaType, stepFiveTagLine])
 
     /* step-5 */
     useEffect(() => {
@@ -347,6 +460,17 @@ function CustomPost(props) {
         }
     }, [imageLinks, dispatch, imageLinksSuccessFlag])
 
+    /* convert video links list to dict */
+    useEffect(() => {
+        let videoList = videoLinks.video_list;
+        if (videoLinksSuccessFlag) {
+            let linkDict = {};
+            let key = 0;
+            linkDict = videoList.map(x => { return ({ src: x, key: (key++).toString() }) });
+            dispatch(videoLinksConvert(linkDict));
+        }
+    }, [videoLinks, dispatch, videoLinksSuccessFlag])
+
     useEffect(() => {
         let generatedImageList = generatedImageLinks.data;
         if (generatedImageLinksSuccessFlag) {
@@ -368,8 +492,8 @@ function CustomPost(props) {
                         <div className="mask-2 w-slider-mask">
                             <StepOne tagLineHandler={tagLineHandler} categoryHandler={categoryHandler} postHandler={postHandler} mediaTypeHandler={mediaTypeHandler} />
                             <StepTwo />
-                            <StepThree />
-                            <StepFour />
+                            {mediaType === 'image' ? <StepThree /> : <StepThreeVideo />}
+                            {mediaType === 'image' ? <StepFour /> : <StepFourVideo reset={props.reset} />}
                             <StepFive reset={props.reset} />
                         </div>
                         <div className="line-bottom" />

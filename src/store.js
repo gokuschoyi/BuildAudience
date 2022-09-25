@@ -7,6 +7,8 @@ import forgotPasswordReducer from '../src/Auth/ForgotPassword/ForgotPasswordSlic
 import customPostReducer from './Dashboard/CustomPost/CustomPostSlice'
 import DashboardNavbarSlice from './Dashboard/Common/DashboardNavbarSlice'
 import BlogPostSlice from './Dashboard/BlogPost/BlogPostSlice'
+import VideoPostStatusSlice from './Dashboard/CustomPost/VideoPostStatusSlice';
+import QVPSlice from './Dashboard/Common/QVPSlice';
 
 const reducer = combineReducers({
     signup: signupReducer,
@@ -14,14 +16,16 @@ const reducer = combineReducers({
     forgotPassword: forgotPasswordReducer,
     customPost: customPostReducer,
     resetPassword: DashboardNavbarSlice,
-    blogPost: BlogPostSlice
+    blogPost: BlogPostSlice,
+    saveVideoPostFlag: VideoPostStatusSlice,
+    qvp: QVPSlice
 })
 
 const persistConfig = {
     key: 'root',
     storage,
-    /* whitelist: ['signupReducer', 'loginReducer', 'forgotPasswordReducer'],
-    version: 1 */
+    /*  whitelist: ['signupReducer', 'loginReducer', 'forgotPasswordReducer'],
+     version: 1 */
     /* whitelisting casuing redux to not work */
 }
 
