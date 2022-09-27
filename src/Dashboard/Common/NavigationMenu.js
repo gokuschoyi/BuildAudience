@@ -86,7 +86,7 @@ function NavigationMenu() {
     const [prop, setProp] = useState('');
     const [qvpUrl, setQvpUrl] = useState('');
     const [qvpProcessedStatus, setqvpProcessedStatus] = useState(false)
-    const randomValues = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+    const randomValues = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
     const history = useNavigate();
 
     const reset = useCallback(() => {
@@ -175,7 +175,7 @@ function NavigationMenu() {
             .catch(err => {
                 console.log("something went wrong, try later")
             })
-        console.log(projectCount.current, project.projects.length)
+        /* console.log(projectCount.current, project.projects.length) */
 
         if (project === '') {
             getProjects()
@@ -492,7 +492,7 @@ function NavigationMenu() {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        toastId: QvpUid+randomValues[Math.floor(Math.random()* randomValues.length)],
+        toastId: QvpUid + randomValues[Math.floor(Math.random() * randomValues.length)],
         type: "success"
     });
 
