@@ -433,3 +433,17 @@ else {
 wrapper.style.height = '100vh'
 }
 }) */
+
+
+
+if (project === '') {
+setProjects(res.data);
+setDefaultProject('')
+console.log("inside project null check")
+}
+if (res.data.projects.length > projectCount.current) {
+projectCount.current = res.data.projects.length;
+setProjects(res.data)
+setDefaultProject('')
+console.log("Total count ", projectCount.current + " actual count", res.data.projects.length)
+}

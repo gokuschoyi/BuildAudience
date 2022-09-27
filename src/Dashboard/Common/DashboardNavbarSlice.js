@@ -15,15 +15,15 @@ const DashboardNavbarSlice = createSlice({
         setResetEmail: (state, action) => {
             state.userEmail = action.payload
         },
-        resetPasswordPending: (state) => {
+        rPasswordPending: (state) => {
             state.resetPasswordPending = true
         },
-        resetPasswordSuccess: (state) => {
+        rPasswordSuccess: (state) => {
             state.resetPasswordSuccess = true
             state.resetPasswordError = false
             state.resetPasswordPending = false
         },
-        resetPasswordError: (state, actions) => {
+        rPasswordError: (state, actions) => {
             state.resetPasswordError = true
             state.resetPasswordSuccess = false
             state.resetPasswordErrorMsg = actions.payload
@@ -39,5 +39,5 @@ const DashboardNavbarSlice = createSlice({
 });
 
 const { reducer, actions } = DashboardNavbarSlice;
-export const { setResetEmail, resetPasswordPending, resetPasswordSuccess, resetPasswordError, resetPasswordReset } = actions
+export const { setResetEmail, rPasswordPending, rPasswordSuccess, rPasswordError, resetPasswordReset } = actions
 export default reducer

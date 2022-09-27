@@ -62,7 +62,8 @@ function DashboardNavbar() {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        toastId: customId
+        toastId: customId,
+        type: "success"
     });
 
     if (saved) {
