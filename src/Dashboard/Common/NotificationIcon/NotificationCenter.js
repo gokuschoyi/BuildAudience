@@ -104,10 +104,16 @@ const Header = styled.header`
 export function NotificationCenter() {
     const dispatch = useDispatch();
     const { notiData } = useSelector((state) => state.notification);
-    var [NotificationData, setNotificationData] = useState(JSON.parse(notiData));
+    var [NotificationData, setNotificationData] = useState('');
     const { notifications, clear, markAllAsRead, markAsRead, remove, unreadCount } = useNotificationCenter({
         data: NotificationData
     });
+
+    useEffect(() => {
+        if (notiData !== '') {
+            setNotificationData(JSON.parse(notiData));
+        }
+    }, [notiData]);
 
     useEffect(() => {
         if (notifications.length > 0) {
