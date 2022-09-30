@@ -19,6 +19,7 @@ import {
     blogPostFailure,
     blogPostReset
 } from '../BlogPost/BlogPostSlice'
+import { saveAllProjectData } from './ProjectSlice';
 import { saveProjectData, setStatusFlag, resetProjectVideoSlice } from '../CustomPost/VideoPostStatusSlice';
 import { saveQVPFlag, saveQVPData, resetQVPSlice, resetQvpSaveFlag, setQVPStatusFlag } from './QVPSlice'
 import {
@@ -59,6 +60,7 @@ function NavigationMenu() {
     const { saveProjectVideoFlag, projectData, videoProjectUid, videoProjectFlag } = useSelector(state => state.saveVideoPostFlag)
     const { saveProjectNotificationFlag, mediaType, saveProjectSuccessFlag } = useSelector(state => state.customPost)
     const { qvpProjectVideoFlag, saveQvpFlag, qvpUid, qvpData, qvpStatus } = useSelector(state => state.qvp)
+    const { allProjectData } = useSelector(state => state.allProjects)
     const dispatch = useDispatch()
     const [tooltip, showTooltip] = useState(true)
     const [qipUrl, setQipUrl] = useState('')
@@ -151,22 +153,15 @@ function NavigationMenu() {
 
         let allProjects = await axios.get(process.env.REACT_APP_BURL + '/user/projects', config, { withCredentials: true })
             .then(res => {
-                if (res.data.projects.length === 0) {
-                    setDefaultProject(res.data)
-                    setProjects('')
-                    console.log("project length is 0")
-                }
-                else {
-                    setProjects(res.data)
-                    setDefaultProject('')
-                }
+                dispatch(saveAllProjectData(res.data))
             })
             .catch(err => {
                 console.log(err)
             })
-    }, [])
+    }, [dispatch])
 
     const refreshProjectTab = useCallback(async () => {
+        var result = '';
         const token = sessionStorage.getItem('userTokenSession');
         const config = {
             headers: { Authorization: `Bearer ${token}` }
@@ -174,21 +169,37 @@ function NavigationMenu() {
         let totalPCount = await axios.get(process.env.REACT_APP_BURL + '/user/projects', config, { withCredentials: true })
             .then(res => {
                 projectCount.current = res.data.projects.length
+                result = res.data;
             })
             .catch(err => {
                 console.log("something went wrong, try later")
             })
-        /* console.log(projectCount.current, project.projects.length) */
 
-        if (project === '') {
-            getProjects()
+        if (allProjectData === '') {
+            dispatch(saveAllProjectData(result))
+            /* getProjects() */
             console.log("inside project null check")
         }
-        else if (project.projects.length < projectCount.current) {
-            getProjects()
+        else if (allProjectData.projects.length < projectCount.current) {
+            dispatch(saveAllProjectData(result))
+            /* getProjects() */
             console.log("Total count ", projectCount.current + " actual count", project.projects.length)
         }
-    }, [getProjects, project])
+    }, [project, dispatch, allProjectData])
+
+    useEffect(() => {
+        if (allProjectData !== '') {
+            if (allProjectData.projects.length === 0) {
+                setDefaultProject(allProjectData)
+                setProjects('')
+                console.log("project length is 0")
+            }
+            else {
+                setProjects(allProjectData)
+                setDefaultProject('')
+            }
+        }
+    }, [allProjectData])
 
     /* Converting projects list to dictionary */
     useEffect(() => {
@@ -676,6 +687,7 @@ function NavigationMenu() {
             dispatch(resetProjectVideoSlice());
             dispatch(resetCustomPostSlice())
             dispatch(resetQVPSlice())
+            /* dispatch(resetProjectSlice()) */
             /* dispatch(resetNotifiacationHistory()) */
         }
     })
@@ -870,7 +882,7 @@ function NavigationMenu() {
                             </div> : <CustomPost reset={reset} key={seed} />
                         }
                     </div>
-                    <div data-w-tab="Blog" className="dashboard-section w-tab-pane w--tab-active" style={{ marginTop: '40px' }}>
+                    <div data-w-tab="Blog" className="dashboard-section w-tab-pane " style={{ marginTop: '40px' }}>
                         {BPResetFlag === false ?
                             <div>
                                 {blogPostPendingFlag ?

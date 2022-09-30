@@ -9,6 +9,7 @@ import DashboardNavbarSlice from './Dashboard/Common/DashboardNavbarSlice'
 import BlogPostSlice from './Dashboard/BlogPost/BlogPostSlice'
 import VideoPostStatusSlice from './Dashboard/CustomPost/VideoPostStatusSlice';
 import QVPSlice from './Dashboard/Common/QVPSlice';
+import ProjectSlice from './Dashboard/Common/ProjectSlice';
 import NotificationSlice from './Dashboard/Common/NotificationIcon/NotificationSlice';
 
 const reducer = combineReducers({
@@ -20,6 +21,7 @@ const reducer = combineReducers({
     blogPost: BlogPostSlice,
     saveVideoPostFlag: VideoPostStatusSlice,
     qvp: QVPSlice,
+    allProjects: ProjectSlice,
     notification: NotificationSlice
 })
 

@@ -14,10 +14,8 @@ function LandingPage() {
     const WEBFLOW_SITE_ID = '62c7a74dd5c3fb4c886564d2'
 
     var doc = document.getElementsByTagName("html")[0]
-    console.log(" test " + doc);
     doc.setAttribute('data-wf-page', WEBFLOW_PAGE_ID)
     doc.setAttribute('data-wf-site', WEBFLOW_SITE_ID)
-    console.log(doc.getAttribute('data-wf-page'));
   });
 
   useEffect(() => {
@@ -174,12 +172,12 @@ function LandingPage() {
                 Name
               </label>
               <input
-                type="email"
+                type="text"
                 className="w-input"
                 maxLength={256}
                 name="email-4"
                 data-name="Email 4"
-                placeholder
+                placeholder="Enter your name"
                 id="email-4"
                 required
               />
@@ -192,7 +190,7 @@ function LandingPage() {
                 maxLength={256}
                 name="email"
                 data-name="Email"
-                placeholder
+                placeholder="Enter your email address"
                 id="email"
                 required
               />
@@ -203,10 +201,9 @@ function LandingPage() {
                 type="email"
                 className="w-input"
                 maxLength={256}
-                n
                 ame="email-2"
                 data-name="Email 2"
-                placeholder
+                placeholder="Enter your contact number"
                 id="email-2"
                 required
               />

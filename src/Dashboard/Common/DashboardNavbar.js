@@ -3,15 +3,28 @@ import { useNavigate } from "react-router-dom";
 import BuildAudienceLogo from '../../images/5.png';
 import 'react-toastify/dist/ReactToastify.css';
 import { NotificationCenter } from "./NotificationIcon/NotificationCenter";
+import { useDispatch } from "react-redux";
+import { resetProjectVideoSlice } from '../CustomPost/VideoPostStatusSlice';
+import { resetCustomPostSlice } from '../CustomPost/CustomPostSlice';
+import { resetQVPSlice } from './QVPSlice';
+import { resetProjectSlice } from './ProjectSlice';
+import { resetNotifiacationHistory } from '../Common/NotificationIcon/NotificationSlice';
 function DashboardNavbar() {
     const history = useNavigate();
+    const dispatch = useDispatch();
+
     const handleLogout = useCallback(() => {
         sessionStorage.removeItem('userEmail');
         sessionStorage.removeItem('CompanyName');
         sessionStorage.removeItem('userTokenSession');
-        localStorage.removeItem('userTokenLocal')
+        localStorage.removeItem("userTokenLocal");
+        dispatch(resetProjectVideoSlice());
+        dispatch(resetCustomPostSlice());
+        dispatch(resetQVPSlice());
+        dispatch(resetProjectSlice());
+        dispatch(resetNotifiacationHistory());
         history('/Auth');
-    }, [history]);
+    }, [history, dispatch]);
 
     const handleProfile = useCallback(() => {
         history('/UserProfile');

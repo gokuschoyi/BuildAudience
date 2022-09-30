@@ -398,7 +398,7 @@ body {
 .heading-9 {
   margin-top: 5px;
   margin-left: 0px;
-  padding-left: 325px;
+  padding-left: 187px;
   color: hsla(0, 0%, 100%, 0.84);
   font-weight: 700;
   letter-spacing: 8px;
@@ -1243,7 +1243,7 @@ body {
   filter: saturate(145%);
   background-clip: border-box;
   -webkit-text-fill-color: inherit;
-  margin-top: -20px;
+  margin-top: 20px;
 }
 
 .container-3 {
