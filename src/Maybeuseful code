@@ -447,3 +447,17 @@ setProjects(res.data)
 setDefaultProject('')
 console.log("Total count ", projectCount.current + " actual count", res.data.projects.length)
 }
+
+<!-- working code below -->
+/* useEffect(() => {
+var createPost = document.getElementById("createPost");
+var newPost = document.getElementById("newPost");
+if (!saveProjectSuccessFlag) {
+createPost.style.display = "block"
+newPost.style.display = "none"
+}
+else {
+createPost.style.display = "none"
+newPost.style.display = "block"
+}
+}, [saveProjectSuccessFlag]) */

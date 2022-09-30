@@ -9,6 +9,7 @@ import DashboardNavbarSlice from './Dashboard/Common/DashboardNavbarSlice'
 import BlogPostSlice from './Dashboard/BlogPost/BlogPostSlice'
 import VideoPostStatusSlice from './Dashboard/CustomPost/VideoPostStatusSlice';
 import QVPSlice from './Dashboard/Common/QVPSlice';
+import NotificationSlice from './Dashboard/Common/NotificationIcon/NotificationSlice';
 
 const reducer = combineReducers({
     signup: signupReducer,
@@ -18,7 +19,8 @@ const reducer = combineReducers({
     resetPassword: DashboardNavbarSlice,
     blogPost: BlogPostSlice,
     saveVideoPostFlag: VideoPostStatusSlice,
-    qvp: QVPSlice
+    qvp: QVPSlice,
+    notification: NotificationSlice
 })
 
 const persistConfig = {

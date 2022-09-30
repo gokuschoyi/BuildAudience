@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Icons } from "react-toastify";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNotificationCenter } from "react-toastify/addons/use-notification-center";
@@ -8,6 +8,8 @@ import { ItemActions } from "./ItemActions";
 import { Switch } from "./Switch";
 import { TimeTracker } from "./TimeTracker";
 import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { saveNotificationData } from "./NotificationSlice";
 const variants = {
     container: {
         open: {
@@ -100,7 +102,24 @@ const Header = styled.header`
   align-items: center;
 `;
 export function NotificationCenter() {
-    const { notifications, clear, markAllAsRead, markAsRead, remove, unreadCount } = useNotificationCenter();
+    const dispatch = useDispatch();
+    const { notiData } = useSelector((state) => state.notification);
+    var [NotificationData, setNotificationData] = useState(JSON.parse(notiData));
+    const { notifications, clear, markAllAsRead, markAsRead, remove, unreadCount } = useNotificationCenter({
+        data: NotificationData
+    });
+
+    useEffect(() => {
+        if (notifications.length > 0) {
+            setNotificationData(notifications);
+        }
+    }, [notifications, NotificationData]);
+
+    useEffect(() => {
+        var notiStrData = JSON.stringify(notifications);
+        dispatch(saveNotificationData(notiStrData));
+    }, [dispatch, NotificationData, notifications]);
+
     const [showUnreadOnly, toggleFilter] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     return (

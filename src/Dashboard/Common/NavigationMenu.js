@@ -10,6 +10,7 @@ import infoIcon from '../../images/information.png'
 import axios from "axios";
 import CustomPost from "../CustomPost/CustomPost";
 import { resetCustomPostSlice, resetSaveProjectSuccessFlag } from '../CustomPost/CustomPostSlice'
+import { resetNotifiacationHistory } from './NotificationIcon/NotificationSlice'
 import { useNavigate } from "react-router-dom";
 import {
     blogPostPending,
@@ -58,34 +59,37 @@ function NavigationMenu() {
     const { saveProjectVideoFlag, projectData, videoProjectUid, videoProjectFlag } = useSelector(state => state.saveVideoPostFlag)
     const { saveProjectNotificationFlag, mediaType, saveProjectSuccessFlag } = useSelector(state => state.customPost)
     const { qvpProjectVideoFlag, saveQvpFlag, qvpUid, qvpData, qvpStatus } = useSelector(state => state.qvp)
-    const dispatch = useDispatch();
-    const [tooltip, showTooltip] = useState(true);
-    const [qipUrl, setQipUrl] = useState('');
-    const [qipUrlError, setQipUrlError] = useState('');
-    const [pDict, setPDict] = useState('');
-    const [project, setProjects] = useState('');
-    const [defaultpDict, setDefaultpDict] = useState('');
-    const [defaultProject, setDefaultProject] = useState('');
-    const [facebook, setFacebook] = useState('');
-    const [facebookThree, setFacebookThree] = useState('');
+    const dispatch = useDispatch()
+    const [tooltip, showTooltip] = useState(true)
+    const [qipUrl, setQipUrl] = useState('')
+    const [qipUrlError, setQipUrlError] = useState('')
+    const [pDict, setPDict] = useState('')
+    const [project, setProjects] = useState('')
+    const [defaultpDict, setDefaultpDict] = useState('')
+    const [defaultProject, setDefaultProject] = useState('')
+    const [facebook, setFacebook] = useState('')
+    const [facebookThree, setFacebookThree] = useState('')
     const [facebookRemaining, setFacebookRemaining] = useState('')
-    const [instagram, setInstagram] = useState('');
-    const [instagramThree, setInstagramThree] = useState('');
+    const [instagram, setInstagram] = useState('')
+    const [instagramThree, setInstagramThree] = useState('')
     const [instagramRemaining, setInstagramRemaining] = useState('')
-    const [story, setStory] = useState('');
-    const [storyThree, setStoryThree] = useState('');
+    const [story, setStory] = useState('')
+    const [storyThree, setStoryThree] = useState('')
     const [storyRemaining, setStoryRemaining] = useState('')
-    const [blog, setBlog] = useState('');
-    const [blogThree, setBlogThree] = useState('');
+    const [blog, setBlog] = useState('')
+    const [blogThree, setBlogThree] = useState('')
     const [blogRemaining, setBlogRemaining] = useState('')
-    const [seed, setSeed] = useState(1);
-    const [deleteUrl, setDeleteUrl] = useState('');
-    const [customPostSwitch, setCustomPostSwitch] = useState(false);
-    const [BPDescription, setBPDescription] = useState('');
-    const [BPUrl, setBPUrl] = useState('');
-    const [prop, setProp] = useState('');
-    const [qvpUrl, setQvpUrl] = useState('');
+    const [seed, setSeed] = useState(1)
+    const [deleteUrl, setDeleteUrl] = useState('')
+    const [customPostSwitch, setCustomPostSwitch] = useState(false)
+    const [BPDescription, setBPDescription] = useState('')
+    const [BPUrl, setBPUrl] = useState('')
+    const [prop, setProp] = useState('')
+    const [qvpUrl, setQvpUrl] = useState('')
     const [qvpProcessedStatus, setqvpProcessedStatus] = useState(false)
+    const [blogPostUrl, setBlogPostUrl] = useState('')
+    const [BPResetFlag, setBPResetFlag] = useState(false)
+    const projectCount = React.useRef(0)
     const randomValues = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
     const history = useNavigate();
 
@@ -162,7 +166,6 @@ function NavigationMenu() {
             })
     }, [])
 
-    const projectCount = React.useRef(0)
     const refreshProjectTab = useCallback(async () => {
         const token = sessionStorage.getItem('userTokenSession');
         const config = {
@@ -373,9 +376,9 @@ function NavigationMenu() {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        toastId: PostUid,
         data: {
-            text: ProjectUrl
+            url: ProjectUrl,
+            p_uid: PostUid
         },
         type: "success"
     });
@@ -523,6 +526,10 @@ function NavigationMenu() {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
+    const handleBPReset = () => {
+        setBPResetFlag(false)
+    }
+
     /* Generating blog Post */
     const generateBlogPost = useCallback(async () => {
         dispatch(blogPostReset())
@@ -549,31 +556,17 @@ function NavigationMenu() {
                 .then(res => {
                     dispatch(blogPostSuccess(res.data))
                     var BPT = randomNumberInRange()
-                    var url = "/BlogPost" + BPT
-                    console.log(url)
-                    history(url);
+                    setBlogPostUrl("/BlogPost" + BPT)
+                    console.log(blogPostUrl)
+                    setBPResetFlag(true)
+                    /* history(blogPostUrl); */
                 })
                 .catch(err => {
                     dispatch(blogPostFailure(err.data))
                 })
         }
 
-    }, [BPDescription, BPUrl, dispatch, history])
-
-    /* Setting share url for blog Post share buttons */
-    useEffect(() => {
-        var exampleModal = document.getElementById('shareBlog')
-        exampleModal.addEventListener('show.bs.modal', function (event) {
-            var button = event.relatedTarget
-            var blogURL = button.getAttribute('data-bs-whatever')
-            var modalBodyInput = exampleModal.querySelectorAll('.modal-body input')
-            modalBodyInput[0].value = blogURL
-            setProp({
-                url: blogURL,
-            })
-            modalBodyInput[1].value = button.getAttribute('data-bs-id')
-        })
-    })
+    }, [BPDescription, BPUrl, dispatch, blogPostUrl])
 
     /* Setting share url for various  projects */
     useEffect(() => {
@@ -590,24 +583,17 @@ function NavigationMenu() {
         })
     })
 
-    /* Copying blogPost link */
-    const copyLink = () => {
-        var copyText = document.getElementById("recipient-name");
-        copyText.select();
-        copyText.setSelectionRange(0, 99999)
-        document.execCommand("copy");
-        var PostUid = document.getElementById('postUid')
-        copied(PostUid)
-    }
-
     /* Copying Project link */
     const copyProjectLink = () => {
+        var PostUid = ''
         var copyText = document.getElementById("shareProjectUrl");
         var projectUrl = copyText.value;
         copyText.select();
         copyText.setSelectionRange(0, 99999)
         document.execCommand("copy");
-        var PostUid = document.getElementById('postUid')
+        PostUid = document.getElementById('postUidP').value
+        console.log(PostUid)
+        /* console.log(projectUrl) */
         copied(PostUid, projectUrl)
     }
 
@@ -690,6 +676,7 @@ function NavigationMenu() {
             dispatch(resetProjectVideoSlice());
             dispatch(resetCustomPostSlice())
             dispatch(resetQVPSlice())
+            /* dispatch(resetNotifiacationHistory()) */
         }
     })
 
@@ -777,21 +764,20 @@ function NavigationMenu() {
 
                 <div className="dash-tab-wrapper w-tab-content">
                     <div data-w-tab="ImagePost" className="dashboard-section w-tab-pane">
-                        <div className="container-13">
+                        <div className="container-13" style={{ marginTop: '60px' }}>
                             <h1 className="heading-18">Quick Post </h1>
                             <div className="dash-row">
-                                <a href="" data-bs-toggle="modal" data-bs-target="#quickImagePost" onClick={getQuickImagePost} className="white-box link-box paper-box w-inline-block">
-                                    <div className="box-padding paper-padding">
-                                        <h3 className="doc-heading">Quick Image Post</h3>
+                                <div className="btnQ">
+                                    <a href="" onClick={getQuickImagePost} data-bs-toggle="modal" data-bs-target="#quickImagePost">Quick Image Post </a>
+                                    <div style={{ zIndex: '1', position: 'absolute', bottom: '70px' }}>
                                         <img
-                                            sizes="60px"
-                                            width={60}
+                                            style={{ width: '40px' }}
                                             src={plus}
                                             loading="lazy"
                                             alt="plusicon"
-                                            className="image-18" />
+                                        />
                                     </div>
-                                </a>
+                                </div>
                                 <div className="modal modal-centered fade" id="quickImagePost" data-bs-backdrop="false" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                     <div className="modal-dialog modal-lg modal-dialog-centered">
                                         <div className="modal-content">
@@ -809,25 +795,24 @@ function NavigationMenu() {
                                                     <img src={qipUrl.data} alt="qip" />}
                                             </div>
                                             <div className="modal-footer">
-                                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={removeQipLink}>Close</button>
-                                                <button type="button" className="btn btn-primary" onClick={downloadQIP}>Download</button>
+                                                <button type="button" className="btn btn-dark" data-bs-dismiss="modal" onClick={removeQipLink}>Close</button>
+                                                <button type="button" className="btn btn-dark" onClick={downloadQIP}>Download</button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <a href="" data-bs-toggle="modal" data-bs-target="#quickVideoPost" onClick={getQuickVideoPost} className="white-box link-box paper-box w-inline-block">
-                                    <div className="box-padding paper-padding">
-                                        <h3 className="doc-heading">Quick Video Post</h3>
+                                <div className="btnQ">
+                                    <a href="" onClick={getQuickVideoPost} data-bs-toggle="modal" data-bs-target="#quickVideoPost">Quick Video Post </a>
+                                    <div style={{ zIndex: '1', position: 'absolute', bottom: '70px' }}>
                                         <img
-                                            sizes="60px"
-                                            width={60}
+                                            style={{ width: '40px' }}
                                             src={plus}
                                             loading="lazy"
                                             alt="plusicon"
-                                            className="image-18" />
+                                        />
                                     </div>
-                                </a>
+                                </div>
                                 <div className="modal modal-centered fade" id="quickVideoPost" data-bs-backdrop="false" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                     <div className="modal-dialog modal-lg modal-dialog-centered">
                                         <div className="modal-content">
@@ -837,186 +822,214 @@ function NavigationMenu() {
                                             </div>
                                             <div className="modal-body">
                                                 {qvpProcessedStatus === false ?
-                                                    <div className="d-flex justify-content-center" style={{ zIndex: '2', paddingTop: '20px' }}>
-                                                        <div className="spinner-border text-danger" role="status">
-                                                            <span className="sr-only"></span>
+                                                    <>
+                                                        <div className="d-flex justify-content-center" style={{ zIndex: '2', paddingTop: '20px' }}>
+                                                            <div className="spinner-border text-danger" role="status">
+                                                                <span className="sr-only"></span>
+                                                            </div>
                                                         </div>
-                                                    </div> :
+                                                        {qvpProjectVideoFlag === true ?
+                                                            <div className="heading-21" style={{ textAlign: 'center' }}>
+                                                                You will be notified once the quick video post is processed. You can close this tab.
+                                                            </div> : ""}
+                                                    </> :
                                                     <div className="ratio ratio-16x9">
                                                         <video src={qvpUrl} controls type="video/mp4" style={{ padding: '15px' }}></video>
                                                     </div>
                                                 }
                                             </div>
                                             <div className="modal-footer">
-                                                <button type="button" className="btn btn-secondary" onClick={removeQvpLink} data-bs-dismiss="modal">Close</button>
-                                                <button type="button" className="btn btn-primary" onClick={downloadQVP}>Download</button>
+                                                <button type="button" className="btn btn-dark" onClick={removeQvpLink} data-bs-dismiss="modal">Close</button>
+                                                <button type="button" className="btn btn-dark" onClick={downloadQVP}>Download</button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div style={{ height: '163px' }}></div>
+                            {/* <div style={{ height: '163px' }}></div> */}
                         </div>
                     </div>
-                    <div data-w-tab="CustomPost" className="dashboard-section w-tab-pane" style={{ padding: '0' }}>
+                    <div data-w-tab="CustomPost" className="dashboard-section w-tab-pane" >
                         {!customPostSwitch ?
-                            <div className="container-13" style={{ padding: '5em' }}>
+                            <div className="container-13" style={{ marginTop: '60px' }}>
                                 <h1 className="heading-18">Custom Post </h1>
                                 <div className="dash-row">
-                                    <a href="#" className="white-box link-box paper-box w-inline-block" onClick={changeCustomPostSwitch}>
-                                        <div className="box-padding paper-padding">
-                                            <h3 className="doc-heading">Custom Post</h3>
+                                    <div className="btnQ">
+                                        <a href="#" onClick={changeCustomPostSwitch}>Custom Post </a>
+                                        <div style={{ zIndex: '1', position: 'absolute', bottom: '70px' }}>
                                             <img
-                                                sizes="60px"
-                                                width={60}
+                                                style={{ width: '40px' }}
                                                 src={plus}
                                                 loading="lazy"
                                                 alt="plusicon"
-                                                className="image-18" />
+                                            />
                                         </div>
-                                    </a>
+                                    </div>
                                 </div>
-                                <div style={{ height: '163px' }}></div>
+                                {/* <div style={{ height: '163px' }}></div> */}
                             </div> : <CustomPost reset={reset} key={seed} />
                         }
                     </div>
-                    <div data-w-tab="Blog" className="dashboard-section w-tab-pane w--tab-active">
-                        {blogPostPendingFlag ?
-                            <div style={{ zIndex: '2', paddingTop: '260px', paddingBottom: '225px' }}>
+                    <div data-w-tab="Blog" className="dashboard-section w-tab-pane w--tab-active" style={{ marginTop: '40px' }}>
+                        {BPResetFlag === false ?
+                            <div>
+                                {blogPostPendingFlag ?
+                                    <div style={{ zIndex: '2', paddingTop: '260px', paddingBottom: '201px' }}>
+                                        <div className="row justify-content-center align-items-center">
+                                            <div className="col-lg-4 d-flex justify-content-center">
+                                                <div className="form-section-title-2">Generating Posts</div>
+                                            </div>
+                                        </div>
+                                        <div className="w-100"></div>
+                                        <div className="row justify-content-center align-items-center">
+                                            <div className="col-lg-4 d-flex justify-content-center">
+                                                <div className="spinner-border text-danger" role="status">
+                                                    <span className="sr-only"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    :
+                                    <>
+                                        <div className="container-18 w-container">
+                                            <div className="form-wrap w-form">
+                                                <form id="email-form" name="email-form" data-name="Email Form" method="get" className="form-4">
+                                                    <div className="ios-style-reset w-embed">
+                                                        <style dangerouslySetInnerHTML={{ __html: "\n input[type=text],\n input[type=email],\n input[type=tel] {\n /* Removes innershadow on form fields on iOS */\n border-radius: 0;\n                        -webkit-appearance: none;\n                        -moz-appearance: none;\n                        appearance: none;\n                      }\n                    " }} />
+                                                    </div>
+                                                    <h1 className="form-heading">Blog Generation</h1>
+                                                    <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '50px' }}>
+                                                        <div style={{ width: '90%' }}>
+                                                            <SelectTagInput />
+                                                        </div>
+                                                        <p data-for="tooltipTag" data-tip style={{ paddingTop: '5px' }} onMouseEnter={() => showTooltip(true)}
+                                                            onMouseLeave={() => {
+                                                                showTooltip(false);
+                                                                setTimeout(() => showTooltip(true), 50);
+                                                            }}>
+                                                            <img src={infoIcon} alt='...' style={{ width: '25px' }}></img>
+                                                        </p>
+                                                        {tooltip &&
+                                                            <ReactTooltip id="tooltipTag" data-effect="float" delayHide={1000} >
+                                                                <span>Select relevent tags from the list to customize your blog post</span>
+                                                            </ReactTooltip>
+                                                        }
+                                                    </div>
+                                                    <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '50px' }}>
+                                                        <div className="field-wrap">
+                                                            <textarea
+                                                                type="text"
+                                                                onChange={handleBPDescription}
+                                                                className="form-field w-input"
+                                                                autoComplete="off"
+                                                                maxLength={1000}
+                                                                name="name"
+                                                                data-name="name"
+                                                                placeholder="Enter a short description for the blog"
+                                                                id="name"
+                                                                required
+                                                                style={{ height: '100px' }} />
+                                                        </div>
+                                                        <p data-for="tooltipURLdesc" data-tip style={{ paddingTop: '5px' }} onMouseEnter={() => showTooltip(true)}
+                                                            onMouseLeave={() => {
+                                                                showTooltip(false);
+                                                                setTimeout(() => showTooltip(true), 50);
+                                                            }}>
+                                                            <img src={infoIcon} alt='...' style={{ width: '25px' }}></img>
+                                                        </p>
+                                                        {tooltip &&
+                                                            <ReactTooltip id="tooltipURLdesc" data-effect="float" delayHide={1000} >
+                                                                <span>Enter a short description for the blog</span>
+                                                            </ReactTooltip>
+                                                        }
+                                                    </div>
+                                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                        <div className="field-wrap">
+                                                            <input
+                                                                type="text"
+                                                                onChange={handleBPUrl}
+                                                                className="form-field w-input"
+                                                                autoComplete="off"
+                                                                maxLength={256}
+                                                                name="name"
+                                                                data-name="name"
+                                                                placeholder="Enter a URL"
+                                                                id="name"
+                                                                required />
+                                                        </div>
+                                                        <p data-for="tooltipURL" data-tip style={{ paddingTop: '5px' }} onMouseEnter={() => showTooltip(true)}
+                                                            onMouseLeave={() => {
+                                                                showTooltip(false);
+                                                                setTimeout(() => showTooltip(true), 50);
+                                                            }}>
+                                                            <img src={infoIcon} alt='...' style={{ width: '25px' }}></img>
+                                                        </p>
+                                                        {tooltip &&
+                                                            <ReactTooltip id="tooltipURL" data-effect="float" delayHide={1000} >
+                                                                <span>Enter a URL of a post that you want a blog created from</span>
+                                                            </ReactTooltip>
+                                                        }
+                                                    </div>
+                                                    <div className="orfield">
+                                                        <h3 className="heading-24">OR</h3>
+                                                    </div>
+                                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                        <div className="field-wrap">
+                                                            {/* <label htmlFor="day" className="form-field-label">Select</label> */}
+                                                            <select id="day" name="day" data-name="day" required className="form-field select-field wide w-select">
+                                                                <option value>Select From Saved Article</option>
+                                                                <option value="Monday">https://www.agegracefullyamerica.com/technology-help/</option>
+                                                                <option value="Tuesday">https://www.internetsociety.org/issues/technology/</option>
+                                                                <option value="Wednesday">https://www.computerweekly.com/blogs</option>
+                                                                <option value="Thursday">https://www.gartner.com/en/information-technology/insights/information-technology-blogs</option>
+                                                            </select>
+                                                        </div>
+                                                        <p data-for="tooltipSaved" data-tip style={{ paddingTop: '5px' }} onMouseEnter={() => showTooltip(true)}
+                                                            onMouseLeave={() => {
+                                                                showTooltip(false);
+                                                                setTimeout(() => showTooltip(true), 50);
+                                                            }}>
+                                                            <img src={infoIcon} alt='...' style={{ width: '25px' }}></img>
+                                                        </p>
+                                                        {tooltip &&
+                                                            <ReactTooltip id="tooltipSaved" data-effect="float" delayHide={1000} >
+                                                                <span>Select one Blog from your saved Articles</span>
+                                                            </ReactTooltip>
+                                                        }
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <div className="container-15 w-container">
+                                            <a href="#" className="button-3 w-button" onClick={generateBlogPost}>Submit</a>
+                                        </div>
+                                    </>
+                                }
+                            </div>
+                            :
+                            <div style={{ zIndex: '2', paddingTop: '190px', paddingBottom: '177px' }}>
                                 <div className="row justify-content-center align-items-center">
                                     <div className="col-lg-4 d-flex justify-content-center">
-                                        <div className="form-section-title-2">Generating Posts</div>
+                                        <div className="form-section-title-2">Blog Post Generated</div>
                                     </div>
                                 </div>
                                 <div className="w-100"></div>
                                 <div className="row justify-content-center align-items-center">
                                     <div className="col-lg-4 d-flex justify-content-center">
-                                        <div className="spinner-border text-danger" role="status">
-                                            <span className="sr-only"></span>
-                                        </div>
+                                        <p>Check out your blog  <a href={blogPostUrl} target="_blank" rel="noopener noreferrer">here</a>.</p>
+                                    </div>
+                                </div>
+                                <div className="row justify-content-center align-items-center p-4">
+                                    <div className="col-lg-4 d-flex justify-content-center">
+                                        <button className="btn btn-dark" onClick={handleBPReset}>Start Over</button>
                                     </div>
                                 </div>
                             </div>
-                            :
-                            <>
-                                <div className="container-18 w-container">
-                                    <div className="form-wrap w-form">
-                                        <form id="email-form" name="email-form" data-name="Email Form" method="get" className="form-4">
-                                            <div className="ios-style-reset w-embed">
-                                                <style dangerouslySetInnerHTML={{ __html: "\n input[type=text],\n input[type=email],\n input[type=tel] {\n /* Removes innershadow on form fields on iOS */\n border-radius: 0;\n                        -webkit-appearance: none;\n                        -moz-appearance: none;\n                        appearance: none;\n                      }\n                    " }} />
-                                            </div>
-                                            <h1 className="form-heading">Blog Generation</h1>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '50px' }}>
-                                                <div style={{ width: '90%' }}>
-                                                    <SelectTagInput />
-                                                </div>
-                                                <p data-for="tooltipTag" data-tip style={{ paddingTop: '5px' }} onMouseEnter={() => showTooltip(true)}
-                                                    onMouseLeave={() => {
-                                                        showTooltip(false);
-                                                        setTimeout(() => showTooltip(true), 50);
-                                                    }}>
-                                                    <img src={infoIcon} alt='...' style={{ width: '25px' }}></img>
-                                                </p>
-                                                {tooltip &&
-                                                    <ReactTooltip id="tooltipTag" data-effect="float" delayHide={1000} >
-                                                        <span>Select relevent tags from the list to customize your blog post</span>
-                                                    </ReactTooltip>
-                                                }
-                                            </div>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '50px' }}>
-                                                <div className="field-wrap">
-                                                    <textarea
-                                                        type="text"
-                                                        onChange={handleBPDescription}
-                                                        className="form-field w-input"
-                                                        autoComplete="off"
-                                                        maxLength={1000}
-                                                        name="name"
-                                                        data-name="name"
-                                                        placeholder="Enter a short description for the blog"
-                                                        id="name"
-                                                        required
-                                                        style={{ height: '100px' }} />
-                                                </div>
-                                                <p data-for="tooltipURLdesc" data-tip style={{ paddingTop: '5px' }} onMouseEnter={() => showTooltip(true)}
-                                                    onMouseLeave={() => {
-                                                        showTooltip(false);
-                                                        setTimeout(() => showTooltip(true), 50);
-                                                    }}>
-                                                    <img src={infoIcon} alt='...' style={{ width: '25px' }}></img>
-                                                </p>
-                                                {tooltip &&
-                                                    <ReactTooltip id="tooltipURLdesc" data-effect="float" delayHide={1000} >
-                                                        <span>Enter a short description for the blog</span>
-                                                    </ReactTooltip>
-                                                }
-                                            </div>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                                <div className="field-wrap">
-                                                    <input
-                                                        type="text"
-                                                        onChange={handleBPUrl}
-                                                        className="form-field w-input"
-                                                        autoComplete="off"
-                                                        maxLength={256}
-                                                        name="name"
-                                                        data-name="name"
-                                                        placeholder="Enter a URL"
-                                                        id="name"
-                                                        required />
-                                                </div>
-                                                <p data-for="tooltipURL" data-tip style={{ paddingTop: '5px' }} onMouseEnter={() => showTooltip(true)}
-                                                    onMouseLeave={() => {
-                                                        showTooltip(false);
-                                                        setTimeout(() => showTooltip(true), 50);
-                                                    }}>
-                                                    <img src={infoIcon} alt='...' style={{ width: '25px' }}></img>
-                                                </p>
-                                                {tooltip &&
-                                                    <ReactTooltip id="tooltipURL" data-effect="float" delayHide={1000} >
-                                                        <span>Enter a URL of a post that you want a blog created from</span>
-                                                    </ReactTooltip>
-                                                }
-                                            </div>
-                                            <div className="orfield">
-                                                <h3 className="heading-24">OR</h3>
-                                            </div>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                                <div className="field-wrap">
-                                                    {/* <label htmlFor="day" className="form-field-label">Select</label> */}
-                                                    <select id="day" name="day" data-name="day" required className="form-field select-field wide w-select">
-                                                        <option value>Select From Saved Article</option>
-                                                        <option value="Monday">https://www.agegracefullyamerica.com/technology-help/</option>
-                                                        <option value="Tuesday">https://www.internetsociety.org/issues/technology/</option>
-                                                        <option value="Wednesday">https://www.computerweekly.com/blogs</option>
-                                                        <option value="Thursday">https://www.gartner.com/en/information-technology/insights/information-technology-blogs</option>
-                                                    </select>
-                                                </div>
-                                                <p data-for="tooltipSaved" data-tip style={{ paddingTop: '5px' }} onMouseEnter={() => showTooltip(true)}
-                                                    onMouseLeave={() => {
-                                                        showTooltip(false);
-                                                        setTimeout(() => showTooltip(true), 50);
-                                                    }}>
-                                                    <img src={infoIcon} alt='...' style={{ width: '25px' }}></img>
-                                                </p>
-                                                {tooltip &&
-                                                    <ReactTooltip id="tooltipSaved" data-effect="float" delayHide={1000} >
-                                                        <span>Select one Blog from your saved Articles</span>
-                                                    </ReactTooltip>
-                                                }
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                                <div className="container-15 w-container">
-                                    <a href="#" className="button-3 w-button" onClick={generateBlogPost}>Submit</a>
-                                </div>
-                            </>
                         }
                     </div>
                     <div data-w-tab="MyProjects" className="dashboard-section w-tab-pane">
                         {defaultProject === "" ?
-                            <div className="container-13" style={{ paddingBottom: '361px' }}>
+                            <div className="container-13">
                                 <h3 className="heading-20">Saved Projects</h3>
                                 {project === '' ?
                                     <div className="d-flex justify-content-center" style={{ zIndex: '2', paddingTop: '20px' }}>
@@ -1056,8 +1069,8 @@ function NavigationMenu() {
                                                                     </div>
                                                                     <div className="card-footer">
                                                                         <button className="btn btn-dark" style={{ margin: '5px' }}  ><i onClick={(e) => downloadVideo(e)} data-uid={project.post_url} className="bi bi-download"></i></button>
-                                                                        <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal" ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
                                                                         <button className="btn btn-dark" style={{ margin: '5px' }} data-bs-target="#shareProject" data-bs-toggle="modal" data-bs-whatever={project.post_url} data-bs-id={project.post_uid}><i className="bi bi-share"></i></button>
+                                                                        <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal" ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
                                                                     </div>
                                                                 </div> :
                                                                 <div className="card mb-3">
@@ -1072,8 +1085,8 @@ function NavigationMenu() {
                                                                     </div>
                                                                     <div className="card-footer">
                                                                         <button className="btn btn-dark" style={{ margin: '5px' }}  ><i onClick={(e) => downloadImage(e)} data-uid={project.post_url} className="bi bi-download"></i></button>
-                                                                        <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal" ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
                                                                         <button className="btn btn-dark" style={{ margin: '5px' }} data-bs-target="#shareProject" data-bs-toggle="modal" data-bs-whatever={project.post_url} data-bs-id={project.post_uid}><i className="bi bi-share"></i></button>
+                                                                        <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal" ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
                                                                     </div>
                                                                 </div>
                                                             }
@@ -1099,8 +1112,8 @@ function NavigationMenu() {
                                                                         </div>
                                                                         <div className="card-footer">
                                                                             <button className="btn btn-dark" style={{ margin: '5px' }}  ><i onClick={(e) => downloadVideo(e)} data-uid={project.post_url} className="bi bi-download"></i></button>
-                                                                            <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal"  ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
                                                                             <button className="btn btn-dark" style={{ margin: '5px' }} data-bs-target="#shareProject" data-bs-toggle="modal" data-bs-whatever={project.post_url} data-bs-id={project.post_uid}><i className="bi bi-share"></i></button>
+                                                                            <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal"  ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
                                                                         </div>
                                                                     </div> :
                                                                     <div className="card mb-3">
@@ -1115,8 +1128,8 @@ function NavigationMenu() {
                                                                         </div>
                                                                         <div className="card-footer">
                                                                             <button className="btn btn-dark" style={{ margin: '5px' }}  ><i onClick={(e) => downloadImage(e)} data-uid={project.post_url} className="bi bi-download"></i></button>
-                                                                            <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal"  ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
                                                                             <button className="btn btn-dark" style={{ margin: '5px' }} data-bs-target="#shareProject" data-bs-toggle="modal" data-bs-whatever={project.post_url} data-bs-id={project.post_uid}><i className="bi bi-share"></i></button>
+                                                                            <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal"  ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
                                                                         </div>
                                                                     </div>
                                                                 }
@@ -1157,8 +1170,8 @@ function NavigationMenu() {
                                                                     </div>
                                                                     <div className="card-footer">
                                                                         <button className="btn btn-dark" style={{ margin: '5px' }}  ><i onClick={(e) => downloadVideo(e)} data-uid={project.post_url} className="bi bi-download"></i></button>
-                                                                        <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal"  ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
                                                                         <button className="btn btn-dark" style={{ margin: '5px' }} data-bs-target="#shareProject" data-bs-toggle="modal" data-bs-whatever={project.post_url} data-bs-id={project.post_uid}><i className="bi bi-share"></i></button>
+                                                                        <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal"  ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
                                                                     </div>
                                                                 </div> :
                                                                 <div className="card mb-3">
@@ -1173,8 +1186,8 @@ function NavigationMenu() {
                                                                     </div>
                                                                     <div className="card-footer">
                                                                         <button className="btn btn-dark" style={{ margin: '5px' }} ><i onClick={(e) => downloadImage(e)} data-uid={project.post_url} className="bi bi-download"></i></button>
-                                                                        <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal" ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
                                                                         <button className="btn btn-dark" style={{ margin: '5px' }} data-bs-target="#shareProject" data-bs-toggle="modal" data-bs-whatever={project.post_url} data-bs-id={project.post_uid}><i className="bi bi-share"></i></button>
+                                                                        <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal" ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
                                                                     </div>
                                                                 </div>
                                                             }
@@ -1200,8 +1213,8 @@ function NavigationMenu() {
                                                                         </div>
                                                                         <div className="card-footer">
                                                                             <button className="btn btn-dark" style={{ margin: '5px' }}  ><i onClick={(e) => downloadVideo(e)} data-uid={project.post_url} className="bi bi-download"></i></button>
-                                                                            <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal"  ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
                                                                             <button className="btn btn-dark" style={{ margin: '5px' }} data-bs-target="#shareProject" data-bs-toggle="modal" data-bs-whatever={project.post_url} data-bs-id={project.post_uid}><i className="bi bi-share"></i></button>
+                                                                            <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal"  ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
                                                                         </div>
                                                                     </div> :
                                                                     <div className="card mb-3" >
@@ -1216,8 +1229,8 @@ function NavigationMenu() {
                                                                         </div>
                                                                         <div className="card-footer">
                                                                             <button className="btn btn-dark" style={{ margin: '5px' }}  ><i onClick={(e) => downloadImage(e)} data-uid={project.post_url} className="bi bi-download"></i></button>
-                                                                            <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal" ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
                                                                             <button className="btn btn-dark" style={{ margin: '5px' }} data-bs-target="#shareProject" data-bs-toggle="modal" data-bs-whatever={project.post_url} data-bs-id={project.post_uid}><i className="bi bi-share"></i></button>
+                                                                            <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal" ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
                                                                         </div>
                                                                     </div>
                                                                 }
@@ -1258,8 +1271,8 @@ function NavigationMenu() {
                                                                     </div>
                                                                     <div className="card-footer">
                                                                         <button className="btn btn-dark" style={{ margin: '5px' }}  ><i onClick={(e) => downloadVideo(e)} data-uid={project.post_url} className="bi bi-download"></i></button>
-                                                                        <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal"  ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
                                                                         <button className="btn btn-dark" style={{ margin: '5px' }} data-bs-target="#shareProject" data-bs-toggle="modal" data-bs-whatever={project.post_url} data-bs-id={project.post_uid}><i className="bi bi-share"></i></button>
+                                                                        <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal"  ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
                                                                     </div>
                                                                 </div> :
                                                                 <div className="card mb-3">
@@ -1274,8 +1287,8 @@ function NavigationMenu() {
                                                                     </div>
                                                                     <div className="card-footer">
                                                                         <button className="btn btn-dark" style={{ margin: '5px' }} ><i onClick={(e) => downloadImage(e)} data-uid={project.post_url} className="bi bi-download"></i></button>
-                                                                        <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal" ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
                                                                         <button className="btn btn-dark" style={{ margin: '5px' }} data-bs-target="#shareProject" data-bs-toggle="modal" data-bs-whatever={project.post_url} data-bs-id={project.post_uid}><i className="bi bi-share"></i></button>
+                                                                        <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal" ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
                                                                     </div>
                                                                 </div>
                                                             }
@@ -1301,8 +1314,8 @@ function NavigationMenu() {
                                                                         </div>
                                                                         <div className="card-footer">
                                                                             <button className="btn btn-dark" style={{ margin: '5px' }} ><i onClick={(e) => downloadVideo(e)} data-uid={project.post_url} className="bi bi-download"></i></button>
-                                                                            <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal" ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
                                                                             <button className="btn btn-dark" style={{ margin: '5px' }} data-bs-target="#shareProject" data-bs-toggle="modal" data-bs-whatever={project.post_url} data-bs-id={project.post_uid}><i className="bi bi-share"></i></button>
+                                                                            <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal" ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
                                                                         </div>
                                                                     </div> :
                                                                     <div className="card mb-3" >
@@ -1317,8 +1330,8 @@ function NavigationMenu() {
                                                                         </div>
                                                                         <div className="card-footer">
                                                                             <button className="btn btn-dark" style={{ margin: '5px' }}  ><i onClick={(e) => downloadImage(e)} data-uid={project.post_url} className="bi bi-download"></i></button>
-                                                                            <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal" ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
                                                                             <button className="btn btn-dark" style={{ margin: '5px' }} data-bs-target="#shareProject" data-bs-toggle="modal" data-bs-whatever={project.post_url} data-bs-id={project.post_uid}><i className="bi bi-share"></i></button>
+                                                                            <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal" ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
                                                                         </div>
                                                                     </div>
                                                                 }
@@ -1357,8 +1370,8 @@ function NavigationMenu() {
                                                                     {/* <h4 className="heading-21"><strong className="bold-text-5">{window.location.origin}/Blogs/{project.blogTitle}{project.post_uid}</strong></h4> */}
                                                                 </div>
                                                                 <div className="card-footer">
-                                                                    <button className="btn btn-dark" style={{ margin: '5px' }} data-bs-target="#shareBlog" data-bs-toggle="modal" data-bs-whatever={window.location.origin + "/blogs/" + project.blogTitleUrl + "/" + project.post_uid}><i className="bi bi-share"></i></button>
-                                                                    <button className="btn btn-dark " data-bs-target="#deleteBlogModal" data-bs-toggle="modal" data-bs-id={project.post_uid} ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
+                                                                    <button className="btn btn-dark" style={{ margin: '5px' }} data-bs-target="#shareProject" data-bs-toggle="modal" data-bs-whatever={window.location.origin + "/blogs/" + project.blogTitleUrl + "/" + project.post_uid} data-bs-id={project.post_uid}><i className="bi bi-share"></i></button>
+                                                                    <button className="btn btn-dark " data-bs-target="#deleteBlogModal" data-bs-toggle="modal" ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -1381,8 +1394,8 @@ function NavigationMenu() {
                                                                         {/* <h4 className="heading-21"><strong className="bold-text-5">{window.location.origin}/Blogs/{project.blogTitle}{project.post_uid}</strong></h4> */}
                                                                     </div>
                                                                     <div className="card-footer">
-                                                                        <button className="btn btn-dark" style={{ margin: '5px' }} data-bs-target="#shareBlog" data-bs-toggle="modal" data-bs-whatever={window.location.origin + "/blogs/" + project.blogTitleUrl + "/" + project.post_uid}><i className="bi bi-share"></i></button>
-                                                                        <button className="btn btn-dark " data-bs-target="#deleteBlogModal" data-bs-toggle="modal" data-bs-id={project.post_uid} ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
+                                                                        <button className="btn btn-dark" style={{ margin: '5px' }} data-bs-target="#shareProject" data-bs-toggle="modal" data-bs-whatever={window.location.origin + "/blogs/" + project.blogTitleUrl + "/" + project.post_uid} data-bs-id={project.post_uid}><i className="bi bi-share"></i></button>
+                                                                        <button className="btn btn-dark " data-bs-target="#deleteBlogModal" data-bs-toggle="modal" ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -1452,66 +1465,6 @@ function NavigationMenu() {
                             </div>
                         </div>
 
-                        <div className="modal fade" id="shareBlog" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="false">
-                            <div className="modal-dialog modal-dialog-centered">
-                                <div className="modal-content">
-                                    <div className="modal-header">
-                                        <h5 className="modal-title" id="exampleModalLabel">BLOG URL</h5>
-                                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
-                                        <input type="hidden" className="form-control" id="postUid" />
-                                    </div>
-                                    <div className="modal-body">
-                                        <div className="mb-3">
-                                            <label htmlFor="recipient-name" className="col-form-label">URL:</label>
-                                            <input type="text" className="form-control" id="recipient-name" />
-                                        </div>
-                                        <div className="mb-3 d-flex">
-                                            <div style={{ padding: '5px' }}>
-                                                <FacebookShareButton
-                                                    url={prop.url}>
-                                                    <FacebookIcon size={32} round />
-                                                </FacebookShareButton>
-                                            </div>
-                                            <div style={{ padding: '5px' }}>
-                                                <TwitterShareButton
-                                                    url={prop.url}>
-                                                    <TwitterIcon size={32} round />
-                                                </TwitterShareButton>
-                                            </div>
-                                            <div style={{ padding: '5px' }}>
-                                                <WhatsappShareButton
-                                                    url={prop.url}>
-                                                    <WhatsappIcon size={32} round />
-                                                </WhatsappShareButton>
-                                            </div>
-                                            <div style={{ padding: '5px' }}>
-                                                <RedditShareButton
-                                                    url={prop.url}>
-                                                    <RedditIcon size={32} round />
-                                                </RedditShareButton>
-                                            </div>
-                                            <div style={{ padding: '5px' }}>
-                                                <EmailShareButton
-                                                    url={prop.url}>
-                                                    <EmailIcon size={32} round />
-                                                </EmailShareButton>
-                                            </div>
-                                            <div style={{ padding: '5px' }}>
-                                                <PinterestShareButton
-                                                    url={prop.url}>
-                                                    <PinterestIcon size={32} round />
-                                                </PinterestShareButton>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="modal-footer">
-                                        <button type="button" className="btn btn-dark" data-bs-dismiss="modal">Close</button>
-                                        <button type="button" className="btn btn-dark" onClick={copyLink}>Copy URL</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
                         <div className="modal fade" id="shareProject" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="false">
                             <div className="modal-dialog modal-dialog-centered">
                                 <div className="modal-content">
@@ -1523,7 +1476,7 @@ function NavigationMenu() {
                                         <div className="mb-3">
                                             <label htmlFor="shareProjectUrl" className="col-form-label">URL:</label>
                                             <input type="text" className="form-control" id="shareProjectUrl" />
-                                            <input type="hidden" className="form-control" id="postUid" />
+                                            <input type="text" className="form-control" id="postUidP" />
                                         </div>
                                         <div className="mb-3 d-flex">
                                             <div style={{ padding: '5px' }}>

@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from "react-redux";
 import BuildAudienceLogo from '../../images/5.png';
+import { NotificationCenter } from '../Common/NotificationIcon/NotificationCenter';
 function DashboardNavbar() {
     const [template, setTemplate] = React.useState('');
     const [templateName, setTemplateName] = React.useState('');
@@ -28,8 +29,8 @@ function DashboardNavbar() {
     const { blogPostdata, blogPostSuccessFlag } = useSelector(state => state.blogPost);
 
     const saveBlogPost = useCallback(async () => {
-        const token = sessionStorage.getItem('userTokenSession');
-        /* const token = localStorage.getItem('userTokenLocal').slice(1, -1); */
+        /* const token = sessionStorage.getItem('userTokenSession'); */
+        const token = localStorage.getItem('userTokenLocal').slice(1, -1);
         const config = {
             headers: { Authorization: `Bearer ${token}` }
         };
@@ -52,7 +53,6 @@ function DashboardNavbar() {
     }, [blogPostdata, template]);
 
     const toastId = React.useRef(null);
-    const customId = "blogPostID";
 
     const success = () => toastId.current = toast.success('Blog Post saved', {
         position: "top-right",
@@ -62,7 +62,6 @@ function DashboardNavbar() {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        toastId: customId,
         type: "success"
     });
 
@@ -76,6 +75,9 @@ function DashboardNavbar() {
                 <div className="navbar-wrapper-2">
                     <a href="/Dashboard" className="navbar-brand w-nav-brand"><img src={BuildAudienceLogo} loading="lazy" width={50} alt="Buildaudience Logo" /></a>
                     <h3 className="heading-9">BUILDAUDIENCE.ME</h3>
+                    <div className="navIcon" style={{ translate: '400%', position: 'absolute' }}>
+                        <NotificationCenter />
+                    </div>
                     <nav role="navigation" className="nav-menu-wrapper-2 w-nav-menu">
                         <ul className="nav-menu-two-2 w-list-unstyled">
                             <li>

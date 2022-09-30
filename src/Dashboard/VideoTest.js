@@ -6,6 +6,7 @@ import { useNotificationCenter } from 'react-toastify/addons/use-notification-ce
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { NotificationCenter } from "../Dashboard/Common/NotificationIcon/NotificationCenter";
+import plus from '../images/addIcon.png';
 export default function VideoTest() {
     const [videoUrl, setVideoUrl] = useState('');
     const [vDict, setVDict] = useState('');
@@ -142,14 +143,14 @@ export default function VideoTest() {
         FileSaver.saveAs(url, "image.jpg");
     }
 
-
     const { notifications, clear, markAllAsRead, markAsRead } = useNotificationCenter();
     const showToast = () => {
         toast('Hello World', {
             data: {
                 title: 'Hello World Again',
                 text: 'We are here again with another article'
-            }
+            },
+            toastId: 'hello-world'
         });
     };
     const showSuccessToast = () => {
@@ -157,7 +158,8 @@ export default function VideoTest() {
             data: {
                 title: 'Success toast',
                 text: 'This is a success message'
-            }
+            },
+            toastId: 'hello-world1'
         });
     };
     const showErrorToast = () => {
@@ -165,10 +167,18 @@ export default function VideoTest() {
             data: {
                 title: 'Error toast',
                 text: 'This is an error message'
-            }
+            },
+            toastId: 'hello-world2'
         });
     };
-
+    const dayjs = require('dayjs')
+    useEffect(() => {
+        if (notifications.length > 0) {
+            console.log('Notifications', notifications);
+            console.log(dayjs(notifications[0].createdAt).format('YYYY-MM-DD HH:mm:ss'));
+        }
+    })
+    console.log(localStorage.getItem('userTokenLocal').slice(1, -1))
 
     return (
         <>
@@ -213,6 +223,21 @@ export default function VideoTest() {
             <div className="testing_noti" style={{ float: 'center', padding: '20px' }}>
                 <NotificationCenter />
             </div>
+
+
+            <div className="btnQ">
+                <a href="!">Quick Image Post </a>
+                <div style={{ zIndex: '1', position: 'absolute', bottom: '70px' }}>
+                    <img
+                        style={{ width: '40px' }}
+                        src={plus}
+                        loading="lazy"
+                        alt="plusicon"
+                    />
+                </div>
+
+            </div>
+            <div className="btnQ"><a href="!">Quick Video Post</a></div>
 
 
             <div className='row'>
