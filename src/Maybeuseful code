@@ -461,3 +461,58 @@ createPost.style.display = "none"
 newPost.style.display = "block"
 }
 }, [saveProjectSuccessFlag]) */
+useEffect(() => {
+/* var ssFlag = false; */
+var SSContainer = document.getElementById('SSContainer');
+var screenSaver = document.getElementById('screenSaver')
+
+function ssShow() {
+screenSaver.style.display = "block";
+
+}
+
+function ssHide() {
+screenSaver.style.display = "none"
+
+}
+
+console.log(ssFlag)
+
+if (ssFlag === false) {
+SSContainer.addEventListener('mousemove', function () {
+if (ssFlag === false) {
+setSSFlag(true)
+ssHide()
+}
+
+})
+}
+else {
+setSSFlag(false)
+setTimeout(ssShow, 5000)
+}
+}, [ssFlag])
+
+
+useEffect(() => {
+var timeoutvar;
+var screenSaver = document.getElementById('screenSaver')
+var SSContainer = document.getElementById('SSContainer');
+const status = window.getComputedStyle(screenSaver)
+console.log(status.display)
+
+function ssShow() {
+screenSaver.style.display = "block";
+}
+if (status.display === 'block') {
+SSContainer.addEventListener('mousemove', (event) => {
+screenSaver.style.display = "none"
+})
+}
+
+if (status.display === 'none') {
+clearTimeout(timeoutvar)
+timeoutvar = setTimeout(ssShow, 5000)
+}
+
+})

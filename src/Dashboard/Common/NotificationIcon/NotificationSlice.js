@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-    notiData: '',
+    notiData: '[{}]',
 }
 
 const NotificationSlice = createSlice({

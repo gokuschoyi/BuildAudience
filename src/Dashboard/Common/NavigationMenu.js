@@ -9,9 +9,17 @@ import plus from '../../images/addIcon.png';
 import infoIcon from '../../images/information.png'
 import axios from "axios";
 import CustomPost from "../CustomPost/CustomPost";
+import GalleryComponentVideo from "./GalleryComponent/GalleryComponentVideo";
+import GalleryComponentImage from "./GalleryComponent/GalleryComponentImage";
+import GalleryBlogComponent from "./GalleryComponent/GalleryBlogComponent";
+import {
+    Copied,
+    blogInputDescWarn,
+    blogInputUrlWarn,
+    deleteSuccess,
+    VProjectFlag
+} from "./AllToasts"
 import { resetCustomPostSlice, resetSaveProjectSuccessFlag } from '../CustomPost/CustomPostSlice'
-import { resetNotifiacationHistory } from './NotificationIcon/NotificationSlice'
-import { useNavigate } from "react-router-dom";
 import {
     blogPostPending,
     saveBlogPost,
@@ -93,7 +101,6 @@ function NavigationMenu() {
     const [BPResetFlag, setBPResetFlag] = useState(false)
     const projectCount = React.useRef(0)
     const randomValues = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
-    const history = useNavigate();
 
     const reset = useCallback(() => {
         setSeed(Math.random());
@@ -101,6 +108,49 @@ function NavigationMenu() {
         setCustomPostSwitch(false);
         console.log('seed', seed);
     }, [seed, dispatch]);
+
+    const SCREENSAVER_DELAY_MS = 300000;
+    const SCREENSAVER_INACTIVE_TIME_MS = 5000;
+    const [screensaverActive, setScreensaverActive] = useState(true);
+    const screensaverTimeout = React.useRef();
+    const secondTimer = React.useRef();
+
+    const activeScreensaver = useCallback(() => {
+        setScreensaverActive(true);
+        loop();
+        function loop() {
+            const timerRef2 = setTimeout(() => {
+                loop();
+            }, SCREENSAVER_INACTIVE_TIME_MS);
+            secondTimer.current = timerRef2;
+        }
+    }, []);
+
+    useEffect(() => {
+        activeScreensaver();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const startTimeout = useCallback(() => {
+        clearTimeout(screensaverTimeout.current);
+        clearTimeout(secondTimer.current);
+        const timeout = setTimeout(() => activeScreensaver(), SCREENSAVER_DELAY_MS);
+        screensaverTimeout.current = timeout;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const screensaverClicked = useCallback(() => {
+        setScreensaverActive(false);
+        startTimeout();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const appTouched = useCallback((ev) => {
+        if (ev.target.id !== "screenSaver") {
+            startTimeout();
+        }
+    });
 
     const changeCustomPostSwitch = () => {
         setCustomPostSwitch(true);
@@ -378,66 +428,8 @@ function NavigationMenu() {
             })
     }
 
-    const toastIdCopied = React.useRef(null);
-    const copied = (PostUid, ProjectUrl) => toastIdCopied.current = toast.success('Link Copied', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        data: {
-            url: ProjectUrl,
-            p_uid: PostUid
-        },
-        type: "success"
-    });
-
-    const toastIdBlogInputDescWarn = React.useRef(null);
-    const customIdBlogInputDescWarn = "custom-id-DescWarn";
-    const blogInputDescWarn = () => toastIdBlogInputDescWarn.current = toast.warn('Please fill in Description', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        toastId: customIdBlogInputDescWarn,
-        type: "warning"
-    });
-
-    const toastIdBlogInputUrlWarn = React.useRef(null);
-    const customIdBlogInputUrlWarn = "custom-id-UrlWarn";
-    const blogInputUrlWarn = () => toastIdBlogInputUrlWarn.current = toast.warn('Please fill in URL', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        toastId: customIdBlogInputUrlWarn,
-        type: "warning"
-    });
-
-    const toastIdDelete = React.useRef(null);
-    const deleteSuccess = (PostUid) => toastIdDelete.current = toast.success('Project Deleted', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        toastId: PostUid,
-        type: "success"
-    });
-
     const toastISuccess = React.useRef(null);
     const customIdImage = "custom-id-PSuccess";
-
     const imagePostSuccess = () => toastISuccess.current = toast.success('Your project has been saved', {
         position: "top-right",
         autoClose: false,
@@ -464,20 +456,6 @@ function NavigationMenu() {
         onClose: () => {
             handleSaveVideoProjectSuccess();
         },
-        type: "success"
-    });
-
-    const toastIdVProjectStatus = React.useRef(null);
-    const customIdVProjectStatus = "custom-id-yesVProject";
-    const VProjectFlag = () => toastIdVProjectStatus.current = toast.success('Video post Processed successfully. You can view it in the projects tab', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        toastId: customIdVProjectStatus,
         type: "success"
     });
 
@@ -579,21 +557,6 @@ function NavigationMenu() {
 
     }, [BPDescription, BPUrl, dispatch, blogPostUrl])
 
-    /* Setting share url for various  projects */
-    useEffect(() => {
-        var exampleModal = document.getElementById('shareProject')
-        exampleModal.addEventListener('show.bs.modal', function (event) {
-            var button = event.relatedTarget
-            var projectURL = button.getAttribute('data-bs-whatever')
-            var modalBodyInput = exampleModal.querySelectorAll('.modal-body input')
-            modalBodyInput[0].value = projectURL
-            setProp({
-                url: projectURL,
-            })
-            modalBodyInput[1].value = button.getAttribute('data-bs-id')
-        })
-    })
-
     /* Copying Project link */
     const copyProjectLink = () => {
         var PostUid = ''
@@ -605,7 +568,8 @@ function NavigationMenu() {
         PostUid = document.getElementById('postUidP').value
         console.log(PostUid)
         /* console.log(projectUrl) */
-        copied(PostUid, projectUrl)
+        /* copied(PostUid, projectUrl) */
+        Copied(PostUid, projectUrl)
     }
 
     /* getting status of saved video Project */
@@ -636,6 +600,21 @@ function NavigationMenu() {
             })
         console.log(PData)
     }, [dispatch, videoProjectUid])
+
+    /* Setting share url for various  projects */
+    useEffect(() => {
+        var exampleModal = document.getElementById('shareProject')
+        exampleModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget
+            var projectURL = button.getAttribute('data-bs-whatever')
+            var modalBodyInput = exampleModal.querySelectorAll('.modal-body input')
+            modalBodyInput[0].value = projectURL
+            setProp({
+                url: projectURL,
+            })
+            modalBodyInput[1].value = button.getAttribute('data-bs-id')
+        })
+    })
 
     /* Checking if custom video post is processed or not */
     useEffect(() => {
@@ -678,6 +657,7 @@ function NavigationMenu() {
             dispatch(resetQVPSlice())
         }
         return () => clearInterval(interval);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [qvpProjectVideoFlag, qvpData, qvpStatus, qvpUid, dispatch, getVideoProjectStatus])
 
     /* Resetting customPost, VideoPostStatus, QVP Post slices */
@@ -774,7 +754,21 @@ function NavigationMenu() {
                     </a>
                 </div>
 
-                <div className="dash-tab-wrapper w-tab-content">
+                <div className="dash-tab-wrapper w-tab-content" id="SSContainer" onClick={appTouched}>
+                    {screensaverActive && (
+                        <ul className="circles" id="screenSaver" onClick={screensaverClicked} >
+                            <li></li>
+                            <li></li>
+                            <li></li>
+                            <li></li>
+                            <li></li>
+                            <li></li>
+                            <li></li>
+                            <li></li>
+                            <li></li>
+                            <li></li>
+                        </ul>
+                    )}
                     <div data-w-tab="ImagePost" className="dashboard-section w-tab-pane">
                         <div className="container-13" style={{ marginTop: '60px' }}>
                             <h1 className="heading-18">Quick Post </h1>
@@ -1071,36 +1065,9 @@ function NavigationMenu() {
                                                     return (
                                                         <div className="col-lg-4 col-md-6 col-sm-12 d-flex align-items-stretch" key={project.key}>
                                                             {project.media_type === 'video' ?
-                                                                <div className="card mb-3">
-                                                                    <video src={project.post_url} controls type="video/mp4"></video>
-                                                                    <div className="card-body">
-                                                                        <h4 className="heading-19">{project.p_name}</h4>
-                                                                        <h4 className="heading-21"><strong className="bold-text-5">{project.quote}</strong></h4>
-                                                                        <h4 className="heading-21">{project.hashtags}</h4>
-                                                                        <div className="project-message"><strong className="bold-text-6">{project.quote_author}</strong></div>
-                                                                    </div>
-                                                                    <div className="card-footer">
-                                                                        <button className="btn btn-dark" style={{ margin: '5px' }}  ><i onClick={(e) => downloadVideo(e)} data-uid={project.post_url} className="bi bi-download"></i></button>
-                                                                        <button className="btn btn-dark" style={{ margin: '5px' }} data-bs-target="#shareProject" data-bs-toggle="modal" data-bs-whatever={project.post_url} data-bs-id={project.post_uid}><i className="bi bi-share"></i></button>
-                                                                        <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal" ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
-                                                                    </div>
-                                                                </div> :
-                                                                <div className="card mb-3">
-                                                                    <img
-                                                                        src={project.post_url}
-                                                                        alt="project 1" />
-                                                                    <div className="card-body">
-                                                                        <h4 className="heading-19">{project.p_name} - {project.tag}</h4>
-                                                                        <h4 className="heading-21"><strong className="bold-text-5">{project.quote}</strong></h4>
-                                                                        <h4 className="heading-21">{project.hashtags}</h4>
-                                                                        <div className="project-message"><strong className="bold-text-6">{project.quote_author}</strong></div>
-                                                                    </div>
-                                                                    <div className="card-footer">
-                                                                        <button className="btn btn-dark" style={{ margin: '5px' }}  ><i onClick={(e) => downloadImage(e)} data-uid={project.post_url} className="bi bi-download"></i></button>
-                                                                        <button className="btn btn-dark" style={{ margin: '5px' }} data-bs-target="#shareProject" data-bs-toggle="modal" data-bs-whatever={project.post_url} data-bs-id={project.post_uid}><i className="bi bi-share"></i></button>
-                                                                        <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal" ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
-                                                                    </div>
-                                                                </div>
+                                                                <GalleryComponentVideo project={project} downloadVideo={downloadVideo} getDeleteProjectUrl={getDeleteProjectUrl} />
+                                                                :
+                                                                <GalleryComponentImage project={project} downloadImage={downloadImage} getDeleteProjectUrl={getDeleteProjectUrl} />
                                                             }
                                                         </div>
                                                     )
@@ -1114,36 +1081,9 @@ function NavigationMenu() {
                                                         return (
                                                             <div className="col-lg-4 col-md-6 col-sm-12 d-flex align-items-stretch" key={project.key}>
                                                                 {project.media_type === 'video' ?
-                                                                    <div className="card mb-3">
-                                                                        <video src={project.post_url} controls type="video/mp4"></video>
-                                                                        <div className="card-body">
-                                                                            <h4 className="heading-19">{project.p_name}</h4>
-                                                                            <h4 className="heading-21"><strong className="bold-text-5">{project.quote}</strong></h4>
-                                                                            <h4 className="heading-21">{project.hashtags}</h4>
-                                                                            <div className="project-message"><strong className="bold-text-6">{project.quote_author}</strong></div>
-                                                                        </div>
-                                                                        <div className="card-footer">
-                                                                            <button className="btn btn-dark" style={{ margin: '5px' }}  ><i onClick={(e) => downloadVideo(e)} data-uid={project.post_url} className="bi bi-download"></i></button>
-                                                                            <button className="btn btn-dark" style={{ margin: '5px' }} data-bs-target="#shareProject" data-bs-toggle="modal" data-bs-whatever={project.post_url} data-bs-id={project.post_uid}><i className="bi bi-share"></i></button>
-                                                                            <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal"  ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
-                                                                        </div>
-                                                                    </div> :
-                                                                    <div className="card mb-3">
-                                                                        <img
-                                                                            src={project.post_url}
-                                                                            alt="project 1" />
-                                                                        <div className="card-body">
-                                                                            <h4 className="heading-19">{project.p_name} - {project.tag}</h4>
-                                                                            <h4 className="heading-21"><strong className="bold-text-5">{project.quote}</strong></h4>
-                                                                            <h4 className="heading-21">{project.hashtags}</h4>
-                                                                            <div className="project-message"><strong className="bold-text-6">{project.quote_author}</strong></div>
-                                                                        </div>
-                                                                        <div className="card-footer">
-                                                                            <button className="btn btn-dark" style={{ margin: '5px' }}  ><i onClick={(e) => downloadImage(e)} data-uid={project.post_url} className="bi bi-download"></i></button>
-                                                                            <button className="btn btn-dark" style={{ margin: '5px' }} data-bs-target="#shareProject" data-bs-toggle="modal" data-bs-whatever={project.post_url} data-bs-id={project.post_uid}><i className="bi bi-share"></i></button>
-                                                                            <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal"  ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
-                                                                        </div>
-                                                                    </div>
+                                                                    <GalleryComponentVideo project={project} downloadVideo={downloadVideo} getDeleteProjectUrl={getDeleteProjectUrl} />
+                                                                    :
+                                                                    <GalleryComponentImage project={project} downloadImage={downloadImage} getDeleteProjectUrl={getDeleteProjectUrl} />
                                                                 }
                                                             </div>
                                                         )
@@ -1172,36 +1112,9 @@ function NavigationMenu() {
                                                     return (
                                                         <div className="col-lg-4 col-md-6 col-sm-12 d-flex align-items-stretch" key={project.key}>
                                                             {project.media_type === 'video' ?
-                                                                <div className="card mb-3">
-                                                                    <video src={project.post_url} controls type="video/mp4"></video>
-                                                                    <div className="card-body">
-                                                                        <h4 className="heading-19">{project.p_name}</h4>
-                                                                        <h4 className="heading-21"><strong className="bold-text-5">{project.quote}</strong></h4>
-                                                                        <h4 className="heading-21">{project.hashtags}</h4>
-                                                                        <div className="project-message"><strong className="bold-text-6">{project.quote_author}</strong></div>
-                                                                    </div>
-                                                                    <div className="card-footer">
-                                                                        <button className="btn btn-dark" style={{ margin: '5px' }}  ><i onClick={(e) => downloadVideo(e)} data-uid={project.post_url} className="bi bi-download"></i></button>
-                                                                        <button className="btn btn-dark" style={{ margin: '5px' }} data-bs-target="#shareProject" data-bs-toggle="modal" data-bs-whatever={project.post_url} data-bs-id={project.post_uid}><i className="bi bi-share"></i></button>
-                                                                        <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal"  ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
-                                                                    </div>
-                                                                </div> :
-                                                                <div className="card mb-3">
-                                                                    <img
-                                                                        src={project.post_url}
-                                                                        alt="project 1" />
-                                                                    <div className="card-body">
-                                                                        <h4 className="heading-19">{project.p_name} - {project.tag}</h4>
-                                                                        <h4 className="heading-21"><strong className="bold-text-5">{project.quote}</strong></h4>
-                                                                        <h4 className="heading-21">{project.hashtags}</h4>
-                                                                        <div className="project-message"><strong className="bold-text-6">{project.quote_author}</strong></div>
-                                                                    </div>
-                                                                    <div className="card-footer">
-                                                                        <button className="btn btn-dark" style={{ margin: '5px' }} ><i onClick={(e) => downloadImage(e)} data-uid={project.post_url} className="bi bi-download"></i></button>
-                                                                        <button className="btn btn-dark" style={{ margin: '5px' }} data-bs-target="#shareProject" data-bs-toggle="modal" data-bs-whatever={project.post_url} data-bs-id={project.post_uid}><i className="bi bi-share"></i></button>
-                                                                        <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal" ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
-                                                                    </div>
-                                                                </div>
+                                                                <GalleryComponentVideo project={project} downloadVideo={downloadVideo} getDeleteProjectUrl={getDeleteProjectUrl} />
+                                                                :
+                                                                <GalleryComponentImage project={project} downloadImage={downloadImage} getDeleteProjectUrl={getDeleteProjectUrl} />
                                                             }
                                                         </div>
                                                     )
@@ -1215,36 +1128,9 @@ function NavigationMenu() {
                                                         return (
                                                             <div className="col-lg-4 col-md-6 col-sm-12 d-flex align-items-stretch" key={project.key}>
                                                                 {project.media_type === 'video' ?
-                                                                    <div className="card mb-3">
-                                                                        <video src={project.post_url} controls type="video/mp4"></video>
-                                                                        <div className="card-body">
-                                                                            <h4 className="heading-19">{project.p_name} - {project.tag}</h4>
-                                                                            <h4 className="heading-21"><strong className="bold-text-5">{project.quote}</strong></h4>
-                                                                            <h4 className="heading-21">{project.hashtags}</h4>
-                                                                            <div className="project-message"><strong className="bold-text-6">{project.quote_author}</strong></div>
-                                                                        </div>
-                                                                        <div className="card-footer">
-                                                                            <button className="btn btn-dark" style={{ margin: '5px' }}  ><i onClick={(e) => downloadVideo(e)} data-uid={project.post_url} className="bi bi-download"></i></button>
-                                                                            <button className="btn btn-dark" style={{ margin: '5px' }} data-bs-target="#shareProject" data-bs-toggle="modal" data-bs-whatever={project.post_url} data-bs-id={project.post_uid}><i className="bi bi-share"></i></button>
-                                                                            <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal"  ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
-                                                                        </div>
-                                                                    </div> :
-                                                                    <div className="card mb-3" >
-                                                                        <img
-                                                                            src={project.post_url}
-                                                                            alt="project 1" />
-                                                                        <div className="card-body">
-                                                                            <h4 className="heading-19">{project.p_name} - {project.tag}</h4>
-                                                                            <h4 className="heading-21"><strong className="bold-text-5">{project.quote}</strong></h4>
-                                                                            <h4 className="heading-21">{project.hashtags}</h4>
-                                                                            <div className="project-message"><strong className="bold-text-6">{project.quote_author}</strong></div>
-                                                                        </div>
-                                                                        <div className="card-footer">
-                                                                            <button className="btn btn-dark" style={{ margin: '5px' }}  ><i onClick={(e) => downloadImage(e)} data-uid={project.post_url} className="bi bi-download"></i></button>
-                                                                            <button className="btn btn-dark" style={{ margin: '5px' }} data-bs-target="#shareProject" data-bs-toggle="modal" data-bs-whatever={project.post_url} data-bs-id={project.post_uid}><i className="bi bi-share"></i></button>
-                                                                            <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal" ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
-                                                                        </div>
-                                                                    </div>
+                                                                    <GalleryComponentVideo project={project} downloadVideo={downloadVideo} getDeleteProjectUrl={getDeleteProjectUrl} />
+                                                                    :
+                                                                    <GalleryComponentImage project={project} downloadImage={downloadImage} getDeleteProjectUrl={getDeleteProjectUrl} />
                                                                 }
                                                             </div>
                                                         )
@@ -1273,36 +1159,9 @@ function NavigationMenu() {
                                                     return (
                                                         <div className="col-lg-4 col-md-6 col-sm-12 d-flex align-items-stretch" key={project.key}>
                                                             {project.media_type === 'video' ?
-                                                                <div className="card mb-3">
-                                                                    <video src={project.post_url} controls type="video/mp4"></video>
-                                                                    <div className="card-body">
-                                                                        <h4 className="heading-19">{project.p_name}</h4>
-                                                                        <h4 className="heading-21"><strong className="bold-text-5">{project.quote}</strong></h4>
-                                                                        <h4 className="heading-21">{project.hashtags}</h4>
-                                                                        <div className="project-message"><strong className="bold-text-6">{project.quote_author}</strong></div>
-                                                                    </div>
-                                                                    <div className="card-footer">
-                                                                        <button className="btn btn-dark" style={{ margin: '5px' }}  ><i onClick={(e) => downloadVideo(e)} data-uid={project.post_url} className="bi bi-download"></i></button>
-                                                                        <button className="btn btn-dark" style={{ margin: '5px' }} data-bs-target="#shareProject" data-bs-toggle="modal" data-bs-whatever={project.post_url} data-bs-id={project.post_uid}><i className="bi bi-share"></i></button>
-                                                                        <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal"  ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
-                                                                    </div>
-                                                                </div> :
-                                                                <div className="card mb-3">
-                                                                    <img
-                                                                        src={project.post_url}
-                                                                        alt="project 1" />
-                                                                    <div className="card-body">
-                                                                        <h4 className="heading-19">{project.p_name} - {project.tag}</h4>
-                                                                        <h4 className="heading-21"><strong className="bold-text-5">{project.quote}</strong></h4>
-                                                                        <h4 className="heading-21">{project.hashtags}</h4>
-                                                                        <div className="project-message"><strong className="bold-text-6">{project.quote_author}</strong></div>
-                                                                    </div>
-                                                                    <div className="card-footer">
-                                                                        <button className="btn btn-dark" style={{ margin: '5px' }} ><i onClick={(e) => downloadImage(e)} data-uid={project.post_url} className="bi bi-download"></i></button>
-                                                                        <button className="btn btn-dark" style={{ margin: '5px' }} data-bs-target="#shareProject" data-bs-toggle="modal" data-bs-whatever={project.post_url} data-bs-id={project.post_uid}><i className="bi bi-share"></i></button>
-                                                                        <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal" ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
-                                                                    </div>
-                                                                </div>
+                                                                <GalleryComponentVideo project={project} downloadVideo={downloadVideo} getDeleteProjectUrl={getDeleteProjectUrl} />
+                                                                :
+                                                                <GalleryComponentImage project={project} downloadImage={downloadImage} getDeleteProjectUrl={getDeleteProjectUrl} />
                                                             }
                                                         </div>
                                                     )
@@ -1316,36 +1175,9 @@ function NavigationMenu() {
                                                         return (
                                                             <div className="col-lg-4 col-md-6 col-sm-12 d-flex align-items-stretch" key={project.key}>
                                                                 {project.media_type === 'video' ?
-                                                                    <div className="card mb-3">
-                                                                        <video src={project.post_url} controls type="video/mp4"></video>
-                                                                        <div className="card-body">
-                                                                            <h4 className="heading-19">{project.p_name} - {project.tag}</h4>
-                                                                            <h4 className="heading-21"><strong className="bold-text-5">{project.quote}</strong></h4>
-                                                                            <h4 className="heading-21">{project.hashtags}</h4>
-                                                                            <div className="project-message"><strong className="bold-text-6">{project.quote_author}</strong></div>
-                                                                        </div>
-                                                                        <div className="card-footer">
-                                                                            <button className="btn btn-dark" style={{ margin: '5px' }} ><i onClick={(e) => downloadVideo(e)} data-uid={project.post_url} className="bi bi-download"></i></button>
-                                                                            <button className="btn btn-dark" style={{ margin: '5px' }} data-bs-target="#shareProject" data-bs-toggle="modal" data-bs-whatever={project.post_url} data-bs-id={project.post_uid}><i className="bi bi-share"></i></button>
-                                                                            <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal" ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
-                                                                        </div>
-                                                                    </div> :
-                                                                    <div className="card mb-3" >
-                                                                        <img
-                                                                            src={project.post_url}
-                                                                            alt="project 1" />
-                                                                        <div className="card-body">
-                                                                            <h4 className="heading-19">{project.p_name} - {project.tag}</h4>
-                                                                            <h4 className="heading-21"><strong className="bold-text-5">{project.quote}</strong></h4>
-                                                                            <h4 className="heading-21">{project.hashtags}</h4>
-                                                                            <div className="project-message"><strong className="bold-text-6">{project.quote_author}</strong></div>
-                                                                        </div>
-                                                                        <div className="card-footer">
-                                                                            <button className="btn btn-dark" style={{ margin: '5px' }}  ><i onClick={(e) => downloadImage(e)} data-uid={project.post_url} className="bi bi-download"></i></button>
-                                                                            <button className="btn btn-dark" style={{ margin: '5px' }} data-bs-target="#shareProject" data-bs-toggle="modal" data-bs-whatever={project.post_url} data-bs-id={project.post_uid}><i className="bi bi-share"></i></button>
-                                                                            <button className="btn btn-dark " data-bs-target="#deleteModal" data-bs-toggle="modal" ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
-                                                                        </div>
-                                                                    </div>
+                                                                    <GalleryComponentVideo project={project} downloadVideo={downloadVideo} getDeleteProjectUrl={getDeleteProjectUrl} />
+                                                                    :
+                                                                    <GalleryComponentImage project={project} downloadImage={downloadImage} getDeleteProjectUrl={getDeleteProjectUrl} />
                                                                 }
                                                             </div>
                                                         )
@@ -1373,19 +1205,7 @@ function NavigationMenu() {
                                                 {blogThree && blogThree.map(project => {
                                                     return (
                                                         <div className="col-lg-4 col-md-6 col-sm-12 d-flex align-items-stretch" key={project.key}>
-                                                            <div className="card mb-3">
-                                                                <img
-                                                                    src={project.blogUrl}
-                                                                    alt="project 1" />
-                                                                <div className="card-body">
-                                                                    <h4 className="heading-19">{project.blogTitle}</h4>
-                                                                    {/* <h4 className="heading-21"><strong className="bold-text-5">{window.location.origin}/Blogs/{project.blogTitle}{project.post_uid}</strong></h4> */}
-                                                                </div>
-                                                                <div className="card-footer">
-                                                                    <button className="btn btn-dark" style={{ margin: '5px' }} data-bs-target="#shareProject" data-bs-toggle="modal" data-bs-whatever={window.location.origin + "/blogs/" + project.blogTitleUrl + "/" + project.post_uid} data-bs-id={project.post_uid}><i className="bi bi-share"></i></button>
-                                                                    <button className="btn btn-dark " data-bs-target="#deleteBlogModal" data-bs-toggle="modal" ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
-                                                                </div>
-                                                            </div>
+                                                            <GalleryBlogComponent project={project} getDeleteProjectUrl={getDeleteProjectUrl} />
                                                         </div>
                                                     )
                                                 })}
@@ -1397,19 +1217,7 @@ function NavigationMenu() {
                                                     {blogRemaining && blogRemaining.map(project => {
                                                         return (
                                                             <div className="col-lg-4 col-md-6 col-sm-12 d-flex align-items-stretch" key={project.key}>
-                                                                <div className="card mb-3">
-                                                                    <img
-                                                                        src={project.blogUrl}
-                                                                        alt="project 1" />
-                                                                    <div className="card-body">
-                                                                        <h4 className="heading-19">{project.blogTitle}</h4>
-                                                                        {/* <h4 className="heading-21"><strong className="bold-text-5">{window.location.origin}/Blogs/{project.blogTitle}{project.post_uid}</strong></h4> */}
-                                                                    </div>
-                                                                    <div className="card-footer">
-                                                                        <button className="btn btn-dark" style={{ margin: '5px' }} data-bs-target="#shareProject" data-bs-toggle="modal" data-bs-whatever={window.location.origin + "/blogs/" + project.blogTitleUrl + "/" + project.post_uid} data-bs-id={project.post_uid}><i className="bi bi-share"></i></button>
-                                                                        <button className="btn btn-dark " data-bs-target="#deleteBlogModal" data-bs-toggle="modal" ><i onClick={(e) => getDeleteProjectUrl(e)} data-uid={project.post_uid} className="bi bi-trash"></i></button>
-                                                                    </div>
-                                                                </div>
+                                                                <GalleryBlogComponent project={project} getDeleteProjectUrl={getDeleteProjectUrl} />
                                                             </div>
                                                         )
                                                     })}
