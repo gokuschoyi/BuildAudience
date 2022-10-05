@@ -205,9 +205,9 @@ function UserProfile() {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="card mt-3">
+                                <div className="card mt-3 d-flex justify-content-between align-items-center">
                                     <ul className="list-group list-group-flush">
-                                        <li className="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                                        <li className="list-group-item flex-wrap">
                                             <a href="!" className="button-primary w-button" style={{ margin: '5px' }} onClick={(e) => setEmail(e)} >Reset Password</a>
                                         </li>
 

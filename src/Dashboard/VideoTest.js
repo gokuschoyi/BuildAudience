@@ -7,6 +7,8 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { NotificationCenter } from "../Dashboard/Common/NotificationIcon/NotificationCenter";
 import plus from '../images/addIcon.png';
+import Lottie from "lottie-react";
+import Loading from '../processing-success.json';
 export default function VideoTest() {
     const [videoUrl, setVideoUrl] = useState('');
     const [vDict, setVDict] = useState('');
@@ -172,13 +174,14 @@ export default function VideoTest() {
         });
     };
     const dayjs = require('dayjs')
+    console.log("current time",dayjs().valueOf())
     useEffect(() => {
         if (notifications.length > 0) {
             console.log('Notifications', notifications);
             console.log(dayjs(notifications[0].createdAt).format('YYYY-MM-DD HH:mm:ss'));
         }
     })
-    console.log(localStorage.getItem('userTokenLocal').slice(1, -1))
+    /* console.log(localStorage.getItem('userTokenLocal').slice(1, -1)) */
 
     return (
         <>
@@ -223,7 +226,10 @@ export default function VideoTest() {
             <div className="testing_noti" style={{ float: 'center', padding: '20px' }}>
                 <NotificationCenter />
             </div>
-
+            <div className='container' style={{width:'250px'}}>
+            <Lottie animationData={Loading} loop={true} />;
+            </div>
+            
 
             <div className="btnQ">
                 <a href="!">Quick Image Post </a>

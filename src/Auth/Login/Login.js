@@ -3,7 +3,10 @@ import LoginImage from '../../images/Untitled-design.png'
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import Lottie from "lottie-react";
+import Loader from './loader.json';
 import { loginPending, loginSuccess, loginFailure, resetF } from "./LoginSlice";
+import { saveLoginNoti } from '../../Dashboard/Common/NotificationIcon/NotificationSlice';
 function Login(props) {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -41,6 +44,16 @@ function Login(props) {
 
     async function login(e) {
         console.log("login function called");
+        const dayjs = require('dayjs')
+        var notiData = [{
+            content: "Login Successful",
+            id: "eoy110c",
+            theme: "light",
+            type: "success",
+            status: "added",
+            createdAt: dayjs().valueOf(),
+            read: false
+        }]
         if (email === '' || password === '') {
             return
         }
@@ -59,6 +72,7 @@ function Login(props) {
             }
             else {
                 dispatch(loginSuccess(result.data));
+                dispatch(saveLoginNoti(JSON.stringify(notiData)));
                 sessionStorage.setItem('userTokenSession', result.data.token);
                 sessionStorage.setItem('CompanyName', result.data.company_name);
                 sessionStorage.setItem('userEmail', email)
@@ -88,23 +102,25 @@ function Login(props) {
                             </button>
                         </div></div>}
                         <div className="form-block-5 w-form">
-                            <form id="email-form" name="email-form" data-name="Email Form" redirect="Dashboard" data-redirect="Dashboard" method="get" className="form-2">
-                                <h1 className="heading-15">Sign In</h1>
-                                <label htmlFor="name" className="email_text">Email</label>
-                                <input type="email" onChange={(e) => setEmail(e.target.value)} className="email w-input" autoFocus={true} maxLength={256} name="name" data-name="Name" placeholder="Enter yout Email" id="name" required />
-                                <label htmlFor="email" className="field-label-7">Password</label>
-                                <input type="password" onChange={(e) => setPassword(e.target.value)} className="password w-input" maxLength={256} name="email" data-name="Email" placeholder="Enter Password" id="email" required />
-                                <a href="/ForgotPassword"><div className="text-block-4">Forgot Password?</div></a>
-                                <input type="submit" onClick={login} data-wait="Please wait..." defaultValue="Submit" className="submit-button w-button" />
-                                <div className="text-block-5">Don't have an account? <span className="text-span-3" onClick={props.changeAuthMode} style={{ textDecoration: 'none' }} onMouseOver={getUnderline} onMouseLeave={removeUnderline}>Sign up</span>
-                                </div>
-                            </form>
+                            {isLoading === true ? <Lottie animationData={Loader} loop={true} /> :
+                                <form id="email-form" name="email-form" data-name="Email Form" redirect="Dashboard" data-redirect="Dashboard" method="get" className="form-2">
+                                    <h1 className="heading-15">Sign In</h1>
+                                    <label htmlFor="name" className="email_text">Email</label>
+                                    <input type="email" onChange={(e) => setEmail(e.target.value)} className="email w-input" autoFocus={true} maxLength={256} name="name" data-name="Name" placeholder="Enter yout Email" id="name" required />
+                                    <label htmlFor="email" className="field-label-7">Password</label>
+                                    <input type="password" onChange={(e) => setPassword(e.target.value)} className="password w-input" maxLength={256} name="email" data-name="Email" placeholder="Enter Password" id="email" required />
+                                    <a href="/ForgotPassword"><div className="text-block-4">Forgot Password?</div></a>
+                                    <input type="submit" onClick={login} data-wait="Please wait..." defaultValue="Submit" className="submit-button w-button" />
+                                    <div className="text-block-5">Don't have an account? <span className="text-span-3" onClick={props.changeAuthMode} style={{ textDecoration: 'none' }} onMouseOver={getUnderline} onMouseLeave={removeUnderline}>Sign up</span>
+                                    </div>
+                                </form>
+                            }
                         </div>
-                        {isLoading && <div className="d-flex justify-content-center" style={{ zIndex: '2', paddingTop: '20px' }}>
+                        {/*  {isLoading && <div className="d-flex justify-content-center" style={{ zIndex: '2', paddingTop: '20px' }}>
                             <div className="spinner-border text-danger" role="status">
                                 <span className="sr-only"></span>
                             </div>
-                        </div>}
+                        </div>} */}
                         {success && <div>
                             <div className="alert alert-success alert-dismissible fade show" role="alert">
                                 <strong>Reset password link sent to {emailR}</strong>

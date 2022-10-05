@@ -61,10 +61,39 @@ const VProjectFlag = () => toast.success('Video post Processed successfully. You
     type: "success"
 });
 
+const qvpSuccess = (QvpUid, handleQvpSuccess) => toast.success('Your Quick Video Post is being Processed', {
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    toastId: QvpUid,
+    onClose: () => {
+        handleQvpSuccess();
+    },
+    type: "success"
+});
+
+const qvpProjectFlag = (QvpUid) => toast.success('Your Quick Video post processed successfully. You can view it in the projects tab', {
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    toastId: QvpUid,
+    type: "success"
+});
+
 export {
     Copied,
     blogInputDescWarn,
     blogInputUrlWarn,
     deleteSuccess,
     VProjectFlag,
+    qvpSuccess,
+    qvpProjectFlag
 }

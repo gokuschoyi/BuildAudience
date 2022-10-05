@@ -8,6 +8,9 @@ const NotificationSlice = createSlice({
     name: "NotificationHistory",
     initialState,
     reducers: {
+        saveLoginNoti: (state, action) => {
+            state.notiData = action.payload;
+        },
         saveNotificationData: (state, action) => {
             state.notiData = action.payload;
         },
@@ -19,6 +22,6 @@ const NotificationSlice = createSlice({
 
 const { reducer, actions } = NotificationSlice;
 
-export const { saveNotificationData, resetNotifiacationHistory } = actions;
+export const { saveLoginNoti, saveNotificationData, resetNotifiacationHistory } = actions;
 
 export default reducer;

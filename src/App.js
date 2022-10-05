@@ -15,6 +15,7 @@ import { PersistGate } from 'reduxjs-toolkit-persist/integration/react'
 import RegistrationSuccess from "./Auth/Signup/RegistrationSuccess";
 import UserProfile from "./Auth/UserProfile/UserProfile";
 import VideoTest from "./Dashboard/VideoTest";
+import PageNotFound from './Common/404PageNotFound';
 
 function App() {
   return (
@@ -70,6 +71,7 @@ function App() {
 
               <Route path='/Blogs/:title/:id' element={<Blogs />}> </Route>
               <Route path='/VideoTest' element={<VideoTest />}> </Route>
+              <Route path='*' element={<PageNotFound />}> </Route>
             </Routes>
           </div>
         </Router>

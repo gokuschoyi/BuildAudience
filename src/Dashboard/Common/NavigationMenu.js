@@ -12,12 +12,16 @@ import CustomPost from "../CustomPost/CustomPost";
 import GalleryComponentVideo from "./GalleryComponent/GalleryComponentVideo";
 import GalleryComponentImage from "./GalleryComponent/GalleryComponentImage";
 import GalleryBlogComponent from "./GalleryComponent/GalleryBlogComponent";
+import ImageProcessing from './ImageProcessing.json';
+import Lottie from "lottie-react";
 import {
     Copied,
     blogInputDescWarn,
     blogInputUrlWarn,
     deleteSuccess,
-    VProjectFlag
+    VProjectFlag,
+    qvpSuccess,
+    qvpProjectFlag
 } from "./AllToasts"
 import { resetCustomPostSlice, resetSaveProjectSuccessFlag } from '../CustomPost/CustomPostSlice'
 import {
@@ -459,35 +463,6 @@ function NavigationMenu() {
         type: "success"
     });
 
-    const toastQvpSuccess = React.useRef(null);
-    const qvpSuccess = (QvpUid) => toastQvpSuccess.current = toast.success('Your Quick Video Post is being Processed', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        toastId: QvpUid,
-        onClose: () => {
-            handleQvpSuccess();
-        },
-        type: "success"
-    });
-
-    const toastIdQVPStatus = React.useRef(null);
-    const qvpProjectFlag = (QvpUid) => toastIdQVPStatus.current = toast.success('Your Quick Video post processed successfully. You can view it in the projects tab', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        toastId: QvpUid + randomValues[Math.floor(Math.random() * randomValues.length)],
-        type: "success"
-    });
-
     function handleQvpSuccess() {
         console.log("qvp success")
         dispatch(resetQvpSaveFlag())
@@ -505,7 +480,7 @@ function NavigationMenu() {
         imagePostSuccess()
     }
     if (saveQvpFlag === true) {
-        qvpSuccess(qvpUid)
+        qvpSuccess(qvpUid, handleQvpSuccess )
     }
 
     /* Random number generator for blogPost template selection */
@@ -647,7 +622,7 @@ function NavigationMenu() {
                 }, 5000)
             }
             else {
-                qvpProjectFlag(qvpUid);
+                qvpProjectFlag(qvpUid+randomValues[Math.floor(Math.random() * randomValues.length)]);
                 setqvpProcessedStatus(true)
                 dispatch(resetQVPSlice())
             }
@@ -793,11 +768,11 @@ function NavigationMenu() {
                                             </div>
                                             <div className="modal-body">
                                                 {qipUrl === '' ?
-                                                    <div className="d-flex justify-content-center" style={{ zIndex: '2', paddingTop: '20px' }}>
-                                                        <div className="spinner-border text-danger" role="status">
-                                                            <span className="sr-only"></span>
-                                                        </div>
-                                                    </div> :
+                                                    <>
+                                                        <div className="heading-projects">Processing Image</div>
+                                                        <Lottie animationData={ImageProcessing} loop={true} />
+                                                    </>
+                                                    :
                                                     <img src={qipUrl.data} alt="qip" />}
                                             </div>
                                             <div className="modal-footer">
@@ -829,11 +804,8 @@ function NavigationMenu() {
                                             <div className="modal-body">
                                                 {qvpProcessedStatus === false ?
                                                     <>
-                                                        <div className="d-flex justify-content-center" style={{ zIndex: '2', paddingTop: '20px' }}>
-                                                            <div className="spinner-border text-danger" role="status">
-                                                                <span className="sr-only"></span>
-                                                            </div>
-                                                        </div>
+                                                        <div className="heading-projects">Processing Video</div>
+                                                        <Lottie animationData={ImageProcessing} loop={true} />
                                                         {qvpProjectVideoFlag === true ?
                                                             <div className="heading-21" style={{ textAlign: 'center' }}>
                                                                 You will be notified once the quick video post is processed. You can close this tab.
