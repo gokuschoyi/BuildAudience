@@ -44,30 +44,6 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              {/* <Route
-                path='/BlogPost1'
-                element={
-                  <ProtectedRoute>
-                    <BlogPost1 />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path='/BlogPost2'
-                element={
-                  <ProtectedRoute>
-                    <BlogPost2 />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path='/BlogPost3'
-                element={
-                  <ProtectedRoute>
-                    <BlogPost3 />
-                  </ProtectedRoute>
-                }
-              /> */}
               <Route path='/BlogPost1' element={<BlogPost1 />}></Route>
               <Route path='/BlogPost2' element={<BlogPost2 />}></Route>
               <Route path='/BlogPost3' element={<BlogPost3 />}></Route>
