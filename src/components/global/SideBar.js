@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
-/* import { Link } from "react-router-dom"; */
+import { Link, useLocation } from "react-router-dom";
 import { tokens } from "../../themes/theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
@@ -17,41 +17,22 @@ import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 
-const Item = ({ title, to, icon, selected, setSelected }) => {
-    const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
-    /* console.log({selected,title}) */
-    return (
-        <MenuItem
-            active={selected === title}
-            style={{
-                backgroundColor: selected === title ? colors.black[300] : "transparent",
-                color: theme.palette.background,
-            }}
-            onClick={() => setSelected(title)}
-            icon={icon}
-            
-        >
-            <Typography>{title}</Typography>
-            {/* <Link to={to} /> */}
-        </MenuItem>
-    );
-};
-
 const SidebarC = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [isCollapsed, setIsCollapsed] = useState(false);
-    const [selected, setSelected] = useState("Dashboard");
+    const [selected, setSelected] = useState("");
     const sm = useMediaQuery(theme.breakpoints.down('sm'));
-    console.log(theme.palette.mode);
+    /* console.log(theme.palette.mode); */
     /* console.log(colors.black[400]) */
+    let pathname = useLocation().pathname
+    console.log(pathname)
 
     useEffect(() => {
-        if(sm){
+        if (sm) {
             setIsCollapsed(true)
         }
-        else{
+        else {
             setIsCollapsed(false)
         }
     }, [setIsCollapsed, sm])
@@ -72,7 +53,7 @@ const SidebarC = () => {
                     '& .menu-item:active': {
                         backgroundColor: `${theme.palette.background} !important`,
                     },
-                    '& .MuiTypography-root':{
+                    '& .MuiTypography-root': {
                         color: `${theme.palette.background} !important`,
                     }
                 }}
@@ -86,7 +67,7 @@ const SidebarC = () => {
                                 justifyContent="space-between"
                                 alignItems="center"
                                 ml="15px"
-                                sx={{height:'72px'}}
+                                sx={{ height: '72px' }}
                             >
                                 <Typography variant="h3" color={theme.palette.primary.main}>
                                     BUILDAUDIENCE
@@ -98,140 +79,191 @@ const SidebarC = () => {
                         ) : (
                             <Box
                                 textAlign="center"
-                                sx={{height:'72px'}}	
+                                sx={{ height: '72px' }}
                             >
-                                <IconButton sx={{marginTop:'20%'}} onClick={() => setIsCollapsed(!isCollapsed)}>
+                                <IconButton sx={{ marginTop: '20%' }} onClick={() => setIsCollapsed(!isCollapsed)}>
                                     <MenuOutlinedIcon />
                                 </IconButton>
                             </Box>
                         )}
 
-                        {/* {!isCollapsed && (
-                            <Box mb="25px">
-                                <Box textAlign="center">
-                                    <Typography
-                                        variant="h2"
-                                        color={colors.blue[400]}
-                                        fontWeight="bold"
-                                        sx={{ m: "10px 0 0 0" }}
-                                    >
-                                        Ed Roh
-                                    </Typography>
-                                    <Typography variant="h5" color={colors.yellow[500]}>
-                                        VP Fancy Admin
-                                    </Typography>
-                                </Box>
-                            </Box>
-                        )} */}
-
                         <Box paddingLeft={isCollapsed ? undefined : "0%"}>
-                            <Item
-                                title="Dashboard"
-                                to="/"
+                            <MenuItem
+                                active={selected === "dashboardTab"}
+                                style={{
+                                    backgroundColor: selected === "dashboardTab" ? colors.black[300] : "transparent",
+                                    color: theme.palette.background,
+                                }}
+                                onClick={() => setSelected("dashboardTab")}
                                 icon={<HomeOutlinedIcon />}
-                                selected={selected}
-                                setSelected={setSelected}
-                            />
+                                routerLink={<Link to="dashboardTab" />}
+                            >
+                                <Typography>Dashboard</Typography>
+                            </MenuItem>
+
                             <Typography
                                 variant="h6"
-                                
                                 sx={{ m: "15px 0 5px 20px" }}
                             >
                                 Tools
                             </Typography>
-                            <Item
-                                title="Quick Posts"
-                                to="/quickpost"
+
+                            <MenuItem
+                                active={selected === "quickpost"}
+                                style={{
+                                    backgroundColor: selected === "quickpost" ? colors.black[300] : "transparent",
+                                    color: theme.palette.background,
+                                }}
+                                onClick={() => setSelected("quickpost")}
                                 icon={<PeopleOutlinedIcon />}
-                                selected={selected}
-                                setSelected={setSelected}
-                            />
-                            <Item
-                                title="Custom Posts"
-                                to="/custompost"
+                                routerLink={<Link to="quickpost" />}
+                            >
+                                <Typography>Quick Post</Typography>
+                            </MenuItem>
+
+                            <MenuItem
+                                active={selected === "custompost"}
+                                style={{
+                                    backgroundColor: selected === "custompost" ? colors.black[300] : "transparent",
+                                    color: theme.palette.background,
+                                }}
+                                onClick={() => setSelected("custompost")}
                                 icon={<ContactsOutlinedIcon />}
-                                selected={selected}
-                                setSelected={setSelected}
-                            />
-                            <Item
-                                title="Blog Posts"
-                                to="/blogpost"
+                                routerLink={<Link to="/" />}
+                            >
+                                <Typography>Custom Post</Typography>
+                            </MenuItem>
+
+                            <MenuItem
+                                active={selected === "blogpost"}
+                                style={{
+                                    backgroundColor: selected === "blogpost" ? colors.black[300] : "transparent",
+                                    color: theme.palette.background,
+                                }}
+                                onClick={() => setSelected("blogpost")}
                                 icon={<ReceiptOutlinedIcon />}
-                                selected={selected}
-                                setSelected={setSelected}
-                            />
-                            <Item
-                                title="Projects"
-                                to="/projects"
+                                routerLink={<Link to="/" />}
+                            >
+                                <Typography>Blog Post</Typography>
+                            </MenuItem>
+
+                            <MenuItem
+                                active={selected === "projects"}
+                                style={{
+                                    backgroundColor: selected === "projects" ? colors.black[300] : "transparent",
+                                    color: theme.palette.background,
+                                }}
+                                onClick={() => setSelected("projects")}
                                 icon={<ReceiptOutlinedIcon />}
-                                selected={selected}
-                                setSelected={setSelected}
-                            />
+                                routerLink={<Link to="/" />}
+                            >
+                                <Typography>Projects</Typography>
+                            </MenuItem>
 
                             <Typography
                                 variant="h6"
-                                
-                                sx={{ m: "15px 0 5px 20px",  }}
+                                sx={{ m: "15px 0 5px 20px", }}
                             >
                                 Pages
                             </Typography>
-                            <Item
-                                title="Profile Form"
-                                to="/form"
+
+                            <MenuItem
+                                active={selected === "profileform"}
+                                style={{
+                                    backgroundColor: selected === "profileform" ? colors.black[300] : "transparent",
+                                    color: theme.palette.background,
+                                }}
+                                onClick={() => setSelected("profileform")}
                                 icon={<PersonOutlinedIcon />}
-                                selected={selected}
-                                setSelected={setSelected}
-                            />
-                            <Item
-                                title="Calendar"
-                                to="/calendar"
+                                routerLink={<Link to="/" />}
+                            >
+                                <Typography>Profile Form</Typography>
+                            </MenuItem>
+
+                            <MenuItem
+                                active={selected === "calender"}
+                                style={{
+                                    backgroundColor: selected === "calender" ? colors.black[300] : "transparent",
+                                    color: theme.palette.background,
+                                }}
+                                onClick={() => setSelected("calender")}
                                 icon={<CalendarTodayOutlinedIcon />}
-                                selected={selected}
-                                setSelected={setSelected}
-                            />
-                            <Item
-                                title="FAQ Page"
-                                to="/faq"
+                                routerLink={<Link to="/" />}
+                            >
+                                <Typography>Calender</Typography>
+                            </MenuItem>
+
+                            <MenuItem
+                                active={selected === "faqpage"}
+                                style={{
+                                    backgroundColor: selected === "faqpage" ? colors.black[300] : "transparent",
+                                    color: theme.palette.background,
+                                }}
+                                onClick={() => setSelected("faqpage")}
                                 icon={<HelpOutlineOutlinedIcon />}
-                                selected={selected}
-                                setSelected={setSelected}
-                            />
+                                routerLink={<Link to="/" />}
+                            >
+                                <Typography>FAQ Page</Typography>
+                            </MenuItem>
 
                             <Typography
                                 variant="h6"
-                                
                                 sx={{ m: "15px 0 5px 20px" }}
                             >
                                 Charts
                             </Typography>
-                            <Item
-                                title="Bar Chart"
-                                to="/bar"
+
+                            <MenuItem
+                                active={selected === "barchart"}
+                                style={{
+                                    backgroundColor: selected === "barchart" ? colors.black[300] : "transparent",
+                                    color: theme.palette.background,
+                                }}
+                                onClick={() => setSelected("barchart")}
                                 icon={<BarChartOutlinedIcon />}
-                                selected={selected}
-                                setSelected={setSelected}
-                            />
-                            <Item
-                                title="Pie Chart"
-                                to="/pie"
+                                routerLink={<Link to="/" />}
+                            >
+                                <Typography>Bar Chart</Typography>
+                            </MenuItem>
+
+                            <MenuItem
+                                active={selected === "piechart"}
+                                style={{
+                                    backgroundColor: selected === "piechart" ? colors.black[300] : "transparent",
+                                    color: theme.palette.background,
+                                }}
+                                onClick={() => setSelected("piechart")}
                                 icon={<PieChartOutlineOutlinedIcon />}
-                                selected={selected}
-                                setSelected={setSelected}
-                            />
-                            <Item
-                                title="Line Chart"
-                                to="/line"
+                                routerLink={<Link to="/" />}
+                            >
+                                <Typography>Pie Chart</Typography>
+                            </MenuItem>
+
+                            <MenuItem
+                                active={selected === "linechart"}
+                                style={{
+                                    backgroundColor: selected === "linechart" ? colors.black[300] : "transparent",
+                                    color: theme.palette.background,
+                                }}
+                                onClick={() => setSelected("linechart")}
                                 icon={<TimelineOutlinedIcon />}
-                                selected={selected}
-                                setSelected={setSelected}
-                            />
-                            <Item
-                                title="Geography Chart"
-                                to="/geography"
+                                routerLink={<Link to="/" />}
+                            >
+                                <Typography>Line Chart</Typography>
+                            </MenuItem>
+
+                            <MenuItem
+                                active={selected === "geographychart"}
+                                style={{
+                                    backgroundColor: selected === "geographychart" ? colors.black[300] : "transparent",
+                                    color: theme.palette.background,
+                                }}
+                                onClick={() => setSelected("geographychart")}
                                 icon={<MapOutlinedIcon />}
-                                selected={selected}
-                                setSelected={setSelected}
-                            />
+                                routerLink={<Link to="/" />}
+                            >
+                                <Typography>Geography Chart</Typography>
+                            </MenuItem>
                         </Box>
                     </Menu>
                 </Sidebar>

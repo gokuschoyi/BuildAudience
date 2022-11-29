@@ -1,28 +1,24 @@
-import { useState } from "react";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./themes/theme";
-import { ProSidebarProvider } from 'react-pro-sidebar';
-import Topbar from "./components/global/TopBar";
-import SidebarC from "./components/global/SideBar";
+import { Route, Routes } from "react-router-dom";
+import Dashboard from "./pages/Dashboard";
+import AuthHandler from "./pages/auth/AuthHandler";
+import QuickPost from "./pages/QuickPost";
+
 function App() {
   const [theme, colorMode] = useMode();
-  const [isSidebar, setIsSidebar] = useState(true);
-
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <div className="app">
-          <ProSidebarProvider>
-            <SidebarC isSidebar={isSidebar} />
-          </ProSidebarProvider>
-          <main className="content"
-          style={{
-            backgroundColor: theme.palette.background.default,
-          }}
-          >
-            <Topbar setIsSidebar={setIsSidebar} />
-          </main>
+          <Routes>
+            <Route path="auth" element={<AuthHandler />} />
+            <Route path="dashboard" element={<Dashboard color={theme.palette.background.default} />}>
+              <Route path="dashboardTab" element={<QuickPost tab="dashboard" />} />
+              <Route path="quickPost" element={<QuickPost tab="quickPost" />} />
+            </Route>
+          </Routes>
         </div>
       </ThemeProvider>
     </ColorModeContext.Provider>
