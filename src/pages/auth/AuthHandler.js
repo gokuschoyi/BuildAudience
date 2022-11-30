@@ -2,8 +2,8 @@ import React from 'react'
 import bgImage from '../../assets/login_bg.png'
 import { Box } from "@mui/material";
 
-import Login from '././Login';
-import Signup from '././Signup';
+import Login from './auth-pages/Login';
+import Signup from './auth-pages/Signup';
 
 const AuthHandler = () => {
     const [authSwitch, setAuthSwitch] = React.useState('login');

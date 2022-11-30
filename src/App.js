@@ -1,9 +1,10 @@
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./themes/theme";
 import { Route, Routes } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./pages/dashboard/Dashboard";
 import AuthHandler from "./pages/auth/AuthHandler";
-import QuickPost from "./pages/QuickPost";
+import QuickPost from "./pages/dashboard/QuickPost";
+import CustomPost from "./pages/dashboard/CustomPost";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -16,7 +17,8 @@ function App() {
             <Route path="auth" element={<AuthHandler />} />
             <Route path="dashboard" element={<Dashboard color={theme.palette.background.default} />}>
               <Route path="dashboardTab" element={<QuickPost tab="dashboard" />} />
-              <Route path="quickPost" element={<QuickPost tab="quickPost" />} />
+              <Route path="quickPost" element={<QuickPost tab="Quick Post" />} />
+              <Route path="customPost" element={<CustomPost tab="Custom Post" />} />
             </Route>
           </Routes>
         </div>

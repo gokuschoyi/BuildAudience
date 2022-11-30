@@ -8,6 +8,8 @@ import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
+import PermMediaIcon from '@mui/icons-material/PermMedia';
+import MoreTimeIcon from '@mui/icons-material/MoreTime';
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
@@ -25,8 +27,7 @@ const SidebarC = () => {
     const sm = useMediaQuery(theme.breakpoints.down('sm'));
     /* console.log(theme.palette.mode); */
     /* console.log(colors.black[400]) */
-    let pathname = useLocation().pathname
-    console.log(pathname)
+    /* let pathname = useLocation().pathname */
 
     useEffect(() => {
         if (sm) {
@@ -37,8 +38,18 @@ const SidebarC = () => {
         }
     }, [setIsCollapsed, sm])
 
+    useEffect(() => {
+        const content = document.getElementsByClassName('content')[0];
+        if (!isCollapsed) {
+            content.style.setProperty('--marginLeft', '300px')
+        }
+        else {
+            content.style.setProperty('--marginLeft', '80px')
+        }
+    }, [isCollapsed])
+
     return (
-        <div style={{ display: 'flex', height: '100%' }}>
+        <div style={{ display: 'flex', height: '100%', position: 'fixed' }}>
             <Box
                 sx={{
                     "& .sidebar-inner": {
@@ -129,7 +140,7 @@ const SidebarC = () => {
                                 }}
                                 onClick={() => setSelected("custompost")}
                                 icon={<ContactsOutlinedIcon />}
-                                routerLink={<Link to="/" />}
+                                routerLink={<Link to="custompost" />}
                             >
                                 <Typography>Custom Post</Typography>
                             </MenuItem>
@@ -154,10 +165,23 @@ const SidebarC = () => {
                                     color: theme.palette.background,
                                 }}
                                 onClick={() => setSelected("projects")}
-                                icon={<ReceiptOutlinedIcon />}
+                                icon={<PermMediaIcon />}
                                 routerLink={<Link to="/" />}
                             >
                                 <Typography>Projects</Typography>
+                            </MenuItem>
+
+                            <MenuItem
+                                active={selected === "schedule"}
+                                style={{
+                                    backgroundColor: selected === "schedule" ? colors.black[300] : "transparent",
+                                    color: theme.palette.background,
+                                }}
+                                onClick={() => setSelected("schedule")}
+                                icon={<MoreTimeIcon />}
+                                routerLink={<Link to="/" />}
+                            >
+                                <Typography>Schedule</Typography>
                             </MenuItem>
 
                             <Typography
