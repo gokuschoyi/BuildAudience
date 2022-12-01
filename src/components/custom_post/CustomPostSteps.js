@@ -1,6 +1,8 @@
 import React from 'react'
 import { Box, Stepper, Step, StepLabel, Button, Typography, StepContent, useTheme } from '@mui/material'
-
+import StepOne from './CP_image_steps/StepOne';
+import StepTwo from './CP_image_steps/StepTwo';
+import StepThree from './CP_image_steps/StepThree';
 const CustomPostSteps = (props) => {
     const { steps } = props;
     const theme = useTheme();
@@ -21,6 +23,63 @@ const CustomPostSteps = (props) => {
     const handleReset = () => {
         setActiveStep(0);
     };
+
+    const stepOneData = {
+        tagline: '',
+        category: '',
+        postType: '',
+        mediaType: '',
+    }
+
+    const quotes = [
+        {
+            author: 'Author 1',
+            quote: 'random quote 1'
+        },
+        {
+            author: 'Author 2',
+            quote: 'random quote 2'
+        },
+        {
+            author: 'Author 3',
+            quote: 'random quote 3'
+        },
+        {
+            author: 'Author 4',
+            quote: 'random quote 4'
+        },
+        {
+            author: 'Author 5',
+            quote: 'random quote'
+        }
+    ]
+
+    const stepTwoData = {
+        author: quotes[0].author,
+        quote: quotes[0].quote,
+        key :0
+    }
+
+    const [stepOneInfo, setStepOneInfo] = React.useState(stepOneData)
+    const [stepTwoInfo, setStepTwoInfo] = React.useState(stepTwoData)
+    /* console.log(stepOneInfo); */
+    /* console.log(stepTwoInfo); */
+
+    const getStepContent = (step) => {
+        switch (step) {
+            case 0:
+                return <StepOne stepOneInfo={stepOneInfo} setStepOneInfo={setStepOneInfo} />;
+            case 1:
+                return <StepTwo stepTwoInfo={stepTwoInfo} setStepTwoInfo={setStepTwoInfo} quotes={quotes}/>;
+            case 2:
+                return <StepThree />;
+            default:
+                return 'Unknown step';
+        }
+    }
+
+    console.log(activeStep + 1)
+
     return (
         <Box p={3} sx={{ width: '100%' }}>
             <Stepper activeStep={activeStep} orientation="vertical">
@@ -32,6 +91,7 @@ const CustomPostSteps = (props) => {
                             <StepLabel {...labelProps}>{label}</StepLabel>
                             <StepContent>
                                 <Typography>Step {activeStep + 1}</Typography>
+                                {getStepContent(activeStep)}
                             </StepContent>
                         </Step>
                     );
