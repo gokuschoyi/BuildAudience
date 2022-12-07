@@ -1,113 +1,132 @@
-import React from 'react'
-import { Box, ImageList, ImageListItem, ImageListItemBar, ListSubheader, IconButton, useTheme } from '@mui/material'
+import React, { useEffect } from 'react'
+import { Box, ImageList, ImageListItem, ListSubheader, useTheme, Button } from '@mui/material'
 import DoneIcon from '@mui/icons-material/Done';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { styled } from '@mui/material/styles';
 
-const StepThree = () => {
-    const itemData = [
-        {
-            img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
-            title: 'Breakfast',
-            author: '@bkristastucchio',
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d',
-            title: 'Burger',
-            author: '@rollelflex_graphy726',
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1522770179533-24471fcdba45',
-            title: 'Camera',
-            author: '@helloimnik',
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c',
-            title: 'Coffee',
-            author: '@nolanissac',
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8',
-            title: 'Hats',
-            author: '@hjrc33',
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62',
-            title: 'Honey',
-            author: '@arwinneil',
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6',
-            title: 'Basketball',
-            author: '@tjdragotta',
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1518756131217-31eb79b20e8f',
-            title: 'Fern',
-            author: '@katie_wasserman',
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1597645587822-e99fa5d45d25',
-            title: 'Mushrooms',
-            author: '@silverdalex',
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1567306301408-9b74779a11af',
-            title: 'Tomato basil',
-            author: '@shelleypauls',
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1471357674240-e1a485acb3e1',
-            title: 'Sea star',
-            author: '@peterlaster',
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6',
-            title: 'Bike',
-            author: '@southside_customs',
-        },
-    ];
+const StepThree = (props) => {
+    const { itemData, stepThreeInfo, setStepThreeInfo, mediaType } = props;
 
     const theme = useTheme();
     var col = 6;
     const sm = useMediaQuery(theme.breakpoints.down('sm'));
     const md = useMediaQuery(theme.breakpoints.down('md'));
     const lg = useMediaQuery(theme.breakpoints.down('lg'));
-    if(sm){
-        col=2;
+
+    const columnSize = (type) => ({
+        ...(type === 'Image'
+            ? {
+                Sm: 2,
+                Md: 3,
+                Lg: 4,
+                Xl: 6,
+            }
+            :
+            {
+                Sm: 1,
+                Md: 1,
+                Lg: 2,
+                Xl: 2,
+            }
+        )
+    })
+    /* var cols = columnSize(mediaType);
+    console.log(cols) */
+
+    if (sm) {
+        col = columnSize(mediaType).Sm;
     }
-    else if(md){
-        col=3;
+    else if (md) {
+        col = columnSize(mediaType).Md;
     }
-    else if(lg){
-        col=4;
+    else if (lg) {
+        col = columnSize(mediaType).Lg;
     }
-    /* console.log({sm,md,lg,col}); */
+    else {
+        col = columnSize(mediaType).Xl;
+    }
+
+    const SelectButton = styled(Button)(({ theme }) => ({
+        color: theme.palette.primary.main,
+        backgroundColor: theme.palette.secondary.main,
+        borderRadius: '30px',
+        minWidth: 'auto',
+        padding: '6px 6px',
+        ':hover': {
+            backgroundColor: theme.palette.secondary.main,
+            opacity: 0.75,
+        }
+    }));
+
+    const selectedImageLink = (event) => {
+        var removeClickedStyle = Array.from(document.getElementsByClassName('selectLinkButton'))
+        removeClickedStyle.forEach((item) => {
+            item.classList.remove("selected")
+        })
+        /* console.log(removeClickedStyle) */
+        event.currentTarget.classList.add("selected")
+        /* console.log(event.currentTarget.classList) */
+
+        const url = event.currentTarget.getAttribute('data-link')
+        var id = event.currentTarget.name
+
+        var key = itemData.map(function (e) { return e.author; }).indexOf(id);
+        const { author, title } = itemData[key]
+        /* console.log({ id, key, author, title }) */
+
+        setStepThreeInfo({ ...stepThreeInfo, url: url, key: key, author: author, title: title })
+        /* console.log(event.currentTarget.getAttribute('data-link')); */
+    }
+
+    useEffect(() => {
+        console.log(stepThreeInfo)
+        if (stepThreeInfo.url !== '') {
+            var setSelected = document.getElementsByName(stepThreeInfo.author)
+            setSelected[0].classList.add("selected")
+        }
+        else {
+            return
+        }
+    }, [stepThreeInfo])
+
+    /* console.log(mediaType) */
+
     return (
         <Box sx={{ display: 'flex' }}>
-            <ImageList  sx={{ width: '100%', height: 450 }} cols={col}>
+            <ImageList sx={{ width: '100%', height: 450 }} cols={col}>
                 <ImageListItem key="Subheader" cols={col}>
                     <ListSubheader component="div">Select an Image</ListSubheader>
                 </ImageListItem>
                 {itemData.map((item) => (
-                    <ImageListItem key={item.img}>
-                        <img
-                            src={`${item.img}?w=248&fit=crop&auto=format`}
-                            srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                            alt={item.title}
-                            loading="lazy"
-                        />
-                        <ImageListItemBar
-                            title={item.title}
-                            subtitle={item.author}
-                            actionIcon={
-                                <IconButton
-                                    sx={{ color: 'rgba(255, 255, 255, 0.54)' }}
-                                    aria-label={`info about ${item.title}`}
-                                >
-                                    <DoneIcon />
-                                </IconButton>
-                            }
-                        />
+                    <ImageListItem key={item.url} sx={{ display: 'flex', justifyContent: 'end', alignItems: 'end' }}>
+                        {mediaType === 'Image'
+                            ?
+                            <img
+                                src={`${item.url}?w=248&fit=crop&auto=format`}
+                                srcSet={`${item.url}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                                alt={item.title}
+                                loading="lazy"
+                            />
+                            :
+                            <video
+                                src={`${item.url}?w=248&fit=crop&auto=format`}
+                                srcSet={`${item.url}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                                alt={item.title}
+                                loading="lazy"
+                                loop
+                                muted
+                            />}
+                        <Box position='absolute' m={1} >
+                            <SelectButton
+                                className='selectLinkButton'
+                                aria-label={`info about ${item.title}`}
+                                name={item.author}
+                                onClick={(event) => selectedImageLink(event)}
+                                data-link={`${item.url}`}
+                            >
+                                <DoneIcon sx={{ width: '18px', height: '18px' }} />
+                            </SelectButton>
+                        </Box>
                     </ImageListItem>
                 ))}
             </ImageList>

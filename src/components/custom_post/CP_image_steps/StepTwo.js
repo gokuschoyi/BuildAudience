@@ -1,20 +1,24 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Box, Typography, IconButton } from '@mui/material'
 import ReplayIcon from '@mui/icons-material/Replay';
 const StepTwo = (props) => {
     const { stepTwoInfo, setStepTwoInfo, quotes } = props;
     const { author, quote, key } = stepTwoInfo;
-    const [quoteCount, setQuoteCount] = useState(key);
-    /* console.log(key) */
-    
 
     const regenerateQuote = () => {
-        const { author, quote } = quotes[quoteCount];
-        const k = quotes.indexOf(quotes[quoteCount]);
-        setStepTwoInfo({ ...stepTwoInfo, author: author, quote: quote, key: k });
-        setQuoteCount(quoteCount + 1);
-        if (quoteCount === quotes.length - 1) {
-            setQuoteCount(0);
+
+        if (key === quotes.length - 1) {
+            const { author, quote } = quotes[0];
+            setStepTwoInfo({ ...stepTwoInfo, author: author, quote: quote, key: 0 });
+        }
+        else {
+            var count = key
+            count++;
+            /* console.log('regenerate' + count); */
+            const { author, quote } = quotes[count];
+            /* console.log({ author, quote }); */
+            const k = quotes.indexOf(quotes[count]);
+            setStepTwoInfo({ ...stepTwoInfo, author: author, quote: quote, key: k });
         }
     }
 

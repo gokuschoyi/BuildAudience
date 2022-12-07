@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, TextField, Button } from '@mui/material'
+import { Box, TextField } from '@mui/material'
 import CPInput from '../CP_components/CPInput'
 const StepOne = (props) => {
     const { stepOneInfo, setStepOneInfo } = props;
@@ -42,14 +42,7 @@ const StepOne = (props) => {
         'Story'
     ]
 
-    const mediaTypeOption = [
-        'Image',
-        'Video'
-    ]
-
-    /* console.log(stepOneInfo); */
-
-    const { tagline, category, postType, mediaType } = stepOneInfo;
+    const { tagline, category, postType } = stepOneInfo;
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -63,9 +56,8 @@ const StepOne = (props) => {
 
                 <CPInput label="Select a category" value={category} onChange={handleChange} options={categoriesOption} name="category" />
                 <CPInput label="Post Type" value={postType} onChange={handleChange} options={postTypeOption} name="postType" />
-                <CPInput label="Media Type" value={mediaType} onChange={handleChange} options={mediaTypeOption} name="mediaType" />
+                
             </Box>
-            <Button >submit</Button>
         </Box>
     )
 }

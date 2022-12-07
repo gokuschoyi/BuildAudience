@@ -42,3 +42,23 @@ body,
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+.imageSelect-button:hover {
+  /* background-color: #fde15d !important; */
+  opacity: 0.8;
+  transition: all 0.2s ease-in-out;
+}
+.selected {
+  background-color: #db331c !important;
+}
+
+.smallscreen-stepper {
+  flex-direction: column !important;
+  align-items: start !important;
+  transition: all 0.2s ease-in-out;
+}
+
+.smallscreen-stepper .MuiStep-root {
+  padding: 4px !important;
+  transition: all 0.2s ease-in-out;
+}

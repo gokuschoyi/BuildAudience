@@ -19,6 +19,7 @@
     "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "^18.2.0",
     "react-element-to-jsx-string": "^15.0.0",
+    "react-material-ui-carousel": "^3.4.2",
     "react-pro-sidebar": "^1.0.0-alpha.7",
     "react-router-dom": "^6.4.3",
     "react-scripts": "5.0.1",
