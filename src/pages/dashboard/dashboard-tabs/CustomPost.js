@@ -1,8 +1,8 @@
 import React from 'react'
 import { Box, } from '@mui/material'
-import Header from '../../components/global/Header'
-import CustomPostSteps from '../../components/custom_post/CustomPostSteps';
-import ToggleSwitch from '../../components/custom_post/CP_components/ToggleSwitch';
+import Header from '../../../components/global/Header'
+import CustomPostSteps from '../../../components/custom_post/CustomPostSteps';
+import ToggleSwitch from '../../../components/custom_post/CP_components/ToggleSwitch';
 
 const CustomPost = () => {
     const [mediaType, setMediaType] = React.useState('Image');

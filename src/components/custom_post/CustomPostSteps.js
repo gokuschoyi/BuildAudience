@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react'
 import { Box, Stepper, Step, StepLabel, Button, Typography, useTheme } from '@mui/material'
 import useMediaQuery from '@mui/material/useMediaQuery';
-import StepOne from './CP_image_steps/StepOne';
-import StepTwo from './CP_image_steps/StepTwo';
-import StepThree from './CP_image_steps/StepThree';
-import StepFour from './CP_image_steps/StepFour';
-import StepFive from './CP_image_steps/StepFive';
+import StepOne from './CP_steps/StepOne';
+import StepTwo from './CP_steps/StepTwo';
+import StepThree from './CP_steps/StepThree';
+import StepFour from './CP_steps/StepFour';
+import StepFive from './CP_steps/StepFive';
 const CustomPostSteps = (props) => {
     const { steps, mediaType } = props;
     const theme = useTheme();

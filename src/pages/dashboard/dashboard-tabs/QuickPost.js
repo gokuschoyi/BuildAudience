@@ -1,12 +1,12 @@
 import React, { useState, useRef } from 'react'
-import Header from '../../components/global/Header'
+import Header from '../../../components/global/Header'
 import PhotoCameraBackIcon from '@mui/icons-material/PhotoCameraBack';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { Box, Button } from '@mui/material'
 import Grid from '@mui/material/Grid';
-import MediaHolder from '../../components/MediaHolder';
-import { Item } from '../../components/Item';
+import MediaHolder from '../../../components/MediaHolder';
+import { Item } from '../../../components/Item';
 const QuickPost = (props) => {
     const [postType, setPostType] = useState('');
 

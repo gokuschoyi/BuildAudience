@@ -59,7 +59,7 @@ const SidebarC = () => {
                         color: `${theme.palette.primary.main} !important`,
                     },
                     '& .menu-anchor:hover': {
-                        backgroundColor: `${colors.grey[900]} !important`,
+                        backgroundColor: `${colors.blue[200]} !important`,
                     },
                     '& .menu-item:active': {
                         backgroundColor: `${theme.palette.background} !important`,
@@ -153,7 +153,7 @@ const SidebarC = () => {
                                 }}
                                 onClick={() => setSelected("blogpost")}
                                 icon={<ReceiptOutlinedIcon />}
-                                routerLink={<Link to="/" />}
+                                routerLink={<Link to="blogpost" />}
                             >
                                 <Typography>Blog Post</Typography>
                             </MenuItem>
