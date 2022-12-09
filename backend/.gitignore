@@ -1,0 +1,7 @@
+buildaudience-gcp.json
+venv
+.env
+__pycache__
+logs/all.log
+assets/
+celerybeat-schedule.db

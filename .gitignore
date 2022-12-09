@@ -1,7 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-frontend/node_modules
+/node_modules
 /.pnp
 .pnp.js
 
@@ -23,10 +23,10 @@ yarn-debug.log*
 yarn-error.log*
 
 
-build_audience_api/buildaudience-gcp.json
-build_audience_api/venv
-build_audience_api/.env
-build_audience_api/__pycache__
-build_audience_api/logs/all.log
-build_audience_api/assets/
-build_audience_api/celerybeat-schedule.db
+buildaudience-gcp.json
+venv
+.env
+__pycache__
+logs/all.log
+assets/
+celerybeat-schedule.db
