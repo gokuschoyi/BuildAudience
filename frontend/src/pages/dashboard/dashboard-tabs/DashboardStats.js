@@ -1,6 +1,8 @@
 import React from 'react'
 import { Box, TextField, Button } from '@mui/material'
 import Header from '../../../components/global/Header'
+import BlogpostTemplate from '../../../components/blog_post/BlogpostTemplate'
+import BlogPostEditor from '../../../components/blog_post/blog_post_components/BlogPostEditor'
 const DashboardStats = () => {
 
     function generateShades(colorHex, numShades) {
@@ -33,7 +35,7 @@ const DashboardStats = () => {
     const [generatedShades, setGeneratedShades] = React.useState()
     const [palette, setPalette] = React.useState()
 
-    const handleChange = (e) => {
+    const handleInputChange = (e) => {
         const { name, value } = e.target;
         setColors({ ...colors, [name]: value });
     }
@@ -60,7 +62,7 @@ const DashboardStats = () => {
         for (let i = 0; i < 5; i++) {
             colors.push(randomHexColor());
         }
-        
+
         let shades = [];
         for (let i = 0; i < colors.length; i++) {
             shades.push(generateShades(colors[i], 5));
@@ -71,10 +73,26 @@ const DashboardStats = () => {
 
     /* generate shades from the palette */
 
+    const [template, setTemplate] = React.useState('Template 1')
+    const handleChange = (e) => {
+        const { value } = e.target;
+        setTemplate(value)
+    }
+
+    const [sectionColor, setSectionColor] = React.useState('#fff')
+    const handleSectionColorChange = (color) => {
+        setSectionColor(color.hex)
+    }
+
+    const [backgroundColor, setBackgroundColor] = React.useState('#fff')
+    const handleBackgroundColorChange = (color) => {
+        setBackgroundColor(color.hex)
+    }
+
     return (
         <Box>
             <Box height='100%' width='-webkit-fill-available'>
-                <Header title={"Dashboaard"} subtitle={"View your stats"} />
+                <Header title={"Dashboard"} subtitle={"View your stats"} />
             </Box>
             <Box>
                 <Box>
@@ -87,7 +105,7 @@ const DashboardStats = () => {
                         sx={{ margin: '20px' }}
                         name='color'
                         value={color}
-                        onChange={handleChange}
+                        onChange={handleInputChange}
                     />
                     <TextField
                         label="Enter no of colors to generate"
@@ -98,7 +116,7 @@ const DashboardStats = () => {
                         sx={{ margin: '20px' }}
                         name='number'
                         value={number}
-                        onChange={handleChange}
+                        onChange={handleInputChange}
                     />
                     <Button variant="outlined" href="#outlined-buttons" onClick={generateColors}>
                         Submit
@@ -133,6 +151,24 @@ const DashboardStats = () => {
                     )
                 })
                 }
+            </Box>
+            <BlogPostEditor
+                template={template}
+                handleChange={handleChange}
+                sectionColor={sectionColor}
+                handleSectionColorChange={handleSectionColorChange}
+                backgroundColor={backgroundColor}
+                handleBackgroundColorChange={handleBackgroundColorChange}
+            />
+            <Box
+                className='template-holder'
+                display='flex'
+                flexDirection='column'
+                height='100vh'
+                sx={{ maxHeight: '100vh', overflowY: 'scroll' }}
+                padding={3}
+            >
+                <BlogpostTemplate template={template} backgroundColor={backgroundColor} sectionColor={sectionColor} />
             </Box>
         </Box>
     )
