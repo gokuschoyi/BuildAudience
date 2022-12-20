@@ -6,7 +6,7 @@ from firebase_admin import credentials, firestore
 import logging
 
 FIREBASE_WEB_API_KEY = "AIzaSyB00kXoML4u-TwgatrrmxvaE6PCr3LzezI"
-openai.api_key = "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"
+openai.api_key = "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"
 api_key = "AbcD1234"	
 FB_CRED = credentials.Certificate("buildAudienceSAK.json")
 UNSPLASH_KEY = "u_XnlXDxE_5N8GmpNFJeDaAeiZA-3bNMurXkj3v_4N8"

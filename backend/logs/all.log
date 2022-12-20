@@ -8567,3 +8567,27 @@ INFO:werkzeug: * Debugger PIN: 121-213-643
 INFO:openai:message='Request to OpenAI API' method=post path=https://api.openai.com/v1/engines/text-davinci-002/completions
 INFO:openai:message='OpenAI API response' path=https://api.openai.com/v1/engines/text-davinci-002/completions processing_ms=522 response_code=200
 INFO:werkzeug:127.0.0.1 - - [19/Dec/2022 15:23:29] "[35m[1mPOST /video_post/quick_post HTTP/1.1[0m" 500 -
+INFO:werkzeug: * Running on all addresses (0.0.0.0)
+   WARNING: This is a development server. Do not use it in a production deployment.
+ * Running on http://127.0.0.1:9000
+ * Running on http://10.0.0.47:9000 (Press CTRL+C to quit)
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 121-213-643
+INFO:openai:message='Request to OpenAI API' method=post path=https://api.openai.com/v1/engines/text-davinci-002/completions
+INFO:openai:message='OpenAI API response' path=https://api.openai.com/v1/engines/text-davinci-002/completions processing_ms=None response_code=401
+INFO:openai:error_code=invalid_api_key error_message='Incorrect API key provided: sk-VXNzf***************************************uovk. You can find your API key at https://beta.openai.com.' error_param=None error_type=invalid_request_error message='OpenAI API error received' stream_error=False
+INFO:werkzeug:127.0.0.1 - - [20/Dec/2022 14:14:07] "[35m[1mPOST /image_post/quick_post HTTP/1.1[0m" 500 -
+INFO:openai:message='Request to OpenAI API' method=post path=https://api.openai.com/v1/engines/text-davinci-002/completions
+INFO:openai:message='OpenAI API response' path=https://api.openai.com/v1/engines/text-davinci-002/completions processing_ms=None response_code=401
+INFO:openai:error_code=invalid_api_key error_message='Incorrect API key provided: sk-VXNzf***************************************uovk. You can find your API key at https://beta.openai.com.' error_param=None error_type=invalid_request_error message='OpenAI API error received' stream_error=False
+INFO:werkzeug:127.0.0.1 - - [20/Dec/2022 14:15:27] "[35m[1mPOST /image_post/quick_post HTTP/1.1[0m" 500 -
+INFO:werkzeug: * Detected change in 'C:\\Users\\gokul\\Desktop\\BuildAudience\\buildaudience\\backend\\init.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 121-213-643
+INFO:openai:message='Request to OpenAI API' method=post path=https://api.openai.com/v1/engines/text-davinci-002/completions
+INFO:openai:message='OpenAI API response' path=https://api.openai.com/v1/engines/text-davinci-002/completions processing_ms=487 response_code=200
+INFO:oauth2client.transport:Attempting refresh to obtain initial access_token
+INFO:oauth2client.client:Refreshing access_token
+INFO:werkzeug:127.0.0.1 - - [20/Dec/2022 14:15:43] "POST /image_post/quick_post HTTP/1.1" 200 -
