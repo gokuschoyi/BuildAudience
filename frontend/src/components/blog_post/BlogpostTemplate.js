@@ -1,7 +1,6 @@
 import { Box } from '@mui/material'
 import React from 'react'
-import bg from '../../assets/bg.png'
-import BlogPostEditor from './blog_post_components/BlogPostEditor'
+import BlogData from './BlogData'
 import BlogCover from './blog_post_components/BlogCover'
 import BlogIntroduction from './blog_post_components/BlogIntroduction'
 import BlogContentHolder1 from './template/BlogContentHolder1'
@@ -12,39 +11,16 @@ import BlogContentCustomColors from './template/BlogContentCustomColors'
 import BlogPostFooter from './blog_post_components/BlogPostFooter'
 const BlogpostTemplate = (props) => {
     const { template, sectionColor, backgroundColor } = props;
-    const blogData = [
-        {
-            title: 'Section One Heading',
-            content: 'Lorem ipsum dolor s sit amet co nsectetur adipis icing e l it sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-        },
-        {
-            title: 'Section Two Heading',
-            content: 'Lorem ipsum dolor s sit amet co nsectetur adipis icing e l it sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-        },
-        {
-            title: 'Section Three Heading',
-            content: 'Lorem ipsum dolor s sit amet co nsectetur adipis icing e l it sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-        },
-        {
-            title: 'Section Four Heading',
-            content: 'Lorem ipsum dolor s sit amet co nsectetur adipis icing e l it sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-        },
-        {
-            title: 'Section Five Heading',
-            content: 'Lorem ipsum dolor s sit amet co nsectetur adipis icing e l it sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-        }
-    ]
 
-    const content = "Lorem ipsum dolor s sit amet co nsectetur adipis icing e l it sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-
+    console.log(BlogData.blog_sections[0])
     const handleTemplate = () => {
         if (template === 'Template 1') {
             return (
                 <Box justifyContent='center' display='flex' className='section-content'>
                     <Box width='80%'>
-                        {blogData.map((data, index) => {
+                        {BlogData.blog_sections.map((data, index) => {
                             return (
-                                <BlogContentHolder1 key={index} title={data.title} content={data.content} />
+                                <BlogContentHolder1 key={index} content={data} />
                             )
                         }
                         )}
@@ -56,9 +32,9 @@ const BlogpostTemplate = (props) => {
             return (
                 <Box justifyContent='center' display='flex' className='section-content'>
                     <Box width='80%'>
-                        {blogData.map((data, index) => {
+                        {BlogData.blog_sections.map((data, index) => {
                             return (
-                                <BlogContentHolder2 key={index} title={data.title} content={data.content} />
+                                <BlogContentHolder2 key={index} content={data} />
                             )
                         })
                         }
@@ -70,9 +46,9 @@ const BlogpostTemplate = (props) => {
             return (
                 <Box justifyContent='center' display='flex' className='section-content'>
                     <Box width='80%'>
-                        {blogData.map((data, index) => {
+                        {BlogData.blog_sections.map((data, index) => {
                             return (
-                                <BlogContentHolder3 key={index} title={data.title} content={data.content} />
+                                <BlogContentHolder3 key={index} content={data} />
                             )
                         })
                         }
@@ -84,9 +60,9 @@ const BlogpostTemplate = (props) => {
             return (
                 <Box justifyContent='center' display='flex' className='section-content'>
                     <Box width='80%'>
-                        {blogData.map((data, index) => {
+                        {BlogData.blog_sections.map((data, index) => {
                             return (
-                                <BlogContentHolder4 key={index} title={data.title} content={data.content} index={index} />
+                                <BlogContentHolder4 key={index} content={data} index={index} />
                             )
                         })
                         }
@@ -98,12 +74,11 @@ const BlogpostTemplate = (props) => {
             return (
                 <Box justifyContent='center' display='flex' className='section-content' backgroundColor={`${backgroundColor}`}>
                     <Box width='80%'>
-                        {blogData.map((data, index) => {
+                        {BlogData.blog_sections.map((data, index) => {
                             return (
                                 <BlogContentCustomColors
                                     key={index}
-                                    title={data.title}
-                                    content={data.content}
+                                    content={data}
                                     sectionColor={sectionColor}
                                 />
                             )
@@ -118,8 +93,8 @@ const BlogpostTemplate = (props) => {
     return (
         <Box className='blogpost-container'>
             <Box className='blog-template'>
-                <BlogCover bg={bg} title={"test title"} />
-                <BlogIntroduction introTitle={"Introduction"} content={content} />
+                <BlogCover bg={`${BlogData.main_image.image}`} title={BlogData.title} />
+                <BlogIntroduction introTitle={"Introduction"} content={BlogData.intro} />
                 {handleTemplate()}
                 <BlogPostFooter />
             </Box>

@@ -16,8 +16,8 @@ OUTPUT:
 def upload_generated_image_to_cloud(image_str, image_id, uid):
     today = datetime.date.today()
     file_name = "assets/serve/{}_{}_{}.jpg".format(uid, image_id, today)
-    bucket_name = "buildaudience-img"
-    storage_client =  storage.Client.from_service_account_json('buildaudience-gcp.json')
+    bucket_name = "buildaudience-image-folder"
+    storage_client =  storage.Client.from_service_account_json('buildAudienceSAK.json')
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(file_name)
     blob.upload_from_string(image_str)

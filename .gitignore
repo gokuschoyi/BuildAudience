@@ -23,7 +23,8 @@ yarn-debug.log*
 yarn-error.log*
 
 
-buildaudience-gcp.json
+buildAudienceSAK.json
+init.py
 venv
 .env
 __pycache__

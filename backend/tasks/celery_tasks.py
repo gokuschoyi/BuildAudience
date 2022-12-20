@@ -16,12 +16,12 @@ app = Celery('tasks', backend='rpc://', broker='pyamqp://guest@localhost//')
 @app.task
 def get_templates_from_cloud():
     LOG("Getting templates from cloud: {}".format(datetime.datetime.now()))
-    bucket_name = "buildaudience-img"
-    storage_client = storage.Client.from_service_account_json('buildaudience-gcp.json')
+    bucket_name = "buildaudience-image-folder"
+    storage_client = storage.Client.from_service_account_json('buildAudienceSAK.json')
     bucket = storage_client.get_bucket(bucket_name)
 
     # Get all template data
-    orientation = ['landscape', 'square', 'verticle']
+    orientation = ['landscape', 'square', 'vertical']
     template_data_dict = {}
     for o in orientation:
         blobs = bucket.list_blobs(prefix="assets/template_data/{}/".format(o))

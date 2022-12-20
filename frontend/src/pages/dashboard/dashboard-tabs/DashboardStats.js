@@ -69,7 +69,7 @@ const DashboardStats = () => {
         }
         setPalette(shades);
     }
-    console.log(palette)
+    /* console.log(palette) */
 
     /* generate shades from the palette */
 
@@ -152,6 +152,7 @@ const DashboardStats = () => {
                 })
                 }
             </Box>
+            
             <BlogPostEditor
                 template={template}
                 handleChange={handleChange}
@@ -165,7 +166,7 @@ const DashboardStats = () => {
                 display='flex'
                 flexDirection='column'
                 height='100vh'
-                sx={{ maxHeight: '100vh', overflowY: 'scroll' }}
+                sx={{ maxHeight: '100vh', overflowY: 'scroll', borderStyle:'solid', borderColor:'neutral.dark'  }}
                 padding={3}
             >
                 <BlogpostTemplate template={template} backgroundColor={backgroundColor} sectionColor={sectionColor} />

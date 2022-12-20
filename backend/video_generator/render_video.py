@@ -97,8 +97,8 @@ def render_video(request_data, template_data, video_id):
 
     fileName = "user_images/{}.mp4".format(str(video_id))
     #upload image to gcp bucket
-    bucket_name = "buildaudience-img"
-    storage_client = storage.Client.from_service_account_json('buildaudience-gcp.json')
+    bucket_name = "buildaudience-image-folder"
+    storage_client = storage.Client.from_service_account_json('buildAudienceSAK.json')
     bucket = storage_client.get_bucket(bucket_name)
     blob = bucket.blob(fileName)
     blob.upload_from_filename(output_dir)
@@ -112,8 +112,8 @@ def render_video(request_data, template_data, video_id):
 def upload_video_to_cloud(file, video_id, uid):
     today = datetime.date.today()
     file_name = "user_images/{}.mp4".format(video_id)
-    bucket_name = "buildaudience-img"
-    storage_client =  storage.Client.from_service_account_json('buildaudience-gcp.json')
+    bucket_name = "buildaudience-image-folder"
+    storage_client =  storage.Client.from_service_account_json('buildAudienceSAK.json')
     bucket = storage_client.get_bucket(bucket_name)
     blob = bucket.blob(file_name)
     blob.upload_from_filename(file)
@@ -141,5 +141,5 @@ def get_orientation(post_type):
     elif post_type == "instagram":
         orientation = "square"
     elif post_type == "story":
-        orientation = "verticle"
+        orientation = "vertical"
     return orientation

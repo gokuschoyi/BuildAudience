@@ -11,8 +11,8 @@ from logger import LOG
 def get_image_url_from_gcp_bucket(id, media_type):
     from datetime import timezone, datetime
     url_lifetime = int(datetime.now(tz=timezone.utc).timestamp()) + 36000
-    bucket_name = "buildaudience-img"
-    client = storage.Client.from_service_account_json('buildaudience-gcp.json')  # Implicit environ set-up
+    bucket_name = "buildaudience-image-folder"
+    client = storage.Client.from_service_account_json('buildAudienceSAK.json')  # Implicit environ set-up
     bucket = client.bucket(bucket_name)
     if media_type == "video" or media_type == "Video":
         blob_name = "user_images/{}.mp4".format(str(id))
@@ -33,9 +33,9 @@ def upload_to_gcp_bucket(url, id):
         else:
             urllib.request.urlretrieve(url, fileName)
         #upload image to gcp bucket
-        bucket_name = "buildaudience-img"
+        bucket_name = "buildaudience-image-folder"
         file_name = os.path.join(os.path.dirname(__file__), fileName)
-        storage_client = storage.Client.from_service_account_json('buildaudience-gcp.json')
+        storage_client = storage.Client.from_service_account_json('buildAudienceSAK.json')
         bucket = storage_client.get_bucket(bucket_name)
         blob = bucket.blob(fileName)
         blob.upload_from_filename(file_name)

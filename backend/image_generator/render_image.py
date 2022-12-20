@@ -32,7 +32,7 @@ def get_orientation(post_type):
     elif post_type == "instagram":
         orientation = "square"
     elif post_type == "story":
-        orientation = "verticle"
+        orientation = "vertical"
     return orientation
 
 def render_image(request_data, template_data):

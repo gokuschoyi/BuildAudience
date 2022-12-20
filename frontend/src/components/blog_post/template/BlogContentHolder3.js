@@ -1,8 +1,9 @@
 import React from 'react'
-import { Box, Grid, Typography, Card, CardMedia, useTheme } from '@mui/material'
-import bg from '../../../assets/bg.png'
+import { Box, Grid, useTheme } from '@mui/material'
+import BlogPostSectionContent from '../blog_post_components/BlogPostSectionContent'
+import BlogPostSectionImage from '../blog_post_components/BlogPostSectionImage'
 const BlogContentHolder3 = (props) => {
-    const { title, content } = props
+    const { content } = props
     const theme = useTheme()
     return (
         <Box
@@ -13,24 +14,10 @@ const BlogContentHolder3 = (props) => {
         >
             <Grid container spacing={2}>
                 <Grid item xs={12} md={8}>
-                    <Box justifyContent='center' display='flex'>
-                        <Box pl={1.5}>
-                            <Typography variant='h3' mt={3} mb={3}>{title}</Typography>
-                            <Typography variant='body1' sx={{ textAlign: 'justify' }}>{content}</Typography>
-                        </Box>
-                    </Box>
+                    <BlogPostSectionContent content={content} />
                 </Grid>
-                <Grid item xs={12} md={4}>
-                    <Box p={2}>
-                        <Card>
-                            <CardMedia
-                                component="img"
-                                height="240"
-                                src={bg}
-                                alt="green iguana"
-                            />
-                        </Card>
-                    </Box>
+                <Grid item xs={12} md={4} sx={{ display: 'flex', justifyContent: 'center' }}>
+                    <BlogPostSectionImage content={content} />
                 </Grid>
             </Grid>
         </Box>

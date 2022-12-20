@@ -21,10 +21,12 @@ const BlogPostEditor = (props) => {
 
     const handleSectionColorSwitch = () => {
         setSectionColorSwitch(!sectionColorSwitch)
+        setBackgroundColorSwitch(false)
     }
 
     const handleBackgroundColorSwitch = () => {
         setBackgroundColorSwitch(!backgroundColorSwitch)
+        setSectionColorSwitch(false)
     }
 
     const popover = {
@@ -35,76 +37,78 @@ const BlogPostEditor = (props) => {
     return (
         <Box
             display='flex'
-            justifyContent={template === 'Custom Colors' ? 'start' : 'end'}
+            justifyContent='space-between'
             alignItems='center'
             p={3}
         >
-            <Box pr={2}>
-                <FormControl sx={{ m: 1, minWidth: 150 }} size="small">
-                    <InputLabel id="demo-select-small">Select Template</InputLabel>
-                    <Select
-                        labelId="demo-select-small"
-                        id="demo-select-small"
-                        value={template}
-                        label="Select Template"
-                        onChange={handleChange}
-                    >
-                        <MenuItem value='Template 1'>Template 1</MenuItem>
-                        <MenuItem value='Template 2'>Template 2</MenuItem>
-                        <MenuItem value='Template 3'>Template 3</MenuItem>
-                        <MenuItem value='Template 4'>Template 4</MenuItem>
-                        <MenuItem value='Custom Colors'>Custom Colors</MenuItem>
-                    </Select>
-                </FormControl>
+            <Box display='flex' alignItems='center'>
+                <Box pr={2}>
+                    <FormControl sx={{ m: 1, minWidth: 150 }} size="small">
+                        <InputLabel id="demo-select-small">Select Template</InputLabel>
+                        <Select
+                            labelId="demo-select-small"
+                            id="demo-select-small"
+                            value={template}
+                            label="Select Template"
+                            onChange={handleChange}
+                        >
+                            <MenuItem value='Template 1'>Template 1</MenuItem>
+                            <MenuItem value='Template 2'>Template 2</MenuItem>
+                            <MenuItem value='Template 3'>Template 3</MenuItem>
+                            <MenuItem value='Template 4'>Template 4</MenuItem>
+                            <MenuItem value='Custom Colors'>Custom Colors</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Box>
+                {template === 'Custom Colors'
+                    ?
+                    <Box display='flex'>
+                        <Box alignContent='center'>
+                            <Tooltip title='Change Section Color'>
+                                <IconButton
+                                    onClick={handleSectionColorSwitch}
+                                >
+                                    <FormatColorFillOutlinedIcon />
+                                </IconButton>
+                            </Tooltip>
+                            {sectionColorSwitch ?
+                                <Box sx={popover} className='popover'>
+                                    <GithubPicker
+                                        color={sectionColor}
+                                        onChangeComplete={handleSectionColorChange}
+                                    />
+                                </Box>
+                                : null
+                            }
+                        </Box>
+
+                        <Box alignContent='center'>
+                            <Tooltip title='Change Background Color of the main section'>
+                                <IconButton
+                                    onClick={handleBackgroundColorSwitch}
+                                >
+                                    <FormatColorFillOutlinedIcon />
+                                </IconButton>
+                            </Tooltip>
+                            {backgroundColorSwitch ?
+                                <Box sx={popover} className='popover'>
+                                    <GithubPicker
+                                        color={backgroundColor}
+                                        onChangeComplete={handleBackgroundColorChange}
+                                    />
+                                </Box>
+                                : null
+                            }
+                        </Box>
+                    </Box>
+                    : null
+                }
             </Box>
             <Box alignContent='center'>
                 <IconButton>
                     <SaveOutlinedIcon />
                 </IconButton>
             </Box>
-            {template === 'Custom Colors'
-                ?
-                <>
-                    <Box alignContent='center'>
-                        <Tooltip title='Change Section Color'>
-                            <IconButton
-                                onClick={handleSectionColorSwitch}
-                            >
-                                <FormatColorFillOutlinedIcon />
-                            </IconButton>
-                        </Tooltip>
-                        {sectionColorSwitch ?
-                            <Box sx={popover} className='popover'>
-                                <GithubPicker
-                                    color={sectionColor}
-                                    onChangeComplete={handleSectionColorChange}
-                                />
-                            </Box>
-                            : null
-                        }
-                    </Box>
-
-                    <Box alignContent='center'>
-                        <Tooltip title='Change Background Color of the main section'>
-                            <IconButton
-                                onClick={handleBackgroundColorSwitch}
-                            >
-                                <FormatColorFillOutlinedIcon />
-                            </IconButton>
-                        </Tooltip>
-                        {backgroundColorSwitch ?
-                            <Box sx={popover} className='popover'>
-                                <GithubPicker
-                                    color={backgroundColor}
-                                    onChangeComplete={handleBackgroundColorChange}
-                                />
-                            </Box>
-                            : null
-                        }
-                    </Box>
-                </>
-                : null
-            }
         </Box>
     )
 }
