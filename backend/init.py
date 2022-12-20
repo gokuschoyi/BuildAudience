@@ -5,12 +5,12 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 import logging
 
-FIREBASE_WEB_API_KEY = "AIzaSyB00kXoML4u-TwgatrrmxvaE6PCr3LzezI"
-openai.api_key = "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"
-api_key = "AbcD1234"	
+FIREBASE_WEB_API_KEY = config("FIREBASE_WEB_API_KEY")
+openai.api_key = config("openai_api_key")
+api_key = config("api_key")	
 FB_CRED = credentials.Certificate("buildAudienceSAK.json")
-UNSPLASH_KEY = "u_XnlXDxE_5N8GmpNFJeDaAeiZA-3bNMurXkj3v_4N8"
-PEXEL_KEY = "563492ad6f91700001000001e5a16b166c054493a5181879da3273f6"
+UNSPLASH_KEY = config("UNSPLASH_KEY")
+PEXEL_KEY = config("PEXEL_KEY")
 """ QUOTES_API_KEY = config("QUOTES_KEY") """
 """ switchboard_key = config("SWITCHBOARD_KEY") """
 """ headers_sb = {'Content-Type': 'application/json','X-API-Key': switchboard_key} """
