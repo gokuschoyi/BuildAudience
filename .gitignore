@@ -31,3 +31,4 @@ __pycache__
 logs/all.log
 assets/
 celerybeat-schedule.db
+backend/logs/all.log

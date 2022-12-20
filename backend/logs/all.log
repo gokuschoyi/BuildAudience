@@ -8621,3 +8621,51 @@ INFO:werkzeug:127.0.0.1 - - [20/Dec/2022 16:43:44] "POST /image_post/quick_post 
 INFO:openai:message='Request to OpenAI API' method=post path=https://api.openai.com/v1/engines/text-davinci-002/completions
 INFO:openai:message='OpenAI API response' path=https://api.openai.com/v1/engines/text-davinci-002/completions processing_ms=379 response_code=200
 INFO:werkzeug:127.0.0.1 - - [20/Dec/2022 16:43:57] "POST /image/generate_image HTTP/1.1" 200 -
+INFO:werkzeug: * Running on all addresses (0.0.0.0)
+   WARNING: This is a development server. Do not use it in a production deployment.
+ * Running on http://127.0.0.1:9000
+ * Running on http://172.17.0.2:9000 (Press CTRL+C to quit)
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 140-490-296
+INFO:openai:message='Request to OpenAI API' method=post path=https://api.openai.com/v1/engines/text-davinci-002/completions
+INFO:openai:message='OpenAI API response' path=https://api.openai.com/v1/engines/text-davinci-002/completions processing_ms=672 response_code=200
+INFO:werkzeug:127.0.0.1 - - [20/Dec/2022 06:06:34] "POST /image/generate_image HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/Dec/2022 06:06:37] "POST /image/query_images HTTP/1.1" 200 -
+INFO:openai:message='Request to OpenAI API' method=post path=https://api.openai.com/v1/engines/text-davinci-002/completions
+INFO:openai:message='OpenAI API response' path=https://api.openai.com/v1/engines/text-davinci-002/completions processing_ms=302 response_code=200
+INFO:werkzeug:127.0.0.1 - - [20/Dec/2022 06:06:47] "[35m[1mPOST /image_post/quick_post HTTP/1.1[0m" 500 -
+INFO:openai:message='Request to OpenAI API' method=post path=https://api.openai.com/v1/engines/text-davinci-002/completions
+INFO:openai:message='OpenAI API response' path=https://api.openai.com/v1/engines/text-davinci-002/completions processing_ms=510 response_code=200
+INFO:werkzeug:127.0.0.1 - - [20/Dec/2022 06:10:58] "[35m[1mPOST /image_post/quick_post HTTP/1.1[0m" 500 -
+INFO:openai:message='Request to OpenAI API' method=post path=https://api.openai.com/v1/engines/text-davinci-002/completions
+INFO:openai:message='OpenAI API response' path=https://api.openai.com/v1/engines/text-davinci-002/completions processing_ms=524 response_code=200
+INFO:werkzeug:127.0.0.1 - - [20/Dec/2022 06:13:08] "[35m[1mPOST /image_post/quick_post HTTP/1.1[0m" 500 -
+INFO:werkzeug: * Running on all addresses (0.0.0.0)
+   WARNING: This is a development server. Do not use it in a production deployment.
+ * Running on http://127.0.0.1:9000
+ * Running on http://172.17.0.2:9000 (Press CTRL+C to quit)
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 140-490-296
+INFO:werkzeug:127.0.0.1 - - [20/Dec/2022 06:17:28] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/Dec/2022 06:17:36] "GET / HTTP/1.1" 200 -
+INFO:root:2022-12-20 06:17:54.097438 : SIGNIN : gokulSchoyi@gmail.com
+INFO:werkzeug:127.0.0.1 - - [20/Dec/2022 06:17:54] "POST /user/signin HTTP/1.1" 200 -
+INFO:openai:message='Request to OpenAI API' method=post path=https://api.openai.com/v1/engines/text-davinci-002/completions
+INFO:openai:message='OpenAI API response' path=https://api.openai.com/v1/engines/text-davinci-002/completions processing_ms=362 response_code=200
+INFO:werkzeug:127.0.0.1 - - [20/Dec/2022 06:19:20] "[35m[1mPOST /image_post/quick_post HTTP/1.1[0m" 500 -
+INFO:werkzeug: * Running on all addresses (0.0.0.0)
+   WARNING: This is a development server. Do not use it in a production deployment.
+ * Running on http://127.0.0.1:9000
+ * Running on http://172.17.0.2:9000 (Press CTRL+C to quit)
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 140-490-296
+INFO:werkzeug:127.0.0.1 - - [20/Dec/2022 08:11:54] "GET / HTTP/1.1" 200 -
+INFO:openai:message='Request to OpenAI API' method=post path=https://api.openai.com/v1/engines/text-davinci-002/completions
+INFO:openai:message='OpenAI API response' path=https://api.openai.com/v1/engines/text-davinci-002/completions processing_ms=480 response_code=200
+INFO:oauth2client.transport:Attempting refresh to obtain initial access_token
+INFO:oauth2client.client:Refreshing access_token
+INFO:werkzeug:127.0.0.1 - - [20/Dec/2022 08:12:07] "POST /image_post/quick_post HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/Dec/2022 08:12:22] "GET /user/projects HTTP/1.1" 200 -
