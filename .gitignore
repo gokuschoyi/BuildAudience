@@ -32,3 +32,4 @@ logs/all.log
 assets/
 celerybeat-schedule.db
 backend/logs/all.log
+backend/gcloud_key.json

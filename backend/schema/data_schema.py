@@ -108,6 +108,28 @@ image_post_schema = {
     'required': ['quote','p_name','url','type']
 }
 
+custom_mask_schema = {
+    'type': 'object',
+    'properties': {
+        'annotation': {'type': 'object'},
+        'base64Image': {'type': 'string'},
+        'quote': {'type': 'string'},
+        'p_name': {'type': 'string'},
+        'url': {'type': 'string'},
+        'type': {'type': 'string'},
+        'template_name': {'type':'string'}
+    },
+    'required' :['annotation','base64Image','quote','p_name','url','type', 'template_name']
+}
+
+template_schema = {
+    'type': 'object',
+    'properties': {
+        'template_type':{'type':'string'}
+    },
+    'required':['template_type']
+}
+
 video_post_schema = {
     'type': 'object',
     'properties': {

@@ -9,6 +9,10 @@ import services.firebase as FB
 import services.unsplash as US
 import random
 
+import base64
+import io
+from PIL import Image
+
 image_post = Blueprint('image_post', __name__, url_prefix='/image_post')
 
 @image_post.route('/generate', methods=['POST'])
@@ -42,3 +46,23 @@ def quick_post():
     }
     url = render_image.create_image_post(data, n_post=1)
     return {"data":url}
+
+@image_post.route('/custom_mask', methods=['POST'])
+@jwt_required()
+@expects_json(SCHEMA.custom_mask_schema)
+def custom_mask():
+    data = g.data
+    uid = get_jwt_identity()['uid']
+    data['uid'] = uid
+    computedData = render_image.custom_mask_image_post_generator(data)
+    return {"data":computedData}
+
+@image_post.route('/template_url', methods=['Post'])
+@jwt_required()
+@expects_json(SCHEMA.template_schema)
+def get_template():
+    data = g.data
+    template = render_image.get_template(data)
+    return {"data": template}
+    
+    

@@ -12,7 +12,7 @@ import BlogPostFooter from './blog_post_components/BlogPostFooter'
 const BlogpostTemplate = (props) => {
     const { template, sectionColor, backgroundColor } = props;
 
-    console.log(BlogData.blog_sections[0])
+    /* console.log(BlogData.blog_sections[0]) */
     const handleTemplate = () => {
         if (template === 'Template 1') {
             return (

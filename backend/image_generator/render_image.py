@@ -1,6 +1,6 @@
 import json
 import requests
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageChops
 import random
 from gcloud import storage
 import datetime
@@ -9,7 +9,11 @@ import string
 import io
 import math
 from services.gcp import upload_generated_image_to_cloud
+from gcloud import storage
 
+import base64
+from collections import defaultdict
+import re
 
 def create_image_post(request_data, n_post):
     # Set orientation
@@ -97,3 +101,60 @@ def calculate_vertices(x1,y1,width,height,angle):
 
 def id_generator(size=10, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
+
+def custom_mask_image_post_generator(data):
+    image_url = data['url']
+    template_name = data['template_name']
+    
+    # Download the selected search image
+    img_data = requests.get(image_url).content
+    search_image = Image.open(io.BytesIO(img_data))
+    
+    #converting mask image to 8-bit B/W image and Inverting it to create the final mask
+    image_data = base64.b64decode(data['base64Image'])
+    image_mask_file = io.BytesIO(image_data)
+    imageMask = Image.open(image_mask_file)
+    alpha_mask = imageMask.convert('L')
+    alpha_mask_inverted = ImageChops.invert(alpha_mask)
+    
+    # print(template_data[0]['file'])
+    base_template = Image.open('assets/canva_templates/{}'.format(str(template_name))).convert("RGBA")
+    w,h = base_template.size
+    
+    alpha_mask = alpha_mask_inverted.resize((w,h), Image.ANTIALIAS)
+    search_image = search_image.resize((w,h), Image.ANTIALIAS)
+    
+    search_image.putalpha(alpha_mask)
+    
+    base_template.paste(search_image, (0,0), search_image)
+    
+    base_template = base_template.convert("RGB")
+    output = io.BytesIO()
+    base_template.save('assets/custom_mask/final.png')
+    
+    alpha_mask.save('assets/custom_mask/alpha_mask.png')
+    
+    # imageMask = imageMask.convert('RGB')
+    # imageMask.save('assets/custom_mask/image.jpeg', 'JPEG')
+    return data
+
+def get_template(data):
+    from datetime import timezone, datetime
+    url_lifetime = int(datetime.now(tz=timezone.utc).timestamp()) + 36000
+    templates = {
+        "landscape": ['template_1.jpg', 'template_3.jpg', 'template_10.jpg', 'template_11.jpg', 'template_13.jpg', 'template_14.jpg', 'template_16.jpg'],
+        "square" : ['template_17.jpg', 'template_19.jpg', 'template_20.jpg', 'template_29.jpg', 'template_31.jpg'],
+        "vertical" : ['template_28.jpg', 'template_30.jpg', 'template_33.jpg']
+    }
+    orientation = get_orientation(data['template_type'])
+    bucket_name = "buildaudience-image-folder"
+    storage_client =  storage.Client.from_service_account_json('buildAudienceSAK.json')
+    bucket = storage_client.get_bucket(bucket_name)
+    
+    blobs = bucket.list_blobs(prefix="assets/canva_template")
+    
+    public_url = [blob.generate_signed_url(url_lifetime) for blob in blobs]
+    filtered_url = [url for url in public_url if any(re.search(template, url) for template in templates[orientation])]
+    
+    result = [{"value":template, "url":url} for url in filtered_url for template in templates[orientation] if template in url]
+    return result

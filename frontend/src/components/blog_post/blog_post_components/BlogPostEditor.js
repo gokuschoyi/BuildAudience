@@ -17,7 +17,7 @@ const BlogPostEditor = (props) => {
     const [sectionColorSwitch, setSectionColorSwitch] = React.useState(false)
     const [backgroundColorSwitch, setBackgroundColorSwitch] = React.useState(false)
 
-    console.log(template)
+    // console.log(template)
 
     const handleSectionColorSwitch = () => {
         setSectionColorSwitch(!sectionColorSwitch)

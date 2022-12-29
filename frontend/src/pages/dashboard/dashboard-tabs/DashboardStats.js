@@ -1,158 +1,154 @@
-import React from 'react'
-import { Box, TextField, Button } from '@mui/material'
+import React, { useState, useEffect } from 'react'
+import { Box, Button, FormControl, InputLabel, Select, MenuItem, CircularProgress } from '@mui/material'
+import axios from 'axios'
 import Header from '../../../components/global/Header'
 import BlogpostTemplate from '../../../components/blog_post/BlogpostTemplate'
 import BlogPostEditor from '../../../components/blog_post/blog_post_components/BlogPostEditor'
+import ImageEditor from '../../../components/custom_post/image_editor/ImageEditor'
 const DashboardStats = () => {
+    const [templateUrl, setTemplateUrl] = useState([])
+    const [templateType, setTemplateType] = useState('facebook')
+    const [selectedTemplateUrl, setSelectedTemplateUrl] = useState('')
+    const [selectedTemplateName, setSelectedTemplateName] = useState('')
 
-    function generateShades(colorHex, numShades) {
-        const colorRGB = hexToRGB(colorHex);
-        const [r, g, b] = colorRGB.match(/\d+/g);
-        const shades = [];
-
-        for (let i = 0; i < numShades; i++) {
-            const shade = `#${(Math.max(0, r - i * 10)).toString(16).padStart(2, '0').toUpperCase()}${(Math.max(0, g - i * 10)).toString(16).padStart(2, '0').toUpperCase()}${(Math.max(0, b - i * 10)).toString(16).padStart(2, '0').toUpperCase()}`;
-            shades.push(shade);
-        }
-        return shades;
+    const postTypeHandleChange = (e) => {
+        const { value } = e.target;
+        setTemplateType(value)
     }
 
-    function hexToRGB(hex) {
-        const r = parseInt(hex.slice(1, 3), 16);
-        const g = parseInt(hex.slice(3, 5), 16);
-        const b = parseInt(hex.slice(5, 7), 16);
-
-        return `rgb(${r}, ${g}, ${b})`;
+    const handleSelectedTemplate = (e, obj) => {
+        const target = obj.props;
+        /* console.log(target) */
+        const value = target.value
+        const name = target.children
+        setSelectedTemplateUrl(value)
+        setSelectedTemplateName(name)
     }
 
-    const defaultColors = {
-        color: '',
-        number: 0
-    }
-
-    const [colors, setColors] = React.useState(defaultColors)
-    const { color, number } = colors;
-    const [generatedShades, setGeneratedShades] = React.useState()
-    const [palette, setPalette] = React.useState()
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setColors({ ...colors, [name]: value });
-    }
-
-    const generateColors = () => {
-        const colors = generateShades(color, number);
-        console.log(colors)
-        setGeneratedShades(colors)
-        console.log(generatedShades)
-    }
-
-    function randomHexColor() {
-        // Generate a random integer between 0 and 255
-        const r = Math.floor(Math.random() * 256);
-        const g = Math.floor(Math.random() * 256);
-        const b = Math.floor(Math.random() * 256);
-
-        // Convert the integer values to hexadecimal strings and return the concatenated string
-        return "#" + r.toString(16) + g.toString(16) + b.toString(16);
-    }
-
-    const generatePalette = () => {
-        const colors = [];
-        for (let i = 0; i < 5; i++) {
-            colors.push(randomHexColor());
-        }
-
-        let shades = [];
-        for (let i = 0; i < colors.length; i++) {
-            shades.push(generateShades(colors[i], 5));
-        }
-        setPalette(shades);
-    }
-    /* console.log(palette) */
-
-    /* generate shades from the palette */
-
-    const [template, setTemplate] = React.useState('Template 1')
+    const [template, setTemplate] = useState('Template 1')
     const handleChange = (e) => {
         const { value } = e.target;
         setTemplate(value)
     }
 
-    const [sectionColor, setSectionColor] = React.useState('#fff')
+    const [sectionColor, setSectionColor] = useState('#fff')
     const handleSectionColorChange = (color) => {
         setSectionColor(color.hex)
     }
 
-    const [backgroundColor, setBackgroundColor] = React.useState('#fff')
+    const [backgroundColor, setBackgroundColor] = useState('#fff')
     const handleBackgroundColorChange = (color) => {
         setBackgroundColor(color.hex)
     }
+
+    useEffect(() => {
+        const getTemplates = (templateType) => {
+            setTemplateUrl([])
+            const Token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY3MjExNDMwNCwianRpIjoiODE3NzIzNTYtNWNmYy00YjVkLTg1NzYtM2Y4YmU4N2Q3YzcxIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6eyJ1aWQiOiJFWGk2Nk1FTzQ1VXNGbW1KSGE0UEthMHJRTWkyIiwiZW1haWwiOiJnb2t1bFNjaG95aUBnbWFpbC5jb20iLCJjb21wYW55X25hbWUiOiJCdXp6IiwiZGlzcGxheV9uYW1lIjoiR29rdWwifSwibmJmIjoxNjcyMTE0MzA0fQ.OwGDu284bApsVqORqnL5f_DU7wGx-eem69BgFwvXh0w'
+            const config = {
+                headers: { Authorization: `Bearer ${Token}` }
+            }
+            const data = {
+                'template_type': templateType
+            }
+            axios.post('http://localhost:9000/image_post/template_url', data, config, { withCredentials: true })
+                .then(res => {
+                    setTemplateUrl(res.data)
+                    // console.log(templateUrl.data[0])
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        }
+        if (templateType === 'facebook') {
+            getTemplates("facebook")
+        }
+        if (templateType === 'instagram') {
+            getTemplates("instagram")
+        }
+        if (templateType === 'story') {
+            getTemplates("story")
+        }
+    }, [templateType])
+
+    useEffect(() => {
+        if (templateUrl.length !== 0) {
+            if (templateUrl.data.length > 0) {
+                /* console.log("linkstore") */
+                setSelectedTemplateUrl(templateUrl.data[0].url)
+                setSelectedTemplateName(templateUrl.data[0].value)
+            }
+        }
+    }, [templateUrl])
 
     return (
         <Box>
             <Box height='100%' width='-webkit-fill-available'>
                 <Header title={"Dashboard"} subtitle={"View your stats"} />
             </Box>
-            <Box>
-                <Box>
-                    <TextField
-                        label="Enter color in hex"
-                        id="standard-size-small"
-                        placeholder='enter color in hex'
-                        size="small"
-                        variant="standard"
-                        sx={{ margin: '20px' }}
-                        name='color'
-                        value={color}
-                        onChange={handleInputChange}
-                    />
-                    <TextField
-                        label="Enter no of colors to generate"
-                        id="standard-size-small"
-                        placeholder='enter no of colors to generate'
-                        size="small"
-                        variant="standard"
-                        sx={{ margin: '20px' }}
-                        name='number'
-                        value={number}
-                        onChange={handleInputChange}
-                    />
-                    <Button variant="outlined" href="#outlined-buttons" onClick={generateColors}>
-                        Submit
-                    </Button>
-                </Box>
-                <Box display='flex'>
-                    {generatedShades && generatedShades.map((shade, index) => {
-                        return (
-                            <Box key={index} sx={{ backgroundColor: shade, width: '100px', height: '100px', margin: '10px' }}>
 
-                            </Box>
-                        )
-                    })
-                    }
-                </Box>
-            </Box>
-            <Box p={3}>
-                <Button variant="outlined" href="#outlined-buttons" onClick={generatePalette}>
-                    Regenerate
-                </Button>
-                {palette && palette.map((color, index) => {
-                    return (
-                        <Box key={index} sx={{ display: 'flex' }}>
-                            {color.map((shade, index) => {
-                                return (
-                                    <Box key={index} sx={{ backgroundColor: shade, width: '100px', height: '100px', margin: '10px' }}>
-
-                                    </Box>
+            <Box pr={2} display='flex'>
+                <FormControl sx={{ m: 3, minWidth: 150 }} size="small">
+                    <InputLabel id="demo-select-small">Post Type</InputLabel>
+                    <Select
+                        labelId="demo-select-small-post"
+                        id="demo-select-small-post"
+                        value={templateType}
+                        label="Select Post"
+                        onChange={postTypeHandleChange}
+                    >
+                        <MenuItem value='facebook'>Facebook</MenuItem>
+                        <MenuItem value='instagram'>Instagram</MenuItem>
+                        <MenuItem value='story'>Story</MenuItem>
+                    </Select>
+                </FormControl>
+                {templateUrl.length === 0
+                    ?
+                    <Box display='flex' alignItems='center'>
+                        <CircularProgress size='20px' />
+                    </Box>
+                    :
+                    <FormControl sx={{ m: 3, minWidth: 150 }} size="small">
+                        <InputLabel id="demo-select-small">Template</InputLabel>
+                        <Select
+                            labelId="demo-select-small-template"
+                            id="demo-select-small-template"
+                            value={selectedTemplateUrl}
+                            label="Select Template"
+                            onChange={handleSelectedTemplate}
+                        >
+                            <MenuItem value={selectedTemplateUrl}>Default</MenuItem>
+                            {
+                                templateUrl.data.map((item, key) => {
+                                    return <MenuItem key={key} value={item.url} id={selectedTemplateName}>{item.value}</MenuItem>
+                                }
                                 )
-                            })}
-                        </Box>
-                    )
-                })
+                            }
+                        </Select>
+                    </FormControl>
                 }
             </Box>
-            
+            {/* {templateUrl.length === 0
+                ?
+                <Box display='flex' alignItems='center'>
+                    <CircularProgress size='20px' />
+                </Box>
+                :
+                <Box>
+                    {templateUrl.data.map((item, key) => {
+                        return <img key={key} src={item.url} alt={key}></img>
+                    }
+                    )}
+                </Box>
+            } */}
+
+
+            <Box className='ImageEditor' display='flex' justifyContent='center' width='100%'>
+                <Box width='80%'>
+                    <ImageEditor templateUrl={selectedTemplateUrl} templateType={templateType} templateName={selectedTemplateName} />
+                </Box>
+            </Box>
+
             <BlogPostEditor
                 template={template}
                 handleChange={handleChange}
@@ -166,7 +162,7 @@ const DashboardStats = () => {
                 display='flex'
                 flexDirection='column'
                 height='100vh'
-                sx={{ maxHeight: '100vh', overflowY: 'scroll', borderStyle:'solid', borderColor:'neutral.dark'  }}
+                sx={{ maxHeight: '100vh', overflowY: 'scroll', borderStyle: 'solid', borderColor: 'neutral.dark' }}
                 padding={3}
             >
                 <BlogpostTemplate template={template} backgroundColor={backgroundColor} sectionColor={sectionColor} />
